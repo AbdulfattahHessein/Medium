@@ -4,6 +4,7 @@ using Medium.DA.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Medium.DA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231017113607_ManyToManyStoryTopic")]
+    partial class ManyToManyStoryTopic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,46 +45,6 @@ namespace Medium.DA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Publishers");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.React", b =>
-                {
-                    b.Property<int>("PublisherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReactionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PublisherId", "StoryId");
-
-                    b.HasIndex("ReactionId");
-
-                    b.HasIndex("StoryId");
-
-                    b.ToTable("Reacts");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.Reaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.SavingList", b =>
@@ -139,50 +101,6 @@ namespace Medium.DA.Migrations
                     b.ToTable("Stories");
                 });
 
-            modelBuilder.Entity("Medium.Core.Entities.StoryPhoto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("StoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoryId");
-
-                    b.ToTable("StoryPhotos");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.StoryVideo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("StoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoryId");
-
-                    b.ToTable("StoryVideos");
-                });
-
             modelBuilder.Entity("Medium.Core.Entities.Topic", b =>
                 {
                     b.Property<int>("Id")
@@ -215,21 +133,6 @@ namespace Medium.DA.Migrations
                     b.ToTable("FollowerFollowing", (string)null);
                 });
 
-            modelBuilder.Entity("SavingListStory", b =>
-                {
-                    b.Property<int>("SavingListsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoriesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SavingListsId", "StoriesId");
-
-                    b.HasIndex("StoriesId");
-
-                    b.ToTable("SavingListStory");
-                });
-
             modelBuilder.Entity("StoryTopic", b =>
                 {
                     b.Property<int>("StoriesId")
@@ -243,33 +146,6 @@ namespace Medium.DA.Migrations
                     b.HasIndex("TopicsId");
 
                     b.ToTable("StoryTopic");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.React", b =>
-                {
-                    b.HasOne("Medium.Core.Entities.Publisher", "Publisher")
-                        .WithMany("Reacts")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Medium.Core.Entities.Reaction", "Reaction")
-                        .WithMany("Reacts")
-                        .HasForeignKey("ReactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Medium.Core.Entities.Story", "Story")
-                        .WithMany("Reacts")
-                        .HasForeignKey("StoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Publisher");
-
-                    b.Navigation("Reaction");
-
-                    b.Navigation("Story");
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.SavingList", b =>
@@ -294,28 +170,6 @@ namespace Medium.DA.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("Medium.Core.Entities.StoryPhoto", b =>
-                {
-                    b.HasOne("Medium.Core.Entities.Story", "Story")
-                        .WithMany("StoryPhotos")
-                        .HasForeignKey("StoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Story");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.StoryVideo", b =>
-                {
-                    b.HasOne("Medium.Core.Entities.Story", "Story")
-                        .WithMany("StoryVideos")
-                        .HasForeignKey("StoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Story");
-                });
-
             modelBuilder.Entity("PublisherPublisher", b =>
                 {
                     b.HasOne("Medium.Core.Entities.Publisher", null)
@@ -328,21 +182,6 @@ namespace Medium.DA.Migrations
                         .WithMany()
                         .HasForeignKey("FollowingsId")
                         .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SavingListStory", b =>
-                {
-                    b.HasOne("Medium.Core.Entities.SavingList", null)
-                        .WithMany()
-                        .HasForeignKey("SavingListsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Medium.Core.Entities.Story", null)
-                        .WithMany()
-                        .HasForeignKey("StoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -363,25 +202,9 @@ namespace Medium.DA.Migrations
 
             modelBuilder.Entity("Medium.Core.Entities.Publisher", b =>
                 {
-                    b.Navigation("Reacts");
-
                     b.Navigation("SavingLists");
 
                     b.Navigation("Stories");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.Reaction", b =>
-                {
-                    b.Navigation("Reacts");
-                });
-
-            modelBuilder.Entity("Medium.Core.Entities.Story", b =>
-                {
-                    b.Navigation("Reacts");
-
-                    b.Navigation("StoryPhotos");
-
-                    b.Navigation("StoryVideos");
                 });
 #pragma warning restore 612, 618
         }

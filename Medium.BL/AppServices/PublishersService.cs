@@ -76,7 +76,6 @@ namespace Medium.BL.AppServices
                 return NotFound<GetPublisherByIdResponse>();
             var response = Mapper.Map<GetPublisherByIdResponse>(publisher);
             return Success(response);
-
         }
 
         public async Task<ApiResponse<UpdatePublisherResponse>> UpdatePublisherAsync(UpdatePublisherRequest request)

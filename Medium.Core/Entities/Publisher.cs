@@ -6,6 +6,10 @@
         public string? Bio { get; set; }
         public string? PhotoUrl { get; set; }
         public ICollection<Story>? Stories { get; set; }
+        public ICollection<Publisher>? Followers { get; set; }
+        public ICollection<Publisher>? Followings { get; set; }
+        public ICollection<SavingList>? SavingLists { get; set; }
+        public ICollection<React>? Reacts { get; set; }
         public Publisher()
         {
             Name = string.Empty;

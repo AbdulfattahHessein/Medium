@@ -4,6 +4,7 @@ using Medium.DA.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Medium.DA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231017121505_ReactRelationship")]
+    partial class ReactRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,21 +217,6 @@ namespace Medium.DA.Migrations
                     b.ToTable("FollowerFollowing", (string)null);
                 });
 
-            modelBuilder.Entity("SavingListStory", b =>
-                {
-                    b.Property<int>("SavingListsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoriesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SavingListsId", "StoriesId");
-
-                    b.HasIndex("StoriesId");
-
-                    b.ToTable("SavingListStory");
-                });
-
             modelBuilder.Entity("StoryTopic", b =>
                 {
                     b.Property<int>("StoriesId")
@@ -328,21 +315,6 @@ namespace Medium.DA.Migrations
                         .WithMany()
                         .HasForeignKey("FollowingsId")
                         .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SavingListStory", b =>
-                {
-                    b.HasOne("Medium.Core.Entities.SavingList", null)
-                        .WithMany()
-                        .HasForeignKey("SavingListsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Medium.Core.Entities.Story", null)
-                        .WithMany()
-                        .HasForeignKey("StoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
