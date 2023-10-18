@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Medium.DA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231017122827_MantToManySaveListStory")]
-    partial class MantToManySaveListStory
+    [Migration("20231017145213_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

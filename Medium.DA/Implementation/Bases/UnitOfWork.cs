@@ -11,12 +11,18 @@ namespace Medium.DA.Implementation.Bases
         public IStoriesRepository Stories { get; }
         public IPublishersRepository Publishers { get; }
 
+        public IReactionsRepository Reactions { get; }
+
+        public ITopicsRepository Topics { get; }
+
         public UnitOfWork(ApplicationDbContext dbContext)
         {
 
             _dbContext = dbContext;
             Stories = new StoryRepository(dbContext);
             Publishers = new PublishersRepository(dbContext);
+            Reactions = new ReactionsRepository(dbContext);
+            Topics = new TopicsRepository(dbContext);
 
         }
 

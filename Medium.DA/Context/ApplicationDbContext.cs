@@ -23,7 +23,7 @@ namespace Medium.DA.Context
                 //many to many => many publisher (follower) to many publisher (following)
                 publisher.HasMany(p => p.Followings).WithMany(following => following.Followers).UsingEntity(config =>
                 {
-                    config.ToTable("FollowerFollowing");
+                    config.ToTable("Follow");
 
                 });
 

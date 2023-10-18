@@ -6,6 +6,8 @@ namespace Medium.Core.Interfaces.Bases
     {
         public IStoriesRepository Stories { get; }
         public IPublishersRepository Publishers { get; }
+        public IReactionsRepository Reactions { get; }
+        public ITopicsRepository Topics { get; }
         Task<int> CommitAsync();
         public void Dispose();
     }
