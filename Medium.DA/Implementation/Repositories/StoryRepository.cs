@@ -2,6 +2,7 @@
 using Medium.Core.Interfaces.Repositories;
 using Medium.DA.Context;
 using Medium.DA.Implementation.Bases;
+using System.Linq.Expressions;
 
 namespace Medium.DA.Implementation.Repositories
 {
@@ -12,10 +13,12 @@ namespace Medium.DA.Implementation.Repositories
 
         }
 
-        public IQueryable<Story> GetStoriesByPublisherId(int publisherId)
+        public List<Story> GetStoriesIncludingPublisher(params Expression<Func<Story, object>>[] includes)
         {
-            return GetAllAsQueryable();//to do
+            return GetAll(includes);
         }
+
+
     }
 
 }

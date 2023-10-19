@@ -1,6 +1,6 @@
 ﻿namespace Medium.BL.Features.Stories.Responses
 {
-    public class CreateStoryResponse
-    {
-    }
+    public record CreateStoryResponse(int Id, string Title, string Content, DateTime CreationDate, int PublisherId);
+
+
 }

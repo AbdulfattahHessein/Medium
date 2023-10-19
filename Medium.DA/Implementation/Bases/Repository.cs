@@ -19,6 +19,10 @@ namespace Medium.DA.Implementation.Bases
             _table = _dbContext.Set<TEntity>();
         }
 
+        public async Task<List<TEntity>> GETALL()
+        {
+            return await _table.ToListAsync();
+        }
         public TEntity? GetById(Key id)
         {
             return _table.SingleOrDefault(e => e.Id.Equals(id));

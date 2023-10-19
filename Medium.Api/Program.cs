@@ -1,5 +1,4 @@
 using Medium.BL;
-using Medium.BL.Middlewares;
 using Medium.DA;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +18,7 @@ var app = builder.Build();
 //app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
-app.UseMiddleware<ExceptionHandlerMiddleware>();
+//app.UseMiddleware<ExceptionHandlerMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

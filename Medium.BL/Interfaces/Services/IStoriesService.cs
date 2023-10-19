@@ -1,12 +1,16 @@
-﻿using Medium.BL.Features.Publisher.Responses;
+﻿using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Features.Stories.Responses;
 using Medium.BL.ResponseHandler;
-using Medium.Core.Entities;
 
 namespace Medium.BL.Interfaces.Services
 {
     public interface IStoriesService
     {
-        Task<ApiResponse<CreateStoryResponse>> CreateStory(Story story);
+        Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request);
+        Task<ApiResponse<GetStoryByIdResponse>> GetStoryById(GetStoryByIdRequest request);
+        Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request);
+        Task<ApiResponse<DeleteStoryResponse>> DeleteStoryAsync(DeleteStoryRequest request);
+        Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher();
+        Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories();
     }
 }

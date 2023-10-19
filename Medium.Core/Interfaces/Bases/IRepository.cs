@@ -11,6 +11,8 @@ namespace Medium.Core.Interfaces.Bases
 
         TEntity? GetById(TKey id);
         Task<TEntity?> GetByIdAsync(TKey id);
+        Task<List<TEntity>> GETALL();
+
         List<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes);
         Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
         TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
