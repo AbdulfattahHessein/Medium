@@ -1,5 +1,4 @@
 ﻿using Medium.Core.Entities;
-using Medium.Core.Interfaces;
 using Medium.Core.Interfaces.Bases;
 using Medium.DA.Context;
 using Microsoft.EntityFrameworkCore;

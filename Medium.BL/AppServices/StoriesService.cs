@@ -68,7 +68,8 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher()
         {
-            var stories = UnitOfWork.Stories.GetStoriesIncludingPublisher(story => story.Publisher);
+            //var stories = UnitOfWork.Stories.GetStoriesIncludingPublisher(story => story.Publisher);
+            var stories = await UnitOfWork.Stories.GetAllAsync(story => story.Publisher);
             var response = Mapper.Map<List<GetAllStoryIncludePublisherResponse>>(stories);
             return Success(response);
         }

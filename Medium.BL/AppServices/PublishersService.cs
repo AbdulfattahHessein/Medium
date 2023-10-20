@@ -3,18 +3,11 @@ using FluentValidation;
 using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
-using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices

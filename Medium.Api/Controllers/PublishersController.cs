@@ -1,7 +1,6 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Interfaces.Services;
-using Medium.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers

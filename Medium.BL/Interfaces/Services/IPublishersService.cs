@@ -1,7 +1,6 @@
 ﻿using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.ResponseHandler;
-using Medium.Core.Entities;
 
 namespace Medium.BL.Interfaces.Services
 {

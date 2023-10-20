@@ -61,9 +61,5 @@ namespace Medium.Api.Controllers
             var story = await _storiesService.DeleteStoryAsync(new DeleteStoryRequest(id));
             return ApiResult(story);
         }
-
-
-
-
     }
 }
