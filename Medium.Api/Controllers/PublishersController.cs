@@ -17,31 +17,38 @@ namespace Medium.Api.Controllers
             this._publishersService = publishersService;
             _hostingEnvironment = hostingEnvironment;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllPublisherRequest request)
+        {
+            var result = await _publishersService.GetAllAsync(request);
+
+            return ApiResult(result);
+        }
         [HttpPost]
         public async Task<IActionResult> CreatePublisher([FromForm] CreatePublisherRequest request)
         {
-            var result = await _publishersService.CreatePublisherAsync(request);
+            var result = await _publishersService.Create(request);
 
             return ApiResult(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPublisherById(int id)
         {
-            var result = await _publishersService.GetPublisherById(new GetPublisherByIdRequest(id));
+            var result = await _publishersService.GetById(new GetPublisherByIdRequest(id));
 
             return ApiResult(result);
         }
         [HttpPut]
         public async Task<IActionResult> UpdatePublisher([FromForm] UpdatePublisherRequest request)
         {
-            var result = await _publishersService.UpdatePublisherAsync(request);
+            var result = await _publishersService.UpdateAsync(request);
 
             return ApiResult(result);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePublisher(int id)
         {
-            var result = await _publishersService.DeletePublisherAsync(new DeletePublisherRequest(id));
+            var result = await _publishersService.DeleteAsync(new DeletePublisherRequest(id));
 
             return ApiResult(result);
         }

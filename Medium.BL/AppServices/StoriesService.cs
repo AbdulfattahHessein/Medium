@@ -43,7 +43,7 @@ namespace Medium.BL.AppServices
         ////// ================================ GETALL ============================================================
         public async Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories()
         {
-            var stories = await UnitOfWork.Stories.GETALL();
+            var stories = await UnitOfWork.Stories.GetAllAsync();
             var storiesMap = Mapper.Map<List<GetAllStoryResponse>>(stories);
             return Success(storiesMap);
 

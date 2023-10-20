@@ -1,8 +1,34 @@
 ﻿using Medium.Core.Interfaces.ApiResponse;
+using System.Collections;
 using System.Net;
 
 namespace Medium.BL.ResponseHandler
 {
+    public class ApiResponsePaginated<T> : ApiResponse<T> where T : ICollection
+    {
+        public ApiResponsePaginated()
+        {
+
+        }
+        public ApiResponsePaginated(
+            T data,
+            int totalCount,
+            int page = 1,
+            int pageSize = 10)
+        {
+            Data = data;
+            TotalCount = totalCount;
+            CurrentPage = page;
+            PageSize = pageSize;
+        }
+        public int CurrentPage { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
+        public int TotalCount { get; set; }
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+    }
+
     public class ApiResponse<T> : ApiResponse, IApiResponse<T>
     {
         public ApiResponse()
