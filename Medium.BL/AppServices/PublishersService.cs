@@ -3,18 +3,11 @@ using FluentValidation;
 using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
-using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -43,7 +36,7 @@ namespace Medium.BL.AppServices
             }
             return fileName;
         }
-        public async Task<ApiResponse<CreatePublisherResponse>> CreatePublisherAsync(CreatePublisherRequest request)
+        public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
             var validator = new CreatePublisherRequestValidator();
             var validateResult = validator.Validate(request);
@@ -69,7 +62,7 @@ namespace Medium.BL.AppServices
             return Success(response);
         }
 
-        public async Task<ApiResponse<GetPublisherByIdResponse>> GetPublisherById(GetPublisherByIdRequest request)
+        public async Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request)
         {
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
@@ -78,7 +71,7 @@ namespace Medium.BL.AppServices
             return Success(response);
         }
 
-        public async Task<ApiResponse<UpdatePublisherResponse>> UpdatePublisherAsync(UpdatePublisherRequest request)
+        public async Task<ApiResponse<UpdatePublisherResponse>> UpdateAsync(UpdatePublisherRequest request)
         {
             //get the old publisher
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
@@ -109,7 +102,7 @@ namespace Medium.BL.AppServices
             return Success(response);
         }
 
-        public async Task<ApiResponse<DeletePublisherResponse>> DeletePublisherAsync(DeletePublisherRequest request)
+        public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
@@ -131,6 +124,18 @@ namespace Medium.BL.AppServices
             var response = Mapper.Map<DeletePublisherResponse>(publisher);
 
             return Deleted(response);
+        }
+
+        public async Task<ApiResponsePaginated<List<GetAllPublisherResponse>>> GetAllAsync(GetAllPublisherRequest request)
+        {
+            var publishers = await UnitOfWork.Publishers
+                .GetAllAsync(p => p.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            var totalCount = await UnitOfWork.Publishers.CountAsync(p => p.Name.Contains(request.Search));
+
+            var response = Mapper.Map<List<GetAllPublisherResponse>>(publishers);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
     }
 }

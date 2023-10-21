@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Publisher.Requests;
-using Medium.BL.Features.Stories.Requests;
 
 namespace Medium.BL.Features.Publisher.Validators
 {

@@ -10,35 +10,96 @@ namespace Medium.DA.Implementation.Bases
        where Key : struct
        where TEntity : Entity<Key>
     {
+        #region Variables
         private readonly ApplicationDbContext _dbContext;
 
         protected readonly DbSet<TEntity> _table;
+        #endregion
+
+        #region CTOR
         public Repository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             _table = _dbContext.Set<TEntity>();
         }
 
-        public async Task<List<TEntity>> GETALL()
-        {
-            return await _table.ToListAsync();
-        }
-        public TEntity? GetById(Key id)
-        {
-            return _table.SingleOrDefault(e => e.Id.Equals(id));
-        }
+        #endregion
 
+        #region Async Function
+        public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = Includes(_table, includes);
+
+            return query.ToListAsync();
+        }
+        public async Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = Includes(_table, includes);
+
+            var items = await query.Skip(skip).Take(take).ToListAsync();
+
+            return query.ToList();
+        }
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _table;
+
+            if (criteria != null)
+                query = query.Where(criteria);
+
+            query = Includes(query, includes);
+
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+
+            if (take.HasValue)
+                query = query.Take(take.Value);
+
+            return await query.ToListAsync();
+        }
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria = null, params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _table;
+
+            if (criteria != null)
+                query = query.Where(criteria);
+
+            query = Includes(query, includes);
+
+            return await query.ToListAsync();
+        }
         public Task<TEntity?> GetByIdAsync(Key id)
         {
             return _table.SingleOrDefaultAsync(e => e.Id.Equals(id));
         }
-        private IQueryable<TEntity> Includes(IQueryable<TEntity> table, params Expression<Func<TEntity, object>>[] includes)
+        public Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<TEntity> query = table;
-            if (includes != null)
-                foreach (var include in includes)
-                    query = query.Include(include);
-            return query;
+            return GetWhere(criteria, includes).FirstOrDefaultAsync();
+        }
+        public async Task InsertAsync(TEntity entity)
+        {
+            await _table.AddAsync(entity);
+        }
+        public async Task InsertListAsync(IQueryable<TEntity> entities)
+        {
+            await _table.AddRangeAsync(entities);
+        }
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? criteria = null)
+        {
+            return criteria == null ? await _table.AnyAsync() : await _table.AnyAsync(criteria);
+        }
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? criteria = null)
+        {
+            return criteria == null ? await _table.CountAsync() : await _table.CountAsync(criteria);
+        }
+
+        #endregion
+
+        #region Non Async Functions
+
+        public TEntity? GetById(Key id)
+        {
+            return _table.SingleOrDefault(e => e.Id.Equals(id));
         }
 
         public List<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes)
@@ -48,45 +109,16 @@ namespace Medium.DA.Implementation.Bases
 
             return query.ToList();
         }
-        public IQueryable<TEntity> GetAllAsQueryable(params Expression<Func<TEntity, object>>[] includes)
-        {
-
-            var query = Includes(_table, includes);
-
-            return query;
-        }
-        public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
-        {
-            var query = Includes(_table, includes);
-
-            return query.ToListAsync();
-        }
-
-        public IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
-        {
-            var query = Includes(_table, includes);
-
-            return query.Where(criteria);
-        }
 
         public TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
         {
             return GetWhere(criteria, includes).FirstOrDefault();
         }
 
-        public Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
-        {
-            return GetWhere(criteria, includes).FirstOrDefaultAsync();
-        }
 
         public void Insert(TEntity entity)
         {
             _table.Add(entity);
-        }
-
-        public async Task InsertAsync(TEntity entity)
-        {
-            await _table.AddAsync(entity);
         }
 
         public void InsertList(IQueryable<TEntity> entities)
@@ -94,10 +126,6 @@ namespace Medium.DA.Implementation.Bases
             _table.AddRange(entities);
         }
 
-        public async Task InsertListAsync(IQueryable<TEntity> entities)
-        {
-            await _table.AddRangeAsync(entities);
-        }
 
         public void Update(TEntity entity)
         {
@@ -113,10 +141,26 @@ namespace Medium.DA.Implementation.Bases
         {
             _table.RemoveRange(entities);
         }
-        public async Task<bool> Any(Expression<Func<TEntity, bool>>? criteria = null)
+        #endregion
+
+        #region Private functions
+
+        private IQueryable<TEntity> Includes(IQueryable<TEntity> query, params Expression<Func<TEntity, object>>[] includes)
         {
-            return criteria == null ? await _table.AnyAsync() : await _table.AnyAsync(criteria);
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return query;
         }
+        private IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = Includes(_table, includes);
+
+            return query.Where(criteria);
+        }
+
+        #endregion
     }
 
 }

@@ -1,4 +1,6 @@
-﻿namespace Medium.BL.ResponseHandler
+﻿using System.Collections;
+
+namespace Medium.BL.ResponseHandler
 {
     public static class ApiResponseHandler
     {
@@ -17,6 +19,17 @@
                 Data = data,
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Meta = Meta
+            };
+        }
+        public static ApiResponsePaginated<T> Success<T>(T data, int totalCount, int pageNumber, int pageSize) where T : ICollection
+        {
+            return new ApiResponsePaginated<T>()
+            {
+                Data = data,
+                CurrentPage = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                StatusCode = System.Net.HttpStatusCode.OK,
             };
         }
         public static ApiResponse<T> UnAuthorized<T>()

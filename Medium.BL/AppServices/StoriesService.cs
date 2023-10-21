@@ -49,7 +49,7 @@ namespace Medium.BL.AppServices
         ////// ================================ GETALL ============================================================
         public async Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories()
         {
-            var stories = await UnitOfWork.Stories.GETALL();
+            var stories = await UnitOfWork.Stories.GetAllAsync();
             var storiesMap = Mapper.Map<List<GetAllStoryResponse>>(stories);
             return Success(storiesMap);
 
@@ -74,7 +74,8 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher()
         {
-            var stories = UnitOfWork.Stories.GetStoriesIncludingPublisher(story => story.Publisher);
+            //var stories = UnitOfWork.Stories.GetStoriesIncludingPublisher(story => story.Publisher);
+            var stories = await UnitOfWork.Stories.GetAllAsync(story => story.Publisher);
             var response = Mapper.Map<List<GetAllStoryIncludePublisherResponse>>(stories);
             return Success(response);
         }

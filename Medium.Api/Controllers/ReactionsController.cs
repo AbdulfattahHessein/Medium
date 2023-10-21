@@ -1,6 +1,5 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers

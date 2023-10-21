@@ -3,11 +3,6 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 namespace Medium.BL.AppServices
 {

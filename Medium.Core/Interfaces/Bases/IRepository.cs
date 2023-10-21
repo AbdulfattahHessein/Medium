@@ -7,21 +7,22 @@ namespace Medium.Core.Interfaces.Bases
         where TKey : struct
         where TEntity : Entity<TKey>
     {
+        Task<TEntity?> GetByIdAsync(TKey id);
+        Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
+        Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object>>[] includes);
+        Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object>>[] includes);
+        Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria = null, params Expression<Func<TEntity, object>>[] includes);
+        Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
+        Task InsertAsync(TEntity entity);
+        Task InsertListAsync(IQueryable<TEntity> entities);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? criteria = null);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>>? criteria = null);
 
 
         TEntity? GetById(TKey id);
-        Task<TEntity?> GetByIdAsync(TKey id);
-        Task<List<TEntity>> GETALL();
-
-        List<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes);
-        Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
         TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
-        Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
-        IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
         void Insert(TEntity entity);
-        Task InsertAsync(TEntity entity);
         void InsertList(IQueryable<TEntity> entities);
-        Task InsertListAsync(IQueryable<TEntity> entities);
         void Update(TEntity entity);
         void Delete(TEntity entity);
         void DeleteList(IQueryable<TEntity> entities);
