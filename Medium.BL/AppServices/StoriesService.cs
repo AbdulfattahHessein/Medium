@@ -27,11 +27,17 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException();
             }
+
+            var publisher = UnitOfWork.Publishers.GetById(request.PublisherId);
+            if (publisher == null)
+            {
+                return NotFound<CreateStoryResponse>();
+            }
             var story = new Story()
             {
                 Title = request.Title,
                 Content = request.Content,
-                PublisherId = request.PublisherId,
+                Publisher = publisher
             };
             await UnitOfWork.Stories.InsertAsync(story);
             await UnitOfWork.CommitAsync();
@@ -84,6 +90,7 @@ namespace Medium.BL.AppServices
             {
                 return NotFound<UpdateStoryResponse>();
             }
+            Mapper.Map(request, story);
             UnitOfWork.Stories.Update(story);
             await UnitOfWork.CommitAsync();
             var storyMap = Mapper.Map<UpdateStoryResponse>(story);
