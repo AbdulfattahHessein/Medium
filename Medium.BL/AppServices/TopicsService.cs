@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Medium.BL.Features.Stories.Responses;
+using Medium.BL.Features.Topics.Request;
+using Medium.BL.Features.Topics.Response;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
@@ -38,6 +41,18 @@ namespace Medium.BL.AppServices
             var response = Mapper.Map<DeleteTopicResponse>(Topic);
             return Success(response);
 
+        }
+
+        public async Task<ApiResponsePaginated<List<GetAllPaginationTopicResponse>>> GetAllAsync(GetAllPaginationTopicRequest request)
+        {
+            var topics = await UnitOfWork.Topics
+                 .GetAllAsync(s => s.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            var totalCount = await UnitOfWork.Topics.CountAsync((s => s.Name.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllPaginationTopicResponse>>(topics);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
 
         public async Task<ApiResponse<GetTopicByIdResponse>> GetById(GetTopicByIdRequest requset)
