@@ -39,6 +39,14 @@ namespace Medium.Api.Controllers
             return ApiResult(stories);
         }
 
+        [HttpGet("GetAllPaginationStoies")]
+        public async Task<IActionResult> GetAllPaginationStoies([FromQuery] GetAllPaginationStoryRequest request)
+        {
+            var result = await _storiesService.GetAllAsync(request);
+
+            return ApiResult(result);
+        }
+
         [HttpPost("CreateStory")]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {

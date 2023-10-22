@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Medium.BL.Features.Reactions.Request;
+using Medium.BL.Features.Reactions.Response;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
@@ -41,6 +43,18 @@ namespace Medium.BL.AppServices
             var response = Mapper.Map<DeleteReactionResponse>(reaction);
             return Success(response);
 
+        }
+
+        public async Task<ApiResponsePaginated<List<GetAllPaginationReactionsResponse>>> GetAllAsync(GetAllPaginationReactionsRequest request)
+        {
+            var reactions = await UnitOfWork.Reactions
+                 .GetAllAsync(r => r.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            var totalCount = await UnitOfWork.Reactions.CountAsync(r => r.Name.Contains(request.Search));
+
+            var response = Mapper.Map<List<GetAllPaginationReactionsResponse>>(reactions);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
 
         public async Task<ApiResponse<GetReactionByIdResponse>> GetById(GetReactionByIdRequest requset)

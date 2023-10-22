@@ -12,5 +12,6 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<DeleteStoryResponse>> DeleteStoryAsync(DeleteStoryRequest request);
         Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher();
         Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories();
+        Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllAsync(GetAllPaginationStoryRequest request);
     }
 }

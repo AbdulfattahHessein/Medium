@@ -113,7 +113,17 @@ namespace Medium.BL.AppServices
             return Deleted(storyMap);
         }
 
+        public async Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllAsync(GetAllPaginationStoryRequest request)
+        {
+            var stories = await UnitOfWork.Stories
+                .GetAllAsync(s => s.Title.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
+            var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllPaginationStoryResponse>>(stories);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
     }
 
 }

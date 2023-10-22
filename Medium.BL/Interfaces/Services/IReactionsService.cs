@@ -1,4 +1,6 @@
-﻿using Medium.BL.ResponseHandler;
+﻿using Medium.BL.Features.Reactions.Request;
+using Medium.BL.Features.Reactions.Response;
+using Medium.BL.ResponseHandler;
 
 namespace Medium.BL.Interfaces.Services
 {
@@ -8,7 +10,7 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<UpdateReactionResponse>> UpdateAsync(UpdateReactionRequest requset);
         Task<ApiResponse<DeleteReactionResponse>> DeleteAsync(DeleteReactionRequest requset);
         Task<ApiResponse<GetReactionByIdResponse>> GetById(GetReactionByIdRequest requset);
-        //Task<ApiResponse<GetAllReactionsResponse>> GetAllReactions(GetAllReactionsRequest requset);
+        Task<ApiResponsePaginated<List<GetAllPaginationReactionsResponse>>> GetAllAsync(GetAllPaginationReactionsRequest request);
     }
     // requests
     public record CreateReactionRequest(string Name);
