@@ -116,7 +116,11 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllAsync(GetAllPaginationStoryRequest request)
         {
             var stories = await UnitOfWork.Stories
-                .GetAllAsync(s => s.Title.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
+                .GetAllAsync(s => s.Title.Contains(request.Search),
+                (request.PageNumber - 1) * request.PageSize,
+                request.PageSize,
+                s => s.Publisher,
+                s => s.Topics);
 
             var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
 

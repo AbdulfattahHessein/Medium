@@ -15,6 +15,8 @@ namespace Medium.DA.Implementation.Bases
 
         public ITopicsRepository Topics { get; }
 
+        public IReactsRepository Reacts { get; }
+
         public UnitOfWork(ApplicationDbContext dbContext)
         {
 
@@ -23,6 +25,7 @@ namespace Medium.DA.Implementation.Bases
             Publishers = new PublishersRepository(dbContext);
             Reactions = new ReactionsRepository(dbContext);
             Topics = new TopicsRepository(dbContext);
+            Reacts = new ReactsRepository(dbContext);
 
         }
 

@@ -7,7 +7,10 @@ namespace Medium.BL.Features.Stories.Mapping
     {
         void GetAllPaginationStoryMapping()
         {
-            CreateMap<Story, GetAllPaginationStoryResponse>();
+            CreateMap<Story, GetAllPaginationStoryResponse>()
+                .ForMember(s => s.PublisherName, options => options.MapFrom(s => s.Publisher.Name))
+                .ForMember(s => s.PublisherPhotoUrl, options => options.MapFrom(s => s.Publisher.PhotoUrl))
+                .ForMember(s => s.TopicsNames, options => options.MapFrom(s => s.Topics.Select(t => t.Name)));
         }
     }
 }

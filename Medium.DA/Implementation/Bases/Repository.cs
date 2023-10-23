@@ -72,6 +72,11 @@ namespace Medium.DA.Implementation.Bases
         {
             return _table.SingleOrDefaultAsync(e => e.Id.Equals(id));
         }
+        public Task<TEntity?> GetByIdAsync(Key id, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = Includes(_table, includes);
+            return query.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        }
         public Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
         {
             return GetWhere(criteria, includes).FirstOrDefaultAsync();
@@ -159,6 +164,13 @@ namespace Medium.DA.Implementation.Bases
 
             return query.Where(criteria);
         }
+
+        public async Task<TEntity?> FindAsync(params object[] id)
+        {
+            return await _table.FindAsync(id);
+        }
+
+
 
         #endregion
     }

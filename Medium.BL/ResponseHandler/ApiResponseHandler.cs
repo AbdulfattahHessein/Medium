@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Medium.Core.Interfaces.ApiResponse;
+using System.Collections;
 
 namespace Medium.BL.ResponseHandler
 {

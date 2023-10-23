@@ -6,6 +6,5 @@ using System.Threading.Tasks;
 
 namespace Medium.BL.Features.Topics.Response
 {
-  public record GetAllPaginationTopicResponse(int Id,string Name);
-    
+    public record GetAllPaginationTopicResponse(int Id, string Name);
 }
