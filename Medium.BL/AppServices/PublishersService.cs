@@ -225,6 +225,7 @@ namespace Medium.BL.AppServices
 
             if (publisher != null && following != null)
             {
+
                 if (publisher.Followings == null)
                 {
                     publisher.Followings = new List<Publisher>();
