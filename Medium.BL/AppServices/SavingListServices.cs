@@ -18,28 +18,36 @@ namespace Medium.BL.AppServices
         {
         }
 
-        public async Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest requset)
+        public async Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest request)
         {
-            var story = UnitOfWork.Stories.GetById(requset.storyId);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.storyId);
             if (story == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
-            var saveList = UnitOfWork.SavingLists.GetById(requset.saveListId);
+
+            var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId);
             if (saveList == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
 
+            // Ensure the saving list's Stories collection is not null.
             if (saveList.Stories == null)
             {
                 saveList.Stories = new List<Story>();
             }
+
             saveList.Stories.Add(story);
-            UnitOfWork.CommitAsync();
+
+            // Save changes to the database.
+            await UnitOfWork.CommitAsync();
+
+            // Create the response with the name and stories.
             var responseMap = Mapper.Map<AddStoryToSaveListResponse>(saveList);
             return Success(responseMap);
         }
+
 
         public async Task<ApiResponse<RemoveStoryFromSavingListResponse>> RemoveStoryFromSavingList(RemoveStoryFromSavingListRequest request)
         {
@@ -55,16 +63,20 @@ namespace Medium.BL.AppServices
                 return NotFound<RemoveStoryFromSavingListResponse>();
             }
 
+            // Ensure the saving list Stories collection is not null
             if (savingList.Stories == null)
             {
                 savingList.Stories = new List<Story>();
             }
+
+            // Remove the story from the saving list.
             savingList.Stories.Remove(story);
             await UnitOfWork.CommitAsync();
 
             var responseMap = Mapper.Map<RemoveStoryFromSavingListResponse>(savingList);
             return Success(responseMap);
         }
+
 
 
         public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset)
@@ -153,5 +165,23 @@ namespace Medium.BL.AppServices
             var saveListMap = Mapper.Map<UpdateSavingListResponse>(saveList);
             return Success(saveListMap);
         }
+
+        public async Task<ApiResponse<List<GetSavingListWithStoriesResponse>>> GetAllSavingListsWithStoriesAsync()
+        {
+            var savingLists = await UnitOfWork.SavingLists.GetAllAsync(); // Retrieve all saving lists
+            var result = new List<GetSavingListWithStoriesResponse>();
+
+            foreach (var saveList in savingLists)
+            {
+                result.Add(new GetSavingListWithStoriesResponse(
+                    saveList.Id,
+                    saveList.Name,
+                    saveList.Stories.ToList() // Retrieve all stories associated with this saving list
+                ));
+            }
+
+            return Success(result);
+        }
+
     }
 }

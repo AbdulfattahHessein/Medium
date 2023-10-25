@@ -12,6 +12,11 @@ namespace Medium.BL.Features.SavingLists.Mapping
             CreateMap<SavingList, CreateSavingListResponse>()
                 .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name)); ;
 
+
+            CreateMap<SavingList, GetSavingListWithStoriesResponse>();
+            CreateMap<GetSavingListWithStoriesResponse, SavingList>();
+
+
             CreateMap<SavingList, GetAllSavingListResponse>().
              ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name));
             CreateMap<GetAllSavingListResponse, SavingList>().
@@ -20,28 +25,24 @@ namespace Medium.BL.Features.SavingLists.Mapping
 
             CreateMap<SavingList, GetSavingListByIdResponse>();
 
-
+            // ==================== UpdateSavingListResponse ==============================
             CreateMap<SavingList, UpdateSavingListResponse>()
                 .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name));
             CreateMap<UpdateSavingListRequest, SavingList>();
 
+            // ==================== DeleteSavingListResponse ==============================
             CreateMap<SavingList, DeleteSavingListResponse>();
 
-            CreateMap<SavingList, AddStoryToSaveListResponse>()
-                  .ForMember(dest => dest.SaveListName, op => op.MapFrom(src => src.Name));
-            CreateMap<AddStoryToSaveListResponse, SavingList>()
-                  .ForMember(dest => dest.Name, op => op.MapFrom(src => src.SaveListName));
-            CreateMap<SavingList, AddStoryToSaveListRequest>().ReverseMap();
+            // ==================== AddStoryToSaveListResponse ============================
+            CreateMap<SavingList, AddStoryToSaveListResponse>();
+            //.ForMember(dest => dest.Stories, opt => opt.MapFrom(src => src.Stories));
 
 
 
-
+            // ==================== RemoveStoryFromSavingListResponse ============================
             CreateMap<SavingList, RemoveStoryFromSavingListResponse>();
-
-
-
-            // CreateMap<RemoveStoryFromSavingListResponse, SavingList>();
-            //   CreateMap<RemoveStoryFromSavingListRequest, SavingList>();
+            CreateMap<RemoveStoryFromSavingListResponse, SavingList>();
+            CreateMap<RemoveStoryFromSavingListRequest, SavingList>();
 
 
         }
