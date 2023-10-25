@@ -69,12 +69,12 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpGet("GetAllSavingListsWithStories")]
-        public async Task<IActionResult> GetAllSavingListsWithStories()
-        {
-            var result = await _savingListServices.GetAllSavingListsWithStoriesAsync();
-            return ApiResult(result);
-        }
+        //[HttpGet("GetAllSavingListsWithStories")]
+        //public async Task<IActionResult> GetAllSavingListsWithStories()
+        //{
+        //    var result = await _savingListServices.GetAllSavingListsWithStoriesAsync();
+        //    return ApiResult(result);
+        //}
     }
 }
 

@@ -7,7 +7,7 @@ namespace Medium.BL.Interfaces.Services
     public interface ISavingListServices
     {
         Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset);
-        Task<ApiResponse<List<GetSavingListWithStoriesResponse>>> GetAllSavingListsWithStoriesAsync();
+        //Task<ApiResponse<List<GetSavingListWithStoriesResponse>>> GetAllSavingListsWithStoriesAsync();
         Task<ApiResponse<List<GetAllSavingListResponse>>> GetAllAsync();
         Task<ApiResponse<GetSavingListByIdResponse>> GetByIdAsync(GetSavingListByIdRequest requset);
         Task<ApiResponse<UpdateSavingListResponse>> UpdateAsync(UpdateSavingListRequest requset);

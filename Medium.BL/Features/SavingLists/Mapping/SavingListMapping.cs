@@ -13,7 +13,8 @@ namespace Medium.BL.Features.SavingLists.Mapping
                 .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name)); ;
 
 
-            CreateMap<SavingList, GetSavingListWithStoriesResponse>();
+            CreateMap<SavingList, GetSavingListWithStoriesResponse>()
+                .ForMember(dest => dest.Stories, op => op.MapFrom(src => src.Stories));
             CreateMap<GetSavingListWithStoriesResponse, SavingList>();
 
 
