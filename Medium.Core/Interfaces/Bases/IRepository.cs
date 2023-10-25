@@ -18,6 +18,7 @@ namespace Medium.Core.Interfaces.Bases
         Task InsertListAsync(IQueryable<TEntity> entities);
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? criteria = null);
         Task<int> CountAsync(Expression<Func<TEntity, bool>>? criteria = null);
+        Task<TEntity?> FindAsync(params object[] id);
 
 
         TEntity? GetById(TKey id);

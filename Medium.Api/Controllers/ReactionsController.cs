@@ -1,6 +1,7 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Interfaces.Services;
+using Medium.BL.ResponseHandler;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers
@@ -51,6 +52,20 @@ namespace Medium.Api.Controllers
         public async Task<IActionResult> GetAllPaginationReactions([FromQuery] GetAllPaginationReactionsRequest request)
         {
             var result = await _reactionsService.GetAllAsync(request);
+
+            return ApiResult(result);
+        }
+        [HttpPost("React")]
+        public async Task<IActionResult> AddReactToStory(AddReactToStoryRequest request)
+        {
+            var result = await _reactionsService.AddReactToStory(request);
+
+            return NoContent();
+        }
+        [HttpDelete("React")]
+        public async Task<IActionResult> RemoveReactFromStory(RemoveReactFromStoryRequest request)
+        {
+            var result = await _reactionsService.RemoveReactFromStory(request);
 
             return ApiResult(result);
         }

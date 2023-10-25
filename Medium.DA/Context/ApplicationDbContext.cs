@@ -51,6 +51,7 @@ namespace Medium.DA.Context
                 react.HasOne(r => r.Publisher).WithMany(p => p.Reacts).HasForeignKey(r => r.PublisherId);
                 react.HasOne(r => r.Reaction).WithMany(p => p.Reacts).HasForeignKey(r => r.ReactionId);
                 react.HasOne(r => r.Story).WithMany(p => p.Reacts).HasForeignKey(r => r.StoryId).OnDelete(DeleteBehavior.NoAction);
+                react.Ignore(r => r.Id);
             });
 
 

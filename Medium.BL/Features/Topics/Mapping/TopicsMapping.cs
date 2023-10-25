@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Medium.BL.Features.Topics.Request;
 using Medium.BL.Features.Topics.Response;
 using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;

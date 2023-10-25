@@ -16,6 +16,35 @@ namespace Medium.BL.AppServices
         {
         }
 
+        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request)
+        {
+            //var story = UnitOfWork.Stories.GetById(request.storyId);
+            var react = new React()
+            {
+                StoryId = request.StoryId,
+                ReactionId = request.ReactionId,
+                PublisherId = request.PublisherId,
+            };
+            await UnitOfWork.Reacts.InsertAsync(react);
+            await UnitOfWork.CommitAsync();
+
+            return NoContent<ApiResponse>();
+        }
+        public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request)
+        {
+            var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, request.PublisherId);
+            //var react = await UnitOfWork.Reacts.GetFirstAsync(r => r.StoryId.Equals(request.storyId) && r.PublisherId.Equals(request.publisherId));
+
+            if (react == null)
+            {
+                return NotFound<RemoveReactFromStoryResponse>();
+            }
+            UnitOfWork.Reacts.Delete(react);
+            await UnitOfWork.CommitAsync();
+
+            return NoContent<RemoveReactFromStoryResponse>();
+        }
+
         public async Task<ApiResponse<CreateReactionResponse>> CreateAsync(CreateReactionRequest requset)
         {
             Reaction reaction = new Reaction() { Name = requset.Name };

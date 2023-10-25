@@ -14,6 +14,7 @@ namespace Medium.BL
             services.AddScoped<IPublishersService, PublishersService>();
             services.AddScoped<IReactionsService, ReactionsService>();
             services.AddScoped<ITopicsService, TopicsService>();
+            services.AddScoped<ISavingListServices, SavingListServices>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

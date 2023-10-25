@@ -1,6 +1,6 @@
 ﻿namespace Medium.Core.Entities
 {
-    public class React
+    public class React : Entity<int>
     {
         public Publisher Publisher { get; set; }
         public Story Story { get; set; }
