@@ -26,6 +26,11 @@ namespace Medium.DA.Implementation.Bases
         #endregion
 
         #region Async Function
+        public Task<TEntity?> GetByIdAsync(Key id, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = Includes(_table, includes);
+            return query.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        }
         public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
         {
             var query = Includes(_table, includes);

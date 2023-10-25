@@ -8,6 +8,7 @@ namespace Medium.Core.Interfaces.Bases
         where TEntity : Entity<TKey>
     {
         Task<TEntity?> GetByIdAsync(TKey id);
+        Task<TEntity?> GetByIdAsync(TKey id, params Expression<Func<TEntity, object>>[] includes);
         Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
         Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object>>[] includes);
         Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object>>[] includes);

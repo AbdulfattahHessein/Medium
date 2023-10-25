@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Medium.BL.Features.Publisher.Requests;
+using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
 using Medium.BL.Interfaces.Services;
@@ -137,5 +138,114 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
+
+
+        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request)
+        {
+            var publishers = await UnitOfWork.Publishers
+                .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize,p=>p.Followers,p=>p.Followings);
+            var publisher = publishers.Find(p => p.Id == request.PublisherId);
+
+            List<Publisher> Followers = new List<Publisher>();
+            Followers.AddRange(publisher.Followers);
+            List<Publisher> Followings = new List<Publisher>();
+            Followings.AddRange(publisher.Followings);
+            List<Publisher> FollowersNotFollowing = new List<Publisher>();
+            foreach (var Follower in Followers)
+            {
+                var follower = Followings.Find(f => f.Id == Follower.Id);
+                if (follower == null)
+                    FollowersNotFollowing.Add(Follower);
+            }
+
+            var totalCount = FollowersNotFollowing.Count();
+
+            var response = Mapper.Map<List<FollowerNotFollowingResponse>>(FollowersNotFollowing);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
+        public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
+        {
+            #region Temp
+            //var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
+            //var Following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
+            // publisher.Followings.Add(Following);
+            //var response = Mapper.Map<AddFollowingResponse>(Following);
+            //return Success(response);
+
+            //    var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
+            //    var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
+
+            //if (publisher != null && following != null)
+            //{
+            //    if (publisher.Followings == null )
+            //    {
+            //        publisher.Followings = new List<Publisher>();
+            //    }
+
+            //    publisher.Followings.Add(following);
+            //    following.Followers.Add(publisher);
+            //   //await UnitOfWork.CommitAsync();
+            //    var response = Mapper.Map<AddFollowingResponse>(following);
+            //    return Success(response);
+            //} 
+            #endregion
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
+            var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
+
+            if (publisher != null && following != null)
+            {
+                if (publisher.Followings == null)
+                {
+                    publisher.Followings = new List<Publisher>();
+                }
+
+                if (following.Followers == null)
+                {
+                    following.Followers = new List<Publisher>();
+                }
+
+                publisher.Followings.Add(following);
+                following.Followers.Add(publisher);
+
+                // Save changes to the database if using Entity Framework or a similar ORM.
+                await UnitOfWork.CommitAsync();
+
+                var response = Mapper.Map<AddFollowingResponse>(following);
+                return Success(response);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
+        {
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId, p => p.Followings, p => p.Followers);
+            var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId, p => p.Followings, p => p.Followers);
+
+            if (publisher != null && following != null)
+            {
+                if (publisher.Followings == null)
+                {
+                    publisher.Followings = new List<Publisher>();
+
+                }
+
+                if (following.Followers == null)
+                {
+                    following.Followers = new List<Publisher>();
+                }
+
+                publisher.Followings.Remove(following);
+                following.Followers.Remove(publisher);
+
+                await UnitOfWork.CommitAsync();
+
+                var response = Mapper.Map<DeleteFollowingResponse>(following);
+                return Success(response);
+
+            }
+            throw new NotImplementedException();
+    }
     }
 }
