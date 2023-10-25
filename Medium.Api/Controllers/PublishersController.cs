@@ -63,6 +63,7 @@ namespace Medium.Api.Controllers
         {
 
             var result = await _publishersService.AddFollowingAsync(request);
+
           
             return ApiResult(result);
         }
