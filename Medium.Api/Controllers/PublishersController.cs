@@ -1,6 +1,7 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Interfaces.Services;
+using Medium.DA.Implementation.Bases;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers
@@ -51,6 +52,28 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
+        [HttpGet("GetFollowerNotFollowing")]
+        public async Task<IActionResult> GetFollowerNotFollowing([FromQuery] FollowerNotFollowingRequest request)
+        {
+            var result = await _publishersService.GetFollowerNotFollowing(request);
+            return ApiResult(result);
+        }
+        [HttpPost("Follow")]
+        public async Task<IActionResult> Follow([FromQuery] AddFollowingRequest request)
+        {
 
+            var result = await _publishersService.AddFollowingAsync(request);
+
+          
+            return ApiResult(result);
+        }
+        [HttpDelete("UnFollow")]
+        public async Task<IActionResult> UnFollow([FromQuery] DeleteFollowingRequest request)
+        {
+
+            var result = await _publishersService.DeleteFollowingAsync(request);
+
+            return ApiResult(result);
+        }
     }
 }

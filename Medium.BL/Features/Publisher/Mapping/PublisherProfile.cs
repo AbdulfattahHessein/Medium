@@ -14,6 +14,9 @@ namespace Medium.BL.Features.Publisher.Mapping
             GetPublisherByIdMapping();
             UpdatePublisherMapping();
             DeletePublisherMapping();
+            AddFollowingResponseMapping();
+            DeleteFollowingResponseMapping();
+            GetFollowerNotFollowingResponseMapping();
         }
         void GetAllPublisherMapping()
         {
