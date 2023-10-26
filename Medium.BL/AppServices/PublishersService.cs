@@ -40,7 +40,7 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
             var validator = new CreatePublisherRequestValidator();
-            var validateResult = validator.Validate(request);
+            var validateResult = await validator.ValidateAsync(request);
             if (!validateResult.IsValid)
             {
                 throw new ValidationException(validateResult.Errors);
@@ -143,7 +143,7 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request)
         {
             var publishers = await UnitOfWork.Publishers
-                .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize,p=>p.Followers,p=>p.Followings);
+                .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize, p => p.Followers, p => p.Followings);
             var publisher = publishers.Find(p => p.Id == request.PublisherId);
 
             List<Publisher> Followers = new List<Publisher>();
@@ -247,6 +247,6 @@ namespace Medium.BL.AppServices
 
             }
             throw new NotImplementedException();
-    }
+        }
     }
 }

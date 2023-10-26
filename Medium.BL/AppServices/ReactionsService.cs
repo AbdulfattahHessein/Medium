@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using Medium.BL.Features.Publisher.Validators;
 using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Features.Reactions.Response;
+using Medium.BL.Features.Reactions.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
@@ -18,7 +21,15 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request)
         {
-            //var story = UnitOfWork.Stories.GetById(request.storyId);
+            //var validator = new AddReactToStoryRequestValidator(UnitOfWork);
+            //var validateResult = await validator.ValidateAsync(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+
+            await DoValidationAsync<AddReactToStoryRequestValidator, AddReactToStoryRequest>(request, UnitOfWork);
+
             var react = new React()
             {
                 StoryId = request.StoryId,
@@ -34,6 +45,8 @@ namespace Medium.BL.AppServices
         {
             var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, request.PublisherId);
             //var react = await UnitOfWork.Reacts.GetFirstAsync(r => r.StoryId.Equals(request.storyId) && r.PublisherId.Equals(request.publisherId));
+
+            await DoValidationAsync<RemoveReactFromStoryRequestValidator, RemoveReactFromStoryRequest>(request, UnitOfWork);
 
             if (react == null)
             {
@@ -57,14 +70,16 @@ namespace Medium.BL.AppServices
 
         }
 
-        public async Task<ApiResponse<DeleteReactionResponse>> DeleteAsync(DeleteReactionRequest requset)
+        public async Task<ApiResponse<DeleteReactionResponse>> DeleteAsync(DeleteReactionRequest request)
         {
-            var reaction = await UnitOfWork.Reactions.GetByIdAsync(requset.Id);
-            if (reaction == null)
-            {
-                return NotFound<DeleteReactionResponse>();
+            await DoValidationAsync<DeleteReactionRequestValidator, DeleteReactionRequest>(request, UnitOfWork);
 
-            }
+            var reaction = await UnitOfWork.Reactions.GetByIdAsync(request.Id)!;
+            //if (reaction == null)
+            //{
+            //    return NotFound<DeleteReactionResponse>();
+
+            //}
 
             UnitOfWork.Reactions.Delete(reaction);
             await UnitOfWork.CommitAsync();
