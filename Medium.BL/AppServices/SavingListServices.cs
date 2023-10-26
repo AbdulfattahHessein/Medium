@@ -17,7 +17,7 @@ namespace Medium.BL.AppServices
         public SavingListServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
-
+        //========================================= Add Story To SaveList =====================================
         public async Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest request)
         {
             var story = await UnitOfWork.Stories.GetByIdAsync(request.storyId);
@@ -25,12 +25,17 @@ namespace Medium.BL.AppServices
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
+            var saveListOld = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, sv => sv.Stories);
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId);
             if (saveList == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
-            // Ensure the saving list's Stories collection is not null.
+            if (saveList.Stories == saveListOld.Stories)
+            {
+                return BadRequest<AddStoryToSaveListResponse>("This Story is olready Saved in this SaveList");
+            }
+            // Ensure the saving list Stories collection is not null.
             if (saveList.Stories == null)
             {
                 saveList.Stories = new List<Story>();
@@ -43,7 +48,7 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
         }
 
-
+        //========================================= Remove Story From SavingList =====================================
         public async Task<ApiResponse<RemoveStoryFromSavingListResponse>> RemoveStoryFromSavingList(RemoveStoryFromSavingListRequest request)
         {
 
@@ -71,7 +76,7 @@ namespace Medium.BL.AppServices
         }
 
 
-
+        //========================================= Create SaveList =====================================
         public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset)
         {
             var validator = new CreateSavingListValidator();
@@ -99,7 +104,7 @@ namespace Medium.BL.AppServices
             var savingListMap = Mapper.Map<CreateSavingListResponse>(savingList);
             return Success(savingListMap);
         }
-
+        //========================================= Delete SaveList =====================================
         public async Task<ApiResponse<DeleteSavingListResponse>> DeleteAsync(DeleteSavingListRequest requset)
         {
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
@@ -114,7 +119,7 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
 
         }
-
+        //========================================= GetAll SaveList =====================================
         public async Task<ApiResponse<List<GetAllSavingListResponse>>> GetAllAsync()
         {
 
@@ -125,7 +130,7 @@ namespace Medium.BL.AppServices
 
 
         }
-
+        //========================================= GetById SaveList =====================================
         public async Task<ApiResponse<GetSavingListByIdResponse>> GetByIdAsync(GetSavingListByIdRequest requset)
         {
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
@@ -138,7 +143,7 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
         }
 
-
+        //========================================= Update SaveList =====================================
         public async Task<ApiResponse<UpdateSavingListResponse>> UpdateAsync(UpdateSavingListRequest requset)
         {
 
@@ -172,8 +177,9 @@ namespace Medium.BL.AppServices
         //            saveList.Stories.ToList() // Retrieve all stories associated with this saving list
         //        ));
         //    }
+        //    var responseMap = Mapper.Map<List<GetSavingListWithStoriesResponse>>(result);
 
-        //    return Success(result);
+        //    return Success(responseMap);
         //}
 
     }
