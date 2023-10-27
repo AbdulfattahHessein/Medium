@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Features.Stories.Responses;
 using Medium.BL.Features.Stories.Validators;
@@ -7,7 +8,6 @@ using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -45,7 +45,7 @@ namespace Medium.BL.AppServices
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
-                throw new ValidationException();
+                throw new ValidationException(validateResult.Errors);
             }
             string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
             // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
@@ -112,6 +112,13 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<GetStoryByIdResponse>> GetStoryById(GetStoryByIdRequest request)
         {
+            var validator = new GetStoryByIdRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+
             var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
             if (story == null)
             {
@@ -139,6 +146,13 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request)
         {
+            var validator = new UpdateStoryRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+
             var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
             if (story == null)
             {
@@ -155,6 +169,13 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<DeleteStoryResponse>> DeleteStoryAsync(DeleteStoryRequest request)
         {
+            var validator = new DeleteStoryRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+
             var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
             if (story == null)
             {

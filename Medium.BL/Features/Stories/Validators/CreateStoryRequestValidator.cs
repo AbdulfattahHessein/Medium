@@ -8,16 +8,16 @@ namespace Medium.BL.Features.Stories.Validators
         public CreateStoryRequestValidator()
         {
             RuleFor(s => s.Title)
-                .NotNull().WithMessage("{PropertyName}Must be not null")
-                .NotEmpty().WithMessage("{PropertyName}Must be not empty");
+                .NotNull().WithMessage("{PropertyName}Must be not Null")
+                .NotEmpty().WithMessage("{PropertyName}Must be not Empty");
 
             RuleFor(s => s.Content)
-    .NotNull().WithMessage("{PropertyName}Must be not null")
-    .NotEmpty().WithMessage("{PropertyName}Must be not empty");
+    .NotNull().WithMessage("{PropertyName}Must be not Null")
+    .NotEmpty().WithMessage("{PropertyName}Must be not Empty");
 
             RuleFor(s => s.PublisherId)
-    .NotNull().WithMessage("{PropertyName}Must be not null")
-    .NotEmpty().WithMessage("{PropertyName}Must be not empty");
+    .NotNull().WithMessage("PublisherId Must be not null")
+    .NotEmpty().WithMessage("PublisherId Must be not Empty");
 
 
         }
