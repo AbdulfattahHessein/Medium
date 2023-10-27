@@ -14,7 +14,7 @@ namespace Medium.BL.Features.Publisher.Validators
                 WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be valid");
             RuleFor(p => p.FollowingId)
-                .MustAsync(async (af, i, c) => await Task.Run(() => af.FollowingId != af.FollowingId))
+                .MustAsync(async (af, i, c) => await Task.Run(() => af.FollowingId != af.PublisherId))
                 .WithMessage("Publisher can't follow itself");
         }
     }
