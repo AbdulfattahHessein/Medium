@@ -68,7 +68,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request)
         {
-            var validator = new GetPublisherByIdRequestValidator();
+            var validator = new GetPublisherByIdRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
@@ -83,7 +83,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<UpdatePublisherResponse>> UpdateAsync(UpdatePublisherRequest request)
         {
-            var validator = new UpdatePublisherRequestValidator();
+            var validator = new UpdatePublisherRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
@@ -120,7 +120,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
-            var validator = new DeletePublisherRequestValidator();
+            var validator = new DeletePublisherRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
@@ -188,7 +188,7 @@ namespace Medium.BL.AppServices
         }
         public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
-            var validator = new AddFollowingRequestValidator();
+            var validator = new AddFollowingRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
@@ -223,7 +223,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
         {
-            var validator = new DeleteFollowingRequestValidator();
+            var validator = new DeleteFollowingRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
