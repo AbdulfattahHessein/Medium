@@ -91,6 +91,8 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponsePaginated<List<GetAllPaginationReactionsResponse>>> GetAllAsync(GetAllPaginationReactionsRequest request)
         {
+            await DoValidationAsync<GetAllPaginationReactionsRequestValidator, GetAllPaginationReactionsRequest>(request, UnitOfWork);
+
             var reactions = await UnitOfWork.Reactions
                  .GetAllAsync(r => r.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
 

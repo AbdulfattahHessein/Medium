@@ -18,18 +18,18 @@ namespace Medium.BL.AppServices
         {
             UnitOfWork.Dispose();
         }
-        protected async Task DoValidationAsync<T, TRequest>(TRequest request, IUnitOfWork? unitOfWork = null)
-            where T : AbstractValidator<TRequest>
+        protected async Task DoValidationAsync<TValidator, TRequest>(TRequest request, IUnitOfWork unitOfWork)
+            where TValidator : AbstractValidator<TRequest>
         {
-            T instance;
-            if (unitOfWork != null)
-            {
-                //object[] constructorParameters = { unitOfWork }; // Pass the parameter values
+            //TValidator instance;
+            //if (unitOfWork != null)
+            //{
+            //    //object[] constructorParameters = { unitOfWork }; // Pass the parameter values
+            //    instance = (TValidator)Activator.CreateInstance(typeof(TValidator), unitOfWork)!;
+            //}
+            //else instance = Activator.CreateInstance<TValidator>();
 
-                instance = (T)Activator.CreateInstance(typeof(T), unitOfWork)!;
-
-            }
-            else instance = Activator.CreateInstance<T>();
+            var instance = (TValidator)Activator.CreateInstance(typeof(TValidator), unitOfWork)!;
 
             var validateResult = await instance.ValidateAsync(request);
             if (!validateResult.IsValid)

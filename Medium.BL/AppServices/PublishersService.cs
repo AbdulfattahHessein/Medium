@@ -39,12 +39,13 @@ namespace Medium.BL.AppServices
         }
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
-            var validator = new CreatePublisherRequestValidator();
-            var validateResult = await validator.ValidateAsync(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
+            //var validator = new CreatePublisherRequestValidator(UnitOfWork);
+            //var validateResult = await validator.ValidateAsync(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+            await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
 
             string uploadDirectory = Path.Combine("./Resources", "Photos");
             string? fileName = await UploadFormFileToAsync(request.Photo, uploadDirectory);
