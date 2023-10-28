@@ -1,4 +1,6 @@
-﻿namespace Medium.Core.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Medium.Core.Entities
 {
     public class Publisher : Entity<int>
     {
@@ -10,6 +12,8 @@
         public ICollection<Publisher>? Followings { get; set; }
         public ICollection<SavingList>? SavingLists { get; set; }
         public ICollection<React>? Reacts { get; set; }
+        public int UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public Publisher()
         {
             Name = string.Empty;

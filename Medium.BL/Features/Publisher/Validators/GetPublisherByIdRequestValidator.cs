@@ -16,6 +16,14 @@ namespace Medium.BL.Features.Publisher.Validators
                 WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be valid");
 
+            RuleFor(p => p.Id).NotNull()
+                .WithMessage("{PropertyName} Must be not Null")
+                .NotEmpty().WithMessage("{PropertyName} Must be valid")
+                .MustAsync(async (gp, i, c) =>
+                {
+                    return await _unitOfWork.Publishers.AnyAsync(p => p.Id == gp.Id);
+                })
+                .WithMessage("Publisher is not found");
         }
     }
 }

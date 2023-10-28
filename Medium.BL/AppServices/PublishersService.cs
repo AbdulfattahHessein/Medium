@@ -41,13 +41,13 @@ namespace Medium.BL.AppServices
         }
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
-            //var validator = new CreatePublisherRequestValidator(UnitOfWork);
-            //var validateResult = await validator.ValidateAsync(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
-            await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
+            var validator = new CreatePublisherRequestValidator(UnitOfWork);
+            var validateResult = await validator.ValidateAsync(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+            //await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
 
             string uploadDirectory = Path.Combine("./Resources", "Photos");
             string? fileName = await UploadFormFileToAsync(request.Photo, uploadDirectory);
@@ -69,7 +69,7 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request)
         {
             var validator = new GetPublisherByIdRequestValidator(UnitOfWork);
-            var validateResult = validator.Validate(request);
+            var validateResult = await validator.ValidateAsync(request);
             if (!validateResult.IsValid)
             {
                 throw new ValidationException(validateResult.Errors);

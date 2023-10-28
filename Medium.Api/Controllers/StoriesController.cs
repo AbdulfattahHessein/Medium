@@ -1,6 +1,7 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers
@@ -18,7 +19,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetAllStories")]
-
+        [Authorize]
         public async Task<IActionResult> GetAllStories()
         {
             var stories = await _storiesService.GetAllStories();

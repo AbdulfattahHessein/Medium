@@ -1,9 +1,11 @@
 ﻿using Medium.Core.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medium.DA.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int> //: DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -29,6 +31,12 @@ namespace Medium.DA.Context
 
                 //one to many ==> 1 publisher has many savelist
                 publisher.HasMany(p => p.SavingLists).WithOne(sl => sl.Publisher).HasForeignKey(s => s.PublisherId);
+
+                //one to one ==> publisher has user
+                publisher
+                .HasOne(p => p.User)
+                .WithOne(u => u.Publisher)
+                .HasForeignKey<Publisher>(p => p.UserId);
             });
 
 

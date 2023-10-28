@@ -15,7 +15,6 @@ namespace Medium.BL.Features.SavingLists.Validators
                 .NotNull().WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be not empty");
 
-
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Medium.DA.Implementation.Bases
        where TEntity : Entity<Key>
     {
         #region Variables
-        private readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _dbContext;
 
         protected readonly DbSet<TEntity> _table;
         #endregion

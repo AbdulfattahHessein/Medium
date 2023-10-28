@@ -50,10 +50,10 @@ namespace Medium.Api.Controllers
         }
 
 
-        [HttpDelete("DeleteSaveList/{id}")]
-        public async Task<IActionResult> DeleteSaveList(int id)
+        [HttpDelete("DeleteSaveList")]
+        public async Task<IActionResult> DeleteSaveList([FromQuery] DeleteSavingListRequest request)
         {
-            var saveList = await _savingListServices.DeleteAsync(new DeleteSavingListRequest(id));
+            var saveList = await _savingListServices.DeleteAsync(request);
             return ApiResult(saveList);
         }
 
