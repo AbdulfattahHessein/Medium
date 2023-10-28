@@ -4,6 +4,7 @@ using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
+using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
@@ -20,6 +21,7 @@ namespace Medium.BL.AppServices
         }
         private async Task<string?> UploadFormFileToAsync(IFormFile? formFile, string uploadDirectory)
         {
+
             string? fileName = null;
             if (formFile != null && formFile.Length > 0)
             {
@@ -66,6 +68,12 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request)
         {
+            var validator = new GetPublisherByIdRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
                 return NotFound<GetPublisherByIdResponse>();
@@ -75,6 +83,12 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<UpdatePublisherResponse>> UpdateAsync(UpdatePublisherRequest request)
         {
+            var validator = new UpdatePublisherRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             //get the old publisher
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
@@ -106,6 +120,12 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
+            var validator = new DeletePublisherRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
             {
@@ -130,6 +150,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponsePaginated<List<GetAllPublisherResponse>>> GetAllAsync(GetAllPublisherRequest request)
         {
+
             var publishers = await UnitOfWork.Publishers
                 .GetAllAsync(p => p.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
@@ -167,30 +188,12 @@ namespace Medium.BL.AppServices
         }
         public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
-            #region Temp
-            //var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
-            //var Following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
-            // publisher.Followings.Add(Following);
-            //var response = Mapper.Map<AddFollowingResponse>(Following);
-            //return Success(response);
-
-            //    var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
-            //    var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
-
-            //if (publisher != null && following != null)
-            //{
-            //    if (publisher.Followings == null )
-            //    {
-            //        publisher.Followings = new List<Publisher>();
-            //    }
-
-            //    publisher.Followings.Add(following);
-            //    following.Followers.Add(publisher);
-            //   //await UnitOfWork.CommitAsync();
-            //    var response = Mapper.Map<AddFollowingResponse>(following);
-            //    return Success(response);
-            //} 
-            #endregion
+            var validator = new AddFollowingRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
 
@@ -209,7 +212,6 @@ namespace Medium.BL.AppServices
                 publisher.Followings.Add(following);
                 following.Followers.Add(publisher);
 
-                // Save changes to the database if using Entity Framework or a similar ORM.
                 await UnitOfWork.CommitAsync();
 
                 var response = Mapper.Map<AddFollowingResponse>(following);
@@ -221,6 +223,12 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
         {
+            var validator = new DeleteFollowingRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId, p => p.Followings, p => p.Followers);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId, p => p.Followings, p => p.Followers);
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Medium.BL.Features.SavingLists.Request;
 using Medium.BL.Features.SavingLists.Response;
 using Medium.BL.Features.SavingLists.Validators;
@@ -6,7 +7,6 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
-using System.ComponentModel.DataAnnotations;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -17,20 +17,31 @@ namespace Medium.BL.AppServices
         public SavingListServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
-
+        //========================================= Add Story To SaveList =====================================
         public async Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest request)
         {
+            var validator = new AddStoryToSaveListRequestValidator();
+            var validateResult = await validator.ValidateAsync(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
             var story = await UnitOfWork.Stories.GetByIdAsync(request.storyId);
             if (story == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
+            var saveListOld = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, sv => sv.Stories);
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId);
             if (saveList == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
-            // Ensure the saving list's Stories collection is not null.
+            if (saveList.Stories == saveListOld.Stories)
+            {
+                return BadRequest<AddStoryToSaveListResponse>("This Story is olready Saved in this SaveList");
+            }
+            // Ensure the saving list Stories collection is not null.
             if (saveList.Stories == null)
             {
                 saveList.Stories = new List<Story>();
@@ -43,9 +54,15 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
         }
 
-
+        //========================================= Remove Story From SavingList =====================================
         public async Task<ApiResponse<RemoveStoryFromSavingListResponse>> RemoveStoryFromSavingList(RemoveStoryFromSavingListRequest request)
         {
+            var validator = new RemoveStoryFromSavingListRequestValidator();
+            var validateResult = validator.Validate(request);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
 
             var story = await UnitOfWork.Stories.GetByIdAsync(request.StoryId);
             if (story == null)
@@ -71,14 +88,14 @@ namespace Medium.BL.AppServices
         }
 
 
-
+        //========================================= Create SaveList =====================================
         public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset)
         {
-            var validator = new CreateSavingListValidator();
-            var validateResult = validator.Validate(requset);
+            var validator = new CreateSavingListRequestValidator();
+            var validateResult = await validator.ValidateAsync(requset);
             if (!validateResult.IsValid)
             {
-                throw new ValidationException();
+                throw new ValidationException(validateResult.Errors);
             }
 
             var publisher = UnitOfWork.Publishers.GetById(requset.PublisherId);
@@ -99,9 +116,18 @@ namespace Medium.BL.AppServices
             var savingListMap = Mapper.Map<CreateSavingListResponse>(savingList);
             return Success(savingListMap);
         }
-
+        //========================================= Delete SaveList =====================================
         public async Task<ApiResponse<DeleteSavingListResponse>> DeleteAsync(DeleteSavingListRequest requset)
         {
+            var validator = new DeleteSavingListRequestValidator();
+            var validateResult = await validator.ValidateAsync(requset);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+
+            //  await DoValidationAsync<DeleteSavingListRequestValidator, DeleteSavingListRequest>(requset, UnitOfWork);
+
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
             if (saveList == null)
             {
@@ -114,7 +140,7 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
 
         }
-
+        //========================================= GetAll SaveList =====================================
         public async Task<ApiResponse<List<GetAllSavingListResponse>>> GetAllAsync()
         {
 
@@ -125,9 +151,19 @@ namespace Medium.BL.AppServices
 
 
         }
-
+        //========================================= GetById SaveList =====================================
         public async Task<ApiResponse<GetSavingListByIdResponse>> GetByIdAsync(GetSavingListByIdRequest requset)
         {
+            var validator = new GetSavingListByIdRequestValidator();
+            var validateResult = await validator.ValidateAsync(requset);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
+
+            //await DoValidationAsync<GetSavingListByIdRequestValidator, GetSavingListByIdRequest>(requset, UnitOfWork);
+
+
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
             if (saveList == null)
             {
@@ -138,9 +174,18 @@ namespace Medium.BL.AppServices
             return Success(responseMap);
         }
 
-
+        //========================================= Update SaveList =====================================
         public async Task<ApiResponse<UpdateSavingListResponse>> UpdateAsync(UpdateSavingListRequest requset)
         {
+            //var validator = new UpdateSavingListValidator();
+            //var validateResult = validator.Validate(requset);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+
+            await DoValidationAsync<UpdateSavingListValidator, UpdateSavingListRequest>(requset, UnitOfWork);
+
 
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
             if (saveList == null)
@@ -172,8 +217,9 @@ namespace Medium.BL.AppServices
         //            saveList.Stories.ToList() // Retrieve all stories associated with this saving list
         //        ));
         //    }
+        //    var responseMap = Mapper.Map<List<GetSavingListWithStoriesResponse>>(result);
 
-        //    return Success(result);
+        //    return Success(responseMap);
         //}
 
     }

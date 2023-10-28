@@ -1,5 +1,4 @@
-﻿using Medium.Core.Interfaces.ApiResponse;
-using System.Collections;
+﻿using System.Collections;
 
 namespace Medium.BL.ResponseHandler
 {
@@ -13,6 +12,14 @@ namespace Medium.BL.ResponseHandler
                 StatusCode = System.Net.HttpStatusCode.OK,
             };
         }
+        public static ApiResponse<T> Deleted<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = Message == null ? "Deleted Successfully" : Message
+            };
+        }
         public static ApiResponse<T> Success<T>(T data, object? Meta = null)
         {
             return new ApiResponse<T>()
@@ -20,6 +27,16 @@ namespace Medium.BL.ResponseHandler
                 Data = data,
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Meta = Meta
+            };
+        }
+
+        public static ApiResponse<T> Success<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.Created,
+                Message = Message == null ? "Successfully" : Message,
+
             };
         }
         public static ApiResponsePaginated<T> Success<T>(T data, int totalCount, int pageNumber, int pageSize) where T : ICollection
@@ -40,13 +57,15 @@ namespace Medium.BL.ResponseHandler
                 StatusCode = System.Net.HttpStatusCode.Unauthorized,
             };
         }
-        public static ApiResponse<T> BadRequest<T>()
+        public static ApiResponse<T> BadRequest<T>(string Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.BadRequest,
+                Message = Message == null ? "Bad Request" : Message
             };
         }
+
 
         public static ApiResponse<T> UnprocessableEntity<T>(T entity)
         {
@@ -64,6 +83,14 @@ namespace Medium.BL.ResponseHandler
                 StatusCode = System.Net.HttpStatusCode.NotFound,
             };
         }
+        public static ApiResponse<T> NotFound<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.Created,
+                Message = Message == null ? "Not Found" : Message
+            };
+        }
 
         public static ApiResponse<T> Created<T>(T entity, object? Meta = null)
         {
@@ -74,11 +101,27 @@ namespace Medium.BL.ResponseHandler
                 Meta = Meta
             };
         }
+        public static ApiResponse<T> Created<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.Created,
+                Message = Message == null ? "Created Successfully" : Message,
+            };
+        }
         public static ApiResponse<T> NoContent<T>()
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.NoContent,
+            };
+        }
+        public static ApiResponse<T> NoContent<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.NoContent,
+                Message = Message == null ? "Not Content" : Message
             };
         }
     }

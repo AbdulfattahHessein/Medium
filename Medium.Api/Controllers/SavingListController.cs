@@ -24,13 +24,6 @@ namespace Medium.Api.Controllers
             var saveList = await _savingListServices.GetAllAsync();
             return ApiResult(saveList);
         }
-        [HttpPost("CreateSavingList")]
-        public async Task<IActionResult> CreateSavingList([FromForm] CreateSavingListRequest request)
-        {
-            var result = await _savingListServices.CreateAsync(request);
-
-            return ApiResult(result);
-        }
 
         [HttpGet("GetSavingListById/{id}")]
         public async Task<IActionResult> GetSavingListById(int id)
@@ -39,6 +32,15 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
+
+        [HttpPost("CreateSavingList")]
+        public async Task<IActionResult> CreateSavingList([FromForm] CreateSavingListRequest request)
+        {
+            var result = await _savingListServices.CreateAsync(request);
+
+            return ApiResult(result);
+        }
+
 
         [HttpPut("UpdateSavingList")]
         public async Task<IActionResult> UpdateSavingList([FromForm] UpdateSavingListRequest request)
@@ -69,11 +71,12 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        //[HttpGet("GetAllSavingListsWithStories")]
-        //public async Task<IActionResult> GetAllSavingListsWithStories()
-        //{
-        //    var result = await _savingListServices.GetAllSavingListsWithStoriesAsync();
-        //    return ApiResult(result);
+        //    [HttpGet("GetAllSavingListsWithStories")]
+        //    public async Task<IActionResult> GetAllSavingListsWithStories()
+        //    {
+        //        var result = await _savingListServices.GetAllSavingListsWithStoriesAsync();
+        //        return ApiResult(result);
+        //    }
         //}
     }
 }

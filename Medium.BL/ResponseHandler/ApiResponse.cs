@@ -14,17 +14,19 @@ namespace Medium.BL.ResponseHandler
             T data,
             int totalCount,
             int page = 1,
-            int pageSize = 10)
+            int pageSize = 10, string message = null)
         {
             Data = data;
             TotalCount = totalCount;
             CurrentPage = page;
             PageSize = pageSize;
+            Message = message;
         }
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
         public int TotalCount { get; set; }
+        public string Message { get; set; }
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
     }
@@ -35,10 +37,11 @@ namespace Medium.BL.ResponseHandler
         {
 
         }
-        public ApiResponse(T data, string? meta = null)
+        public ApiResponse(T data, string? meta = null, string message = null)
         {
             Data = data;
             Meta = meta;
+            Message = message;
         }
 
         public new T? Data { get; set; }
@@ -49,6 +52,7 @@ namespace Medium.BL.ResponseHandler
         public bool Succeeded => (int)StatusCode >= 200 && (int)StatusCode <= 290;
         public HttpStatusCode StatusCode { get; set; }
         public object? Meta { get; set; }
+        public string Message { get; set; }
         public Dictionary<string, List<string>>? Errors { get; set; }
 
     }

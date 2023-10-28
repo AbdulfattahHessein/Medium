@@ -8,8 +8,10 @@ namespace Medium.BL.Features.Stories.Mapping
     {
         void UpdateStoryMapping()
         {
-            CreateMap<Story, UpdateStoryResponse>().ReverseMap();
-            CreateMap<Story, UpdateStoryRequest>().ReverseMap();
+            CreateMap<Story, UpdateStoryResponse>();
+            CreateMap<Story, UpdateStoryRequest>();
+            CreateMap<UpdateStoryRequest, Story>();
+
 
 
 

@@ -8,23 +8,16 @@ namespace Medium.BL.Features.SavingLists.Mapping
     {
         void SavingListMapping()
         {
-            CreateMap<SavingList, GetSavingListByIdRequest>();
-            CreateMap<SavingList, CreateSavingListResponse>()
-                .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name)); ;
-
-
-            CreateMap<SavingList, GetSavingListWithStoriesResponse>()
-                .ForMember(dest => dest.Stories, op => op.MapFrom(src => src.Stories));
-            CreateMap<GetSavingListWithStoriesResponse, SavingList>();
-
-
+            // ==================== GetAll SavingList Response ==============================
             CreateMap<SavingList, GetAllSavingListResponse>().
              ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name));
-            CreateMap<GetAllSavingListResponse, SavingList>().
-  ForMember(dest => dest.Publisher, op => op.MapFrom(src => src.PublisherName));
 
-
+            // ==================== Get SavingList ById Response ==============================
             CreateMap<SavingList, GetSavingListByIdResponse>();
+
+            // ==================== Create SavingList Response ==============================
+            CreateMap<SavingList, CreateSavingListResponse>()
+                .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name)); ;
 
             // ==================== UpdateSavingListResponse ==============================
             CreateMap<SavingList, UpdateSavingListResponse>()
@@ -34,16 +27,16 @@ namespace Medium.BL.Features.SavingLists.Mapping
             // ==================== DeleteSavingListResponse ==============================
             CreateMap<SavingList, DeleteSavingListResponse>();
 
+            // ==================== GetSavingList With Stories Response ==============================
+            CreateMap<SavingList, GetSavingListWithStoriesResponse>()
+                .ForMember(dest => dest.Stories, op => op.MapFrom(src => src.Stories));
+            CreateMap<GetSavingListWithStoriesResponse, SavingList>();
+
             // ==================== AddStoryToSaveListResponse ============================
             CreateMap<SavingList, AddStoryToSaveListResponse>();
-            //.ForMember(dest => dest.Stories, opt => opt.MapFrom(src => src.Stories));
-
-
 
             // ==================== RemoveStoryFromSavingListResponse ============================
             CreateMap<SavingList, RemoveStoryFromSavingListResponse>();
-            CreateMap<RemoveStoryFromSavingListResponse, SavingList>();
-            CreateMap<RemoveStoryFromSavingListRequest, SavingList>();
 
 
         }
