@@ -7,13 +7,8 @@ namespace Medium.BL.Features.SavingLists.Validators
     {
         public DeleteSavingListRequestValidator()
         {
-            RuleFor(p => p.Id)
-                .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0")
-                .NotNull().WithMessage("{PropertyName} Must be not Null")
-                .NotEmpty().WithMessage("{PropertyName} Must be not Empty");
-
-
-
+            RuleFor(t => t.Id).NotEmpty().WithMessage("{PropertyName} must be not empty")
+                .NotNull().WithMessage("{PropertyName} must be not null");
         }
     }
 }

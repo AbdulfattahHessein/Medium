@@ -2,6 +2,7 @@
 using Medium.BL.Features.SavingLists.Request;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -36,7 +37,8 @@ namespace Medium.Api.Controllers
         [HttpPost("CreateSavingList")]
         public async Task<IActionResult> CreateSavingList([FromForm] CreateSavingListRequest request)
         {
-            var result = await _savingListServices.CreateAsync(request);
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _savingListServices.CreateAsync(request, publisherId);
 
             return ApiResult(result);
         }

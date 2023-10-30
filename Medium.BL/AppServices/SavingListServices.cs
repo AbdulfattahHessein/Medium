@@ -89,25 +89,26 @@ namespace Medium.BL.AppServices
 
 
         //========================================= Create SaveList =====================================
-        public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset)
+        public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset, int publisherId)
         {
-            var validator = new CreateSavingListRequestValidator();
-            var validateResult = await validator.ValidateAsync(requset);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
+            //var validator = new CreateSavingListRequestValidator();
+            //var validateResult = await validator.ValidateAsync(requset);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
 
-            var publisher = UnitOfWork.Publishers.GetById(requset.PublisherId);
-            if (publisher == null)
-            {
-                return NotFound<CreateSavingListResponse>();
-            }
+            // var publisher = UnitOfWork.Publishers.GetById(requset.PublisherId);
+            //if (publisher == null)
+            //{
+            //    return NotFound<CreateSavingListResponse>();
+            //}
+            await DoValidationAsync<CreateSavingListRequestValidator, CreateSavingListRequest>(requset, UnitOfWork);
 
             var savingList = new SavingList()
             {
                 Name = requset.Name,
-                Publisher = publisher
+                // Publisher = publisher
 
             };
 
@@ -120,7 +121,7 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponse<DeleteSavingListResponse>> DeleteAsync(DeleteSavingListRequest requset)
         {
             var validator = new DeleteSavingListRequestValidator();
-            var validateResult = await validator.ValidateAsync(requset);
+            var validateResult = validator.Validate(requset);
             if (!validateResult.IsValid)
             {
                 throw new ValidationException(validateResult.Errors);
