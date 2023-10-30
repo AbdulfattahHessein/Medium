@@ -2,7 +2,10 @@
 using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -56,10 +59,11 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpPost("React")]
+        //[Authorize]
         public async Task<IActionResult> AddReactToStory(AddReactToStoryRequest request)
         {
-            var result = await _reactionsService.AddReactToStory(request);
-
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await _reactionsService.AddReactToStory(request, publisherId);
             return NoContent();
         }
         [HttpDelete("React")]

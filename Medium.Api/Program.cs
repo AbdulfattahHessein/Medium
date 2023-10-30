@@ -1,4 +1,5 @@
 using Medium.BL;
+using Medium.BL.Features.Accounts.Validators;
 using Medium.BL.Middlewares;
 using Medium.Core.Entities;
 using Medium.DA;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(conf =>
 {
+    // diasble validation on controller
     conf.ModelValidatorProviders.Clear();
 });
 // diasble validation on controller
@@ -27,6 +29,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDataAccessDependencies(builder.Configuration);
 
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
+//                    .AddEntityFrameworkStores<ApplicationDbContext>()
+//                    .AddUserValidator<CustomUserValidator<ApplicationUser>>()
+//                    .AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>();
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
@@ -38,21 +46,21 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer"
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+                Reference = new OpenApiReference
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        new List<string>()
-                    }
-                });
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
 
 });
 
@@ -60,10 +68,10 @@ builder.Services.AddBusinessLogicDependencies();
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
 //app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-
-app.UseMiddleware<ExceptionHandlerMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

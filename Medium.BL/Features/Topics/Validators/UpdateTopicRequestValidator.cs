@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Topics.Request;
 using System;
 using System.Collections.Generic;

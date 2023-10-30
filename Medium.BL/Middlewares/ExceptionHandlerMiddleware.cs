@@ -31,7 +31,7 @@ namespace Medium.BL.Middlewares
 
                 if (exception is ValidationException ex)
                 {
-                    var responseResult = new ApiResponse() { StatusCode = (HttpStatusCode)httpStatusCode };
+                    var responseResult = new ApiResponse() { StatusCode = (HttpStatusCode)httpStatusCode, Message = ex.Message };
 
 
                     var errors = new Dictionary<string, List<string>>();

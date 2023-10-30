@@ -1,80 +1,78 @@
-﻿using Medium.Api.Bases;
-using Medium.Api.DTO;
+﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Medium.BL.Features.Accounts.Request;
+using Medium.BL.Features.Accounts.Response;
+using Medium.BL.Features.Accounts.Validators;
 using Medium.BL.Interfaces.Services;
+using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
+using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
-namespace Medium.Api.Controllers
+
+namespace Medium.BL.AppServices
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountsController : AppControllerBase
+    public class AccountsService : AppService, IAccountsService
     {
         private readonly IConfiguration configuration;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IAccountsService _accountsService;
 
-        public AccountsController(IConfiguration configuration, UserManager<ApplicationUser> userManager, IAccountsService accountsService)
+        public AccountsService(IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
             this.configuration = configuration;
             this.userManager = userManager;
-            this._accountsService = accountsService;
         }
-        //[HttpPost("register")]
-        //public async Task<IActionResult> Registration(RegisterUserDto userDto)
-        //{
-        //    ApplicationUser user = new()
-        //    {
-        //        UserName = userDto.UserName,
-        //        Email = userDto.Email,
-        //    };
-        //    var result = await userManager.CreateAsync(user, userDto.Password);
-
-        //    return result.Succeeded ? Ok(user) : BadRequest(result.Errors);
-
-        //}
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Registration(RegisterRequest request)
+        public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
         {
-
-            var result = await _accountsService.Register(request);
-
-            return ApiResult(result);
-
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserDto userDto)
-        {
-            var user = await userManager.FindByNameAsync(userDto.UserName);
+            var user = await userManager.FindByNameAsync(request.UserName);
             if (user != null)
             {
-                var rightPassword = await userManager.CheckPasswordAsync(user, userDto.Password);
+                var rightPassword = await userManager.CheckPasswordAsync(user, request.Password);
                 if (rightPassword)
                 {
-
                     var token = await GenerateJwtTokenAsync(user);
-                    return Ok(new
-                    {
-                        token
-                    });
+                    var response = new LoginResponse(token);
+                    return Success(response);
                 }
             }
-            return Unauthorized();
+            return UnAuthorized<LoginResponse>();
+        }
+
+        public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest request)
+        {
+            await DoValidationAsync<RegisterRequestValidator, RegisterRequest>(request, userManager);
+
+            ApplicationUser user = new()
+            {
+                UserName = request.UserName,
+                Email = request.Email,
+            };
+            var result = await userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded)
+                throw new ValidationException(result.Errors.First().Description);
+
+            var response = new RegisterResponse(user.UserName, user.PasswordHash, user.Email);
+
+            return Success(response);
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             //Token claims
             var claims = new List<Claim>()
                     {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };

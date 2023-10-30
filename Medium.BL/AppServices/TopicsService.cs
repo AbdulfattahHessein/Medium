@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Stories.Responses;
 using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Features.Topics.Request;

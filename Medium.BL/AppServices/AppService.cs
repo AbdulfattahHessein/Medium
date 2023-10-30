@@ -18,7 +18,7 @@ namespace Medium.BL.AppServices
         {
             UnitOfWork.Dispose();
         }
-        protected async Task DoValidationAsync<TValidator, TRequest>(TRequest request, IUnitOfWork unitOfWork)
+        protected async Task DoValidationAsync<TValidator, TRequest>(TRequest request, params object[] constructorParameters)
             where TValidator : AbstractValidator<TRequest>
         {
             //TValidator instance;
@@ -29,7 +29,7 @@ namespace Medium.BL.AppServices
             //}
             //else instance = Activator.CreateInstance<TValidator>();
 
-            var instance = (TValidator)Activator.CreateInstance(typeof(TValidator), unitOfWork)!;
+            var instance = (TValidator)Activator.CreateInstance(typeof(TValidator), constructorParameters)!;
 
             var validateResult = await instance.ValidateAsync(request);
             if (!validateResult.IsValid)

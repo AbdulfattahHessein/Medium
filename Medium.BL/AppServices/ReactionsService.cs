@@ -19,7 +19,7 @@ namespace Medium.BL.AppServices
         {
         }
 
-        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request)
+        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request, int publisherId)
         {
             //var validator = new AddReactToStoryRequestValidator(UnitOfWork);
             //var validateResult = await validator.ValidateAsync(request);
@@ -34,7 +34,7 @@ namespace Medium.BL.AppServices
             {
                 StoryId = request.StoryId,
                 ReactionId = request.ReactionId,
-                PublisherId = request.PublisherId,
+                //PublisherId = request.PublisherId,
             };
             await UnitOfWork.Reacts.InsertAsync(react);
             await UnitOfWork.CommitAsync();

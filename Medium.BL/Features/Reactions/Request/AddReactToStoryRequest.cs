@@ -1,5 +1,5 @@
 ﻿namespace Medium.BL.Features.Reactions.Request
 {
-    public record AddReactToStoryRequest(int PublisherId, int ReactionId, int StoryId);
+    public record AddReactToStoryRequest(int ReactionId, int StoryId);
 
 }

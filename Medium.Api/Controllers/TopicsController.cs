@@ -1,5 +1,6 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.AppServices;
+using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Features.Topics.Request;
 using Medium.BL.Interfaces.Services;
