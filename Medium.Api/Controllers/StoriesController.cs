@@ -3,6 +3,7 @@ using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -51,7 +52,8 @@ namespace Medium.Api.Controllers
         [HttpPost("CreateStory")]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {
-            var result = await _storiesService.CreateStoryAsync(request);
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _storiesService.CreateStoryAsync(request, publisherId);
 
             return ApiResult(result);
         }
