@@ -2,5 +2,5 @@
 
 namespace Medium.BL.Features.Publisher.Requests
 {
-    public record AddFollowingRequest(int PublisherId,int FollowingId);
+    public record AddFollowingRequest(int FollowingId);
 }

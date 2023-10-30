@@ -4,6 +4,8 @@ using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
+using Medium.BL.Features.Reactions.Request;
+using Medium.BL.Features.Reactions.Validators;
 using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
@@ -162,11 +164,12 @@ namespace Medium.BL.AppServices
         }
 
 
-        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request)
+        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request,int PublisherId)
         {
+            await DoValidationAsync<FollowerNotFollowingRequestValidator, FollowerNotFollowingRequest>(request, UnitOfWork);
             var publishers = await UnitOfWork.Publishers
                 .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize, p => p.Followers, p => p.Followings);
-            var publisher = publishers.Find(p => p.Id == request.PublisherId);
+            var publisher = publishers.Find(p => p.Id == PublisherId);
 
             List<Publisher> Followers = new List<Publisher>();
             Followers.AddRange(publisher.Followers);
@@ -186,15 +189,16 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
-        public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
+        public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request, int PublisherId)
         {
-            var validator = new AddFollowingRequestValidator(UnitOfWork);
-            var validateResult = validator.Validate(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId);
+            //var validator = new AddFollowingRequestValidator(UnitOfWork);
+            //var validateResult = validator.Validate(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+            await DoValidationAsync<AddFollowingRequestValidator, AddFollowingRequest>(request, UnitOfWork);
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
 
             if (publisher != null && following != null)
@@ -221,15 +225,16 @@ namespace Medium.BL.AppServices
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
+        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request,int PublisherId)
         {
-            var validator = new DeleteFollowingRequestValidator(UnitOfWork);
-            var validateResult = validator.Validate(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.PublisherId, p => p.Followings, p => p.Followers);
+            //var validator = new DeleteFollowingRequestValidator(UnitOfWork);
+            //var validateResult = validator.Validate(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+            await DoValidationAsync<DeleteFollowingRequestValidator, DeleteFollowingRequest>(request, UnitOfWork);
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followings, p => p.Followers);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId, p => p.Followings, p => p.Followers);
 
             if (publisher != null && following != null)

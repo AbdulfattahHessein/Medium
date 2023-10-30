@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Medium.BL.Features.Publisher.Requests
 {
-    public record DeleteFollowingRequest(int PublisherId,int FollowingId );
+    public record DeleteFollowingRequest(int FollowingId );
 }
