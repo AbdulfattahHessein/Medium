@@ -39,14 +39,16 @@ namespace Medium.BL.AppServices
             return fileName;
         }
         //========================================= CREATE ========================================
-        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request)
+        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId)
         {
-            var validator = new CreateStoryRequestValidator();
-            var validateResult = validator.Validate(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
+            //var validator = new CreateStoryRequestValidator();
+            //var validateResult = validator.Validate(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+            await DoValidationAsync<CreateStoryRequestValidator, CreateStoryRequest>(request, UnitOfWork);
+
             string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
             // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
             var storyPhotos = new List<StoryPhoto>();
@@ -77,17 +79,17 @@ namespace Medium.BL.AppServices
                 }
             }
 
-            var publisher = UnitOfWork.Publishers.GetById(request.PublisherId);
-            if (publisher == null)
-            {
-                return NotFound<CreateStoryResponse>();
-            }
+            // var publisher = UnitOfWork.Publishers.GetById(request.PublisherId);
+            //if (publisher == null)
+            //{
+            //    return NotFound<CreateStoryResponse>();
+            //}
 
             var story = new Story()
             {
                 Title = request.Title,
                 Content = request.Content,
-                Publisher = publisher,
+                // Publisher = publisher,
                 StoryPhotos = storyPhotos,
                 StoryVideos = storyVideos
             };

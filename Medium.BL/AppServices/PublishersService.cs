@@ -4,8 +4,6 @@ using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
-using Medium.BL.Features.Reactions.Request;
-using Medium.BL.Features.Reactions.Validators;
 using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
@@ -43,13 +41,13 @@ namespace Medium.BL.AppServices
         }
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
-            var validator = new CreatePublisherRequestValidator(UnitOfWork);
-            var validateResult = await validator.ValidateAsync(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
-            //await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
+            //var validator = new CreatePublisherRequestValidator(UnitOfWork);
+            //var validateResult = await validator.ValidateAsync(request);
+            //if (!validateResult.IsValid)
+            //{
+            //    throw new ValidationException(validateResult.Errors);
+            //}
+            await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
 
             string uploadDirectory = Path.Combine("./Resources", "Photos");
             string? fileName = await UploadFormFileToAsync(request.Photo, uploadDirectory);

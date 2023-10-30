@@ -12,16 +12,6 @@ namespace Medium.BL.Features.Reactions.Validators
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(p => p.PublisherId).NotNull().
-                WithMessage("{PropertyName} Must be not Null")
-                .NotEmpty().WithMessage("{PropertyName} Must be valid")
-                .MustAsync(async (ars, i, c) =>
-                {
-                    return await _unitOfWork.Publishers.AnyAsync(p => p.Id == ars.PublisherId);
-                })
-                .WithMessage("Publisher is not found");
-
-
             RuleFor(p => p.StoryId).NotNull().
                WithMessage("{PropertyName} Must be not Null")
                .NotEmpty().WithMessage("{PropertyName} Must be valid")
