@@ -79,17 +79,18 @@ namespace Medium.BL.AppServices
                 }
             }
 
-            // var publisher = UnitOfWork.Publishers.GetById(request.PublisherId);
-            //if (publisher == null)
-            //{
-            //    return NotFound<CreateStoryResponse>();
-            //}
+            var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            if (publisher == null)
+            {
+                return NotFound<CreateStoryResponse>();
+            }
 
             var story = new Story()
             {
                 Title = request.Title,
                 Content = request.Content,
-                // Publisher = publisher,
+                Publisher = publisher,
+                //PublisherId = publisherId,
                 StoryPhotos = storyPhotos,
                 StoryVideos = storyVideos
             };
@@ -178,13 +179,25 @@ namespace Medium.BL.AppServices
                 throw new ValidationException(validateResult.Errors);
             }
 
-            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos);
             if (story == null)
             {
                 return NotFound<DeleteStoryResponse>();
             }
             UnitOfWork.Stories.Delete(story);
             await UnitOfWork.CommitAsync();
+
+            //delete all story photos
+            foreach (var photo in story.StoryPhotos)
+            {
+                File.Delete($@"./{photo.Url}");
+            }
+            //delete all story videos
+            foreach (var video in story.StoryVideos)
+            {
+                File.Delete($@"./{video.Url}");
+            }
+
             var storyMap = Mapper.Map<DeleteStoryResponse>(story);
             return Deleted(storyMap);
         }

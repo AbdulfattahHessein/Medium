@@ -134,7 +134,7 @@ namespace Medium.BL.AppServices
             //Delete publisher photo if exist
             if (publisher.PhotoUrl != null)
             {
-                File.Delete($@".{publisher.PhotoUrl}");
+                File.Delete($@"./Resources/{publisher.PhotoUrl}");
             }
             //delete everything related with the publisher like its stories
             //
@@ -162,7 +162,7 @@ namespace Medium.BL.AppServices
         }
 
 
-        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request,int PublisherId)
+        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request, int PublisherId)
         {
             await DoValidationAsync<FollowerNotFollowingRequestValidator, FollowerNotFollowingRequest>(request, UnitOfWork);
             var publishers = await UnitOfWork.Publishers
@@ -223,7 +223,7 @@ namespace Medium.BL.AppServices
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request,int PublisherId)
+        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request, int PublisherId)
         {
             //var validator = new DeleteFollowingRequestValidator(UnitOfWork);
             //var validateResult = validator.Validate(request);

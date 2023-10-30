@@ -11,9 +11,10 @@ namespace Medium.BL.Features.Stories.Mapping
             CreateMap<Story, CreateStoryResponse>()
                  .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))
                 .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
-            CreateMap<Story, CreateStoryRequest>()
-                 .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))
-                .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
+
+            //CreateMap<Story, CreateStoryRequest>()
+            //     .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))
+            //    .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
         }
     }
 }

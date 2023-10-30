@@ -1,12 +1,17 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Stories.Requests;
+using Medium.Core.Interfaces.Bases;
 
 namespace Medium.BL.Features.Stories.Validators
 {
     public class CreateStoryRequestValidator : AbstractValidator<CreateStoryRequest>
     {
-        public CreateStoryRequestValidator()
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CreateStoryRequestValidator(IUnitOfWork unitOfWork)
         {
+            this._unitOfWork = unitOfWork;
+
             RuleFor(s => s.Title)
                 .NotNull().WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName}Must be not Empty")
@@ -15,9 +20,9 @@ namespace Medium.BL.Features.Stories.Validators
 
 
             RuleFor(s => s.Content)
-    .NotNull().WithMessage("{PropertyName}Must be not Null")
-    .NotEmpty().WithMessage("{PropertyName}Must be not Empty")
-    .MinimumLength(5).WithMessage("{PropertyName} Must be greeter than or equal 5");
+                .NotNull().WithMessage("{PropertyName}Must be not Null")
+                .NotEmpty().WithMessage("{PropertyName}Must be not Empty")
+                .MinimumLength(5).WithMessage("{PropertyName} Must be greeter than or equal 5");
 
             //        RuleFor(s => s.PublisherId)
             //.NotNull().WithMessage("PublisherId Must be not null")

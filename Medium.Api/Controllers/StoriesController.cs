@@ -50,6 +50,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("CreateStory")]
+        [Authorize]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

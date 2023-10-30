@@ -1,6 +1,7 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

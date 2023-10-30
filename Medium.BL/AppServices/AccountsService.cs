@@ -63,16 +63,20 @@ namespace Medium.BL.AppServices
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.First().Description);
 
+            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user });
+            await UnitOfWork.CommitAsync();
+
             var response = new RegisterResponse(user.UserName, user.PasswordHash, user.Email);
 
             return Success(response);
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
+            var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.UserId == user.Id);
             //Token claims
             var claims = new List<Claim>()
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Sub, publisher!.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
