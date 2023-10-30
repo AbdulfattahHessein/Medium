@@ -41,9 +41,9 @@ namespace Medium.BL.AppServices
 
             return NoContent<ApiResponse>();
         }
-        public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request)
+        public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request, int publisherId)
         {
-            var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, request.PublisherId);
+            var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, publisherId);
             //var react = await UnitOfWork.Reacts.GetFirstAsync(r => r.StoryId.Equals(request.storyId) && r.PublisherId.Equals(request.publisherId));
 
             await DoValidationAsync<RemoveReactFromStoryRequestValidator, RemoveReactFromStoryRequest>(request, UnitOfWork);

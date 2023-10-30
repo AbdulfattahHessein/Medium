@@ -49,55 +49,64 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
 
         }
-
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserDto userDto)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            var user = await userManager.FindByNameAsync(userDto.UserName);
-            if (user != null)
-            {
-                var rightPassword = await userManager.CheckPasswordAsync(user, userDto.Password);
-                if (rightPassword)
-                {
 
-                    var token = await GenerateJwtTokenAsync(user);
-                    return Ok(new
-                    {
-                        token
-                    });
-                }
-            }
-            return Unauthorized();
+            var result = await _accountsService.Login(request);
+
+            return ApiResult(result);
+
         }
-        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
-        {
-            //Token claims
-            var claims = new List<Claim>()
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
-            // Get user roles
-            var roles = await userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
-            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login(LoginUserDto userDto)
+        //{
+        //    var user = await userManager.FindByNameAsync(userDto.UserName);
+        //    if (user != null)
+        //    {
+        //        var rightPassword = await userManager.CheckPasswordAsync(user, userDto.Password);
+        //        if (rightPassword)
+        //        {
 
-            //create token
-            JwtSecurityToken token = new JwtSecurityToken(
-                issuer: configuration["JWT:ValidIssur"],
-                audience: configuration["JWT:ValidAudience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: signingCredentials
-                );
+        //            var token = await GenerateJwtTokenAsync(user);
+        //            return Ok(new
+        //            {
+        //                token
+        //            });
+        //        }
+        //    }
+        //    return Unauthorized();
+        //}
+        //private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        //{
+        //    //Token claims
+        //    var claims = new List<Claim>()
+        //            {
+        //                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //                new Claim(ClaimTypes.Name, user.UserName),
+        //                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //            };
+        //    // Get user roles
+        //    var roles = await userManager.GetRolesAsync(user);
+        //    foreach (var role in roles)
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, role));
+        //    }
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+        //    var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        //    //create token
+        //    JwtSecurityToken token = new JwtSecurityToken(
+        //        issuer: configuration["JWT:ValidIssur"],
+        //        audience: configuration["JWT:ValidAudience"],
+        //        claims: claims,
+        //        expires: DateTime.Now.AddHours(1),
+        //        signingCredentials: signingCredentials
+        //        );
+
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
     }
 }
