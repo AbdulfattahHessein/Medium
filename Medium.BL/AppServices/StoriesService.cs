@@ -38,8 +38,16 @@ namespace Medium.BL.AppServices
             }
             return fileName;
         }
+
+
+
+        public async Task<bool> IsTopicNameUnique(string topicName)
+        {
+            return !(await UnitOfWork.Topics.AnyAsync(t => t.Name == topicName));
+        }
+
         //========================================= CREATE ========================================
-        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId)
+        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId, string topicName)
         {
             //var validator = new CreateStoryRequestValidator();
             //var validateResult = validator.Validate(request);
@@ -85,15 +93,35 @@ namespace Medium.BL.AppServices
                 return NotFound<CreateStoryResponse>();
             }
 
-            var story = new Story()
+
+            // Check if the topic name is unique, and create a new topic if it is.
+            if (await IsTopicNameUnique(topicName))
+            {
+                var topic = new Topic
+                {
+                    Name = topicName
+                };
+                UnitOfWork.Topics.Insert(topic);
+                await UnitOfWork.CommitAsync();
+            }
+
+
+            // Get the topic with the given name (new or existing).
+            var existingTopic = await UnitOfWork.Topics.FirstOrDefaultAsync(t => t.Name == topicName);
+
+            var story = new Story
             {
                 Title = request.Title,
                 Content = request.Content,
                 Publisher = publisher,
-                //PublisherId = publisherId,
                 StoryPhotos = storyPhotos,
                 StoryVideos = storyVideos
             };
+
+            if (existingTopic != null)
+            {
+                story.Topics = new List<Topic> { existingTopic };
+            }
 
             await UnitOfWork.Stories.InsertAsync(story); await UnitOfWork.CommitAsync();
             //await UnitOfWork.StoryPhotos.InsertAsync(storyPhotos); await UnitOfWork.CommitAsync();
@@ -216,6 +244,8 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
+
+
     }
 
 }

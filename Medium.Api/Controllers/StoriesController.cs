@@ -50,11 +50,12 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("CreateStory")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _storiesService.CreateStoryAsync(request, publisherId);
+            var topics = request.Topics; // Access the Topics from the request
+            var result = await _storiesService.CreateStoryAsync(request, publisherId, topics);
 
             return ApiResult(result);
         }

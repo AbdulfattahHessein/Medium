@@ -1,13 +1,7 @@
 using Medium.BL;
-using Medium.BL.Features.Accounts.Validators;
-using Medium.BL.Middlewares;
-using Medium.Core.Entities;
 using Medium.DA;
-using Medium.DA.Context;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +63,7 @@ builder.Services.AddBusinessLogicDependencies();
 var app = builder.Build();
 
 
-app.UseMiddleware<ExceptionHandlerMiddleware>();
+//app.UseMiddleware<ExceptionHandlerMiddleware>();
 //app.UseMiddleware<UserExistenceMiddleware>();
 
 

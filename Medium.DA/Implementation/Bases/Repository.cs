@@ -26,6 +26,13 @@ namespace Medium.DA.Implementation.Bases
         #endregion
 
         #region Async Function
+
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = GetWhere(criteria, includes);
+            return await query.FirstOrDefaultAsync();
+        }
+
         public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
         {
             var query = Includes(_table, includes);

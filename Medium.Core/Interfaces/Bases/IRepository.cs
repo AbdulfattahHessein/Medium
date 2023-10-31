@@ -19,6 +19,10 @@ namespace Medium.Core.Interfaces.Bases
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? criteria = null);
         Task<int> CountAsync(Expression<Func<TEntity, bool>>? criteria = null);
         Task<TEntity?> FindAsync(params object[] id);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
+
+
+
 
 
         TEntity? GetById(TKey id);
