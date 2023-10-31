@@ -68,7 +68,10 @@ builder.Services.AddBusinessLogicDependencies();
 
 var app = builder.Build();
 
+
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+//app.UseMiddleware<UserExistenceMiddleware>();
+
 
 //app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

@@ -26,19 +26,6 @@ namespace Medium.Api.Controllers
             this.userManager = userManager;
             this._accountsService = accountsService;
         }
-        //[HttpPost("register")]
-        //public async Task<IActionResult> Registration(RegisterUserDto userDto)
-        //{
-        //    ApplicationUser user = new()
-        //    {
-        //        UserName = userDto.UserName,
-        //        Email = userDto.Email,
-        //    };
-        //    var result = await userManager.CreateAsync(user, userDto.Password);
-
-        //    return result.Succeeded ? Ok(user) : BadRequest(result.Errors);
-
-        //}
 
         [HttpPost("register")]
         public async Task<IActionResult> Registration(RegisterRequest request)
@@ -58,6 +45,21 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
 
         }
+
+        #region old code
+        //[HttpPost("register")]
+        //public async Task<IActionResult> Registration(RegisterUserDto userDto)
+        //{
+        //    ApplicationUser user = new()
+        //    {
+        //        UserName = userDto.UserName,
+        //        Email = userDto.Email,
+        //    };
+        //    var result = await userManager.CreateAsync(user, userDto.Password);
+
+        //    return result.Succeeded ? Ok(user) : BadRequest(result.Errors);
+
+        //}
 
         //[HttpPost("login")]
         //public async Task<IActionResult> Login(LoginUserDto userDto)
@@ -108,5 +110,7 @@ namespace Medium.Api.Controllers
 
         //    return new JwtSecurityTokenHandler().WriteToken(token);
         //}
+        #endregion
+
     }
 }

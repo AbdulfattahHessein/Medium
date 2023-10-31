@@ -39,6 +39,8 @@ namespace Medium.BL.AppServices
             }
             return fileName;
         }
+
+        //we dont need this function, because publisher are created when user created
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
             //var validator = new CreatePublisherRequestValidator(UnitOfWork);
@@ -118,6 +120,7 @@ namespace Medium.BL.AppServices
             return Success(response);
         }
 
+        //we dont need this function, and we need to create api to remove user and all thing related to its publisher
         public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
             var validator = new DeletePublisherRequestValidator(UnitOfWork);

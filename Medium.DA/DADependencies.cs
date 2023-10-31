@@ -22,7 +22,8 @@ namespace Medium.DA
 
             });
             services.AddIdentity<ApplicationUser, IdentityRole<int>>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
             services.AddAuthentication(option =>
             {

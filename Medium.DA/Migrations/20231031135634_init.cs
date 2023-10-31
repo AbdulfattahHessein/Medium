@@ -5,7 +5,7 @@ using System;
 
 namespace Medium.DA.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -186,19 +186,17 @@ namespace Medium.DA.Migrations
                 name: "Publishers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Publishers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Publishers_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Publishers_AspNetUsers_Id",
+                        column: x => x.Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -316,7 +314,7 @@ namespace Medium.DA.Migrations
                         column: x => x.SavingListsId,
                         principalTable: "SavingLists",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SavingListStory_Stories_StoriesId",
                         column: x => x.StoriesId,
@@ -432,12 +430,6 @@ namespace Medium.DA.Migrations
                 name: "IX_Follow_FollowingsId",
                 table: "Follow",
                 column: "FollowingsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Publishers_UserId",
-                table: "Publishers",
-                column: "UserId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reacts_ReactionId",

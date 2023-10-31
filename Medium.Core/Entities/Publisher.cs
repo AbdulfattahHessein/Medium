@@ -12,7 +12,7 @@ namespace Medium.Core.Entities
         public ICollection<Publisher>? Followings { get; set; }
         public ICollection<SavingList>? SavingLists { get; set; }
         public ICollection<React>? Reacts { get; set; }
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public Publisher()
         {

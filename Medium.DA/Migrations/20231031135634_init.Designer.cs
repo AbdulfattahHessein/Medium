@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Medium.DA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231028125440_Init")]
-    partial class Init
+    [Migration("20231031135634_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace Medium.DA.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Medium.Core.Entities.ApplicationUser<int>", b =>
+            modelBuilder.Entity("Medium.Core.Entities.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,10 +95,7 @@ namespace Medium.DA.Migrations
             modelBuilder.Entity("Medium.Core.Entities.Publisher", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
@@ -110,13 +107,7 @@ namespace Medium.DA.Migrations
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Publishers");
                 });
@@ -456,9 +447,9 @@ namespace Medium.DA.Migrations
 
             modelBuilder.Entity("Medium.Core.Entities.Publisher", b =>
                 {
-                    b.HasOne("Medium.Core.Entities.ApplicationUser<int>", "User")
+                    b.HasOne("Medium.Core.Entities.ApplicationUser", "User")
                         .WithOne("Publisher")
-                        .HasForeignKey("Medium.Core.Entities.Publisher", "UserId")
+                        .HasForeignKey("Medium.Core.Entities.Publisher", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -547,7 +538,7 @@ namespace Medium.DA.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Medium.Core.Entities.ApplicationUser<int>", null)
+                    b.HasOne("Medium.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -556,7 +547,7 @@ namespace Medium.DA.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Medium.Core.Entities.ApplicationUser<int>", null)
+                    b.HasOne("Medium.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -571,7 +562,7 @@ namespace Medium.DA.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Medium.Core.Entities.ApplicationUser<int>", null)
+                    b.HasOne("Medium.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -580,7 +571,7 @@ namespace Medium.DA.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Medium.Core.Entities.ApplicationUser<int>", null)
+                    b.HasOne("Medium.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -632,7 +623,7 @@ namespace Medium.DA.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Medium.Core.Entities.ApplicationUser<int>", b =>
+            modelBuilder.Entity("Medium.Core.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Publisher")
                         .IsRequired();

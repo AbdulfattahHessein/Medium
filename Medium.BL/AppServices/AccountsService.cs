@@ -72,7 +72,7 @@ namespace Medium.BL.AppServices
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
-            var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.UserId == user.Id);
+            var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.Id == user.Id);
             //Token claims
             var claims = new List<Claim>()
                     {
