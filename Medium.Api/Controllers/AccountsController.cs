@@ -110,7 +110,7 @@ namespace Medium.Api.Controllers
         #endregion
 
         [HttpPost("addRoleToUser")]
-        public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleRequest request)
+        public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleUserRequest request)
         {
             var result = await _roleServices.AddRoleToUser(request);
 
