@@ -3,6 +3,7 @@ using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetAllStories")]
-        [Authorize]
+        //  [Authorize]
         public async Task<IActionResult> GetAllStories()
         {
             var stories = await _storiesService.GetAllStories();
@@ -49,15 +50,15 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("CreateStory")]
-        //[Authorize]
-        //public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
-        //{
-        //    var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        //    var topics = request.Topics; // Access the Topics from the request
-        //    var result = await _storiesService.CreateStoryAsync(request, publisherId, topics);
+        [Authorize]
+        public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
+        {
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            // var topics = request.Topics; // Access the Topics from the request
+            var result = await _storiesService.CreateStoryAsync(request, publisherId);
 
-        //    return ApiResult(result);
-        //}
+            return ApiResult(result);
+        }
 
 
         [HttpPut("UpdateStory")]

@@ -92,7 +92,7 @@ namespace Medium.DA.Implementation.Bases
         {
             await _table.AddAsync(entity);
         }
-        public async Task InsertListAsync(IQueryable<TEntity> entities)
+        public async Task InsertListAsync(IEnumerable<TEntity> entities)
         {
             await _table.AddRangeAsync(entities);
         }
@@ -133,7 +133,7 @@ namespace Medium.DA.Implementation.Bases
             _table.Add(entity);
         }
 
-        public void InsertList(IQueryable<TEntity> entities)
+        public void InsertList(IEnumerable<TEntity> entities)
         {
             _table.AddRange(entities);
         }
