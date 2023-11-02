@@ -1,14 +1,9 @@
 ﻿using Medium.Api.Bases;
-using Medium.Api.DTO;
 using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Medium.Api.Controllers
 {
@@ -18,11 +13,13 @@ namespace Medium.Api.Controllers
     {
 
         private readonly IAccountsService _accountsService;
+        private readonly IRoleServices _roleServices;
 
-        public AccountsController(IAccountsService accountsService)
+        public AccountsController(IConfiguration configuration, UserManager<ApplicationUser> userManager, IAccountsService accountsService, IRoleServices roleServices)
         {
 
             this._accountsService = accountsService;
+            _roleServices = roleServices;
         }
 
         [HttpPost("register")]
@@ -109,6 +106,23 @@ namespace Medium.Api.Controllers
         //    return new JwtSecurityTokenHandler().WriteToken(token);
         //}
         #endregion
+
+        [HttpPost("addRoleToUser")]
+        public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleUserRequest request)
+        {
+            var result = await _roleServices.AddRoleToUser(request);
+
+            return ApiResult(result);
+        }
+
+
+        [HttpPost("UpdateUserRoles")]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateRoleToUserRequest request)
+        {
+            var result = await _roleServices.UpdateUserRoles(request);
+
+            return ApiResult(result);
+        }
 
     }
 }

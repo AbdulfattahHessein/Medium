@@ -92,6 +92,12 @@ namespace Medium.DA.Context
                 react.Ignore(r => r.Id);
             });
 
+            modelBuilder.Entity<Topic>(topic =>
+            {
+                topic
+                .HasIndex(t => t.Name)
+                .IsUnique();
+            });
 
         }
         public DbSet<Publisher> Publishers => Set<Publisher>();

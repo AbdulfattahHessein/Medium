@@ -20,7 +20,7 @@ namespace Medium.BL.ResponseHandler
                 Message = Message == null ? "Deleted Successfully" : Message
             };
         }
-        public static ApiResponse<T> Success<T>(T data, object? Meta = null)
+        public static ApiResponse<T> Success<T>(T data, string? Message = null, object? Meta = null)
         {
             return new ApiResponse<T>()
             {
@@ -30,7 +30,7 @@ namespace Medium.BL.ResponseHandler
             };
         }
 
-        public static ApiResponse<T> Success<T>(string Message = null)
+        public static ApiResponse<T> Success<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
@@ -76,19 +76,21 @@ namespace Medium.BL.ResponseHandler
             };
         }
 
-        public static ApiResponse<T> NotFound<T>()
+        public static ApiResponse<T> NotFound<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.NotFound,
             };
         }
-        public static ApiResponse<T> NotFound<T>(string Message = null)
+        public static ApiResponse<T> NotFound<T>(T entity, object? Meta = null, string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Created,
-                Message = Message == null ? "Not Found" : Message
+                Message = Message == null ? "Not Found" : Message,
+                Meta = Meta,
+                Data = entity
             };
         }
 

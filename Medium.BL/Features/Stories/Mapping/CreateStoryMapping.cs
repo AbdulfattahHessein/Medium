@@ -1,5 +1,4 @@
-﻿using Medium.BL.Features.Stories.Requests;
-using Medium.BL.Features.Stories.Responses;
+﻿using Medium.BL.Features.Stories.Responses;
 using Medium.Core.Entities;
 
 namespace Medium.BL.Features.Stories.Mapping

@@ -38,15 +38,13 @@ namespace Medium.BL.AppServices
             }
             return fileName;
         }
+
+
+
         //========================================= CREATE ========================================
         public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId)
         {
-            //var validator = new CreateStoryRequestValidator();
-            //var validateResult = validator.Validate(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
+
             await DoValidationAsync<CreateStoryRequestValidator, CreateStoryRequest>(request, UnitOfWork);
 
             string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
@@ -85,14 +83,22 @@ namespace Medium.BL.AppServices
                 return NotFound<CreateStoryResponse>();
             }
 
-            var story = new Story()
+            // To Add Topic in Story
+            var existTopics = (await UnitOfWork.Topics.GetAllAsync(t => request.Topics.Contains(t.Name)));
+            var existTopicsNames = existTopics.Select(t => t.Name).ToList();
+            var newTopicsNames = request.Topics.Where(topicName => !existTopicsNames.Contains(topicName)).ToList();
+            UnitOfWork.Topics.InsertList(newTopicsNames.Select(tn => new Topic() { Name = tn }));
+            await UnitOfWork.CommitAsync();
+
+
+            var story = new Story
             {
                 Title = request.Title,
                 Content = request.Content,
                 Publisher = publisher,
-                //PublisherId = publisherId,
                 StoryPhotos = storyPhotos,
-                StoryVideos = storyVideos
+                StoryVideos = storyVideos,
+
             };
 
             await UnitOfWork.Stories.InsertAsync(story); await UnitOfWork.CommitAsync();
@@ -137,7 +143,6 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher()
         {
-            //var storyPhotos = UnitOfWork.Stories.GetStoriesIncludingPublisher(story => story.Publisher);
             var stories = await UnitOfWork.Stories.GetAllAsync(story => story.Publisher);
             var response = Mapper.Map<List<GetAllStoryIncludePublisherResponse>>(stories);
             return Success(response);
@@ -161,6 +166,50 @@ namespace Medium.BL.AppServices
             {
                 return NotFound<UpdateStoryResponse>();
             }
+
+            // Remove old story photos
+            //if (story.StoryPhotos != null && story.StoryPhotos.Any())
+            //{
+            //    foreach (var oldPhoto in story.StoryPhotos)
+            //    {
+            //        File.Delete($@"./{oldPhoto.Url}");
+            //    }
+            //}
+
+            string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
+            // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
+
+            // Update story photos
+            if (request.StoryPhotos != null)
+            {
+                var updatedStoryPhotos = new List<StoryPhoto>();
+                foreach (var file in request.StoryPhotos)
+                {
+                    string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
+                    updatedStoryPhotos.Add(new StoryPhoto
+                    {
+                        Url = $"/Resources/StoryPhotos/{fileName}"
+                    });
+                }
+                story.StoryPhotos = updatedStoryPhotos;
+            }
+
+            // Update story videos
+            if (request.StoryVideos != null)
+            {
+                var updatedStoryVideos = new List<StoryVideo>();
+                uploadDirectory = Path.Combine("./Resources", "StoryVideos");
+                foreach (var file in request.StoryVideos)
+                {
+                    string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
+                    updatedStoryVideos.Add(new StoryVideo
+                    {
+                        Url = $"/Resources/StoryVideos/{fileName}"
+                    });
+                }
+                story.StoryVideos = updatedStoryVideos;
+            }
+
             Mapper.Map(request, story);
             UnitOfWork.Stories.Update(story);
             await UnitOfWork.CommitAsync();

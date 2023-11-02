@@ -15,16 +15,20 @@ namespace Medium.Core.Interfaces.Bases
         Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria = null, params Expression<Func<TEntity, object>>[] includes);
         Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
         Task InsertAsync(TEntity entity);
-        Task InsertListAsync(IQueryable<TEntity> entities);
+        Task InsertListAsync(IEnumerable<TEntity> entities);
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? criteria = null);
         Task<int> CountAsync(Expression<Func<TEntity, bool>>? criteria = null);
         Task<TEntity?> FindAsync(params object[] id);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
+
+
+
 
 
         TEntity? GetById(TKey id);
         TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
         void Insert(TEntity entity);
-        void InsertList(IQueryable<TEntity> entities);
+        void InsertList(IEnumerable<TEntity> entities);
         void Update(TEntity entity);
         void Delete(TEntity entity);
         void DeleteList(IQueryable<TEntity> entities);
