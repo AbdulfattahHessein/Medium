@@ -13,12 +13,13 @@ namespace Medium.BL.Features.Stories.Mapping
 
             //CreateMap<Story, GetAllStoryRequest>().ReverseMap();
 
+            //     CreateMap<Story, GetAllStoryResponse>()
+            //.ForMember(s => s.StoryPhotos, options => options.MapFrom(src => src.StoryPhotos.Select(photo => photo.Url)))
+            //.ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url).ToList()));
+
             CreateMap<Story, GetAllStoryResponse>()
-       .ForMember(s => s.StoryPhotos, options => options.MapFrom(src => src.StoryPhotos.Select(photo => photo.Url)))
-       .ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url).ToList()));
-
-
-
+             .ForMember(s => s.StoryPhotos, options => options.MapFrom(src => src.StoryPhotos.Select(photo => photo.Url)))
+            .ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url).ToList()));
         }
     }
 }

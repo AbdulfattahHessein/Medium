@@ -8,9 +8,18 @@ namespace Medium.BL.Features.Stories.Mapping
     {
         void UpdateStoryMapping()
         {
-            CreateMap<Story, UpdateStoryResponse>();
-            CreateMap<Story, UpdateStoryRequest>();
-            CreateMap<UpdateStoryRequest, Story>();
+            //CreateMap<Story, UpdateStoryResponse>().ReverseMap();
+            //CreateMap<Story, UpdateStoryRequest>()
+            //      .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))
+            //    .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
+            // CreateMap<UpdateStoryRequest, Story>()
+
+            CreateMap<Story, UpdateStoryResponse>().ReverseMap();
+            CreateMap<UpdateStoryRequest, Story>()
+                .ForMember(dest => dest.StoryPhotos, opt => opt.Ignore())
+                .ForMember(dest => dest.StoryVideos, opt => opt.Ignore());
+
+
 
 
 
