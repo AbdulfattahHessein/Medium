@@ -14,5 +14,7 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<DeleteSavingListResponse>> DeleteAsync(DeleteSavingListRequest requset);
         Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest requset);
         Task<ApiResponse<RemoveStoryFromSavingListResponse>> RemoveStoryFromSavingList(RemoveStoryFromSavingListRequest request);
+        Task<ApiResponsePaginated<List<GetAllPaginationSaveListResponse>>> GetAllPaginationAsync(GetAllPaginationSaveListRequest request);
+
     }
 }

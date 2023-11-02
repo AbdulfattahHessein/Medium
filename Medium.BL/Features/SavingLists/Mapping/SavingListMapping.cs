@@ -16,8 +16,8 @@ namespace Medium.BL.Features.SavingLists.Mapping
             CreateMap<SavingList, GetSavingListByIdResponse>();
 
             // ==================== Create SavingList Response ==============================
-            CreateMap<SavingList, CreateSavingListResponse>()
-                .ForMember(dest => dest.PublisherName, op => op.MapFrom(src => src.Publisher.Name)); ;
+            CreateMap<SavingList, CreateSavingListResponse>();
+
 
             // ==================== UpdateSavingListResponse ==============================
             CreateMap<SavingList, UpdateSavingListResponse>()
@@ -37,6 +37,10 @@ namespace Medium.BL.Features.SavingLists.Mapping
 
             // ==================== RemoveStoryFromSavingListResponse ============================
             CreateMap<SavingList, RemoveStoryFromSavingListResponse>();
+
+            // ==================== GetAllPaginationSaveListRequest ============================
+            CreateMap<SavingList, GetAllPaginationSaveListResponse>();
+
 
 
         }
