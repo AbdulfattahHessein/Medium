@@ -1,5 +1,5 @@
 ﻿namespace Medium.BL.Features.Accounts.Request
 {
-    public record GetRoleRequest(string? RoleName);
+    public record GetRoleRequest(string? Name);
 
 }
