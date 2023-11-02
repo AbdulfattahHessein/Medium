@@ -16,14 +16,12 @@ namespace Medium.Api.Controllers
     [ApiController]
     public class AccountsController : AppControllerBase
     {
-        private readonly IConfiguration configuration;
-        private readonly UserManager<ApplicationUser> userManager;
+
         private readonly IAccountsService _accountsService;
 
-        public AccountsController(IConfiguration configuration, UserManager<ApplicationUser> userManager, IAccountsService accountsService)
+        public AccountsController(IAccountsService accountsService)
         {
-            this.configuration = configuration;
-            this.userManager = userManager;
+
             this._accountsService = accountsService;
         }
 

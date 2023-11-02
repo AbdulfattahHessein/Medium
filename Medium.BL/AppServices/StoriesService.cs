@@ -216,6 +216,19 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
+
+        public async Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllPublisherStoriesAsync(GetAllPaginationStoryRequest request, int publisherId)
+        {
+            var stories = await UnitOfWork.Stories
+                 .GetAllAsync(s => s.Title.Contains(request.Search) && s.Publisher.Id == publisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
+                 s => s.Publisher, s => s.Topics);
+
+            var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllPaginationStoryResponse>>(stories);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
     }
 
 }

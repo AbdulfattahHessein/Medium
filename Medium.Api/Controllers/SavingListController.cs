@@ -1,7 +1,9 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.SavingLists.Request;
 using Medium.BL.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Security.Claims;
 
 namespace Medium.Api.Controllers
@@ -19,7 +21,7 @@ namespace Medium.Api.Controllers
 
 
         [HttpGet("GetAllSaveingList")]
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllSaveingList()
         {
             var saveList = await _savingListServices.GetAllAsync();
@@ -27,6 +29,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetSavingListById/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetSavingListById(int id)
         {
             var result = await _savingListServices.GetByIdAsync(new GetSavingListByIdRequest(id));
@@ -35,6 +38,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("CreateSavingList")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateSavingList([FromForm] CreateSavingListRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -43,8 +47,8 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-
         [HttpPut("UpdateSavingList")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateSavingList([FromForm] UpdateSavingListRequest request)
         {
             var saveList = await _savingListServices.UpdateAsync(request);
@@ -53,6 +57,7 @@ namespace Medium.Api.Controllers
 
 
         [HttpDelete("DeleteSaveList")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteSaveList([FromQuery] DeleteSavingListRequest request)
         {
             var saveList = await _savingListServices.DeleteAsync(request);
@@ -60,6 +65,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("AddStoryToSavingList")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> AddStoryToSavingList([FromBody] AddStoryToSaveListRequest request)
         {
             var result = await _savingListServices.AddStoryToSaveList(request);
@@ -67,6 +73,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("RemoveStoryFromSavingList")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveStoryFromSavingList([FromBody] RemoveStoryFromSavingListRequest request)
         {
             var result = await _savingListServices.RemoveStoryFromSavingList(request);
