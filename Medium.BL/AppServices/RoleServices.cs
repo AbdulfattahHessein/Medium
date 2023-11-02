@@ -9,9 +9,7 @@ using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-//using System.ComponentModel.DataAnnotations;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
-//using ValidationException = FluentValidation.ValidationException;
 
 namespace Medium.BL.AppServices
 
