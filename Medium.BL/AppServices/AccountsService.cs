@@ -66,17 +66,20 @@ namespace Medium.BL.AppServices
             await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user });
             await UnitOfWork.CommitAsync();
 
+            await userManager.AddToRoleAsync(user, "User");
+
+
             var response = new RegisterResponse(user.UserName, user.PasswordHash, user.Email);
 
             return Success(response);
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
-            var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.Id == user.Id);
+            //var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.Id == user.Id);
             //Token claims
             var claims = new List<Claim>()
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, publisher!.Id.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
@@ -95,7 +98,7 @@ namespace Medium.BL.AppServices
                 issuer: configuration["JWT:ValidIssur"],
                 audience: configuration["JWT:ValidAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: signingCredentials
                 );
 

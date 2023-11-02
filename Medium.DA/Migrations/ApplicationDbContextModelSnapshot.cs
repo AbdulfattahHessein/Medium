@@ -107,7 +107,7 @@ namespace Medium.DA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publishers", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.React", b =>
@@ -130,7 +130,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("StoryId");
 
-                    b.ToTable("Reacts");
+                    b.ToTable("Reacts", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.Reaction", b =>
@@ -147,7 +147,7 @@ namespace Medium.DA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reactions");
+                    b.ToTable("Reactions", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.SavingList", b =>
@@ -172,7 +172,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("SavingLists");
+                    b.ToTable("SavingLists", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.Story", b =>
@@ -201,7 +201,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Stories");
+                    b.ToTable("Stories", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.StoryPhoto", b =>
@@ -223,7 +223,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("StoryId");
 
-                    b.ToTable("StoryPhotos");
+                    b.ToTable("StoryPhotos", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.StoryVideo", b =>
@@ -245,7 +245,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("StoryId");
 
-                    b.ToTable("StoryVideos");
+                    b.ToTable("StoryVideos", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.Topic", b =>
@@ -262,7 +262,7 @@ namespace Medium.DA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -425,7 +425,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("StoriesId");
 
-                    b.ToTable("SavingListStory");
+                    b.ToTable("SavingListStory", (string)null);
                 });
 
             modelBuilder.Entity("StoryTopic", b =>
@@ -440,7 +440,7 @@ namespace Medium.DA.Migrations
 
                     b.HasIndex("TopicsId");
 
-                    b.ToTable("StoryTopic");
+                    b.ToTable("StoryTopic", (string)null);
                 });
 
             modelBuilder.Entity("Medium.Core.Entities.Publisher", b =>

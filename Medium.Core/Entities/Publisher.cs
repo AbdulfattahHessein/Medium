@@ -25,7 +25,8 @@ namespace Medium.Core.Entities
         }
         public Publisher(string name, string? bio, string? photoUrl = null) : this(name, photoUrl)
         {
-            PhotoUrl = photoUrl;
+            Bio = bio;
+
         }
     }
 }

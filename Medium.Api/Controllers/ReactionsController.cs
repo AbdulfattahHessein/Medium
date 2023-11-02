@@ -7,8 +7,6 @@ using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
-    //    [Route("api/[controller]")]
-    //    [ApiController]
     public class ReactionsController : AppControllerBase
     {
         private readonly IReactionsService _reactionsService;
@@ -18,6 +16,7 @@ namespace Medium.Api.Controllers
             _reactionsService = reactionsService;
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _reactionsService.GetById(new GetReactionByIdRequest(id));
@@ -25,6 +24,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> Create(CreateReactionRequest request)
         {
@@ -33,7 +33,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpDelete]
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _reactionsService.DeleteAsync(new DeleteReactionRequest(id));
@@ -41,7 +41,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpPut]
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(UpdateReactionRequest request)
         {
             var result = await _reactionsService.UpdateAsync(request);
@@ -50,6 +50,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetAllPaginationReactions")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllPaginationReactions([FromQuery] GetAllPaginationReactionsRequest request)
         {
             var result = await _reactionsService.GetAllAsync(request);
@@ -57,7 +58,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpPost("React")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> AddReactToStory(AddReactToStoryRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -65,7 +66,7 @@ namespace Medium.Api.Controllers
             return NoContent();
         }
         [HttpDelete("React")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveReactFromStory(RemoveReactFromStoryRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
