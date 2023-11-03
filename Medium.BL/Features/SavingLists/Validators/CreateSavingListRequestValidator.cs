@@ -1,12 +1,15 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.SavingLists.Request;
+using Medium.Core.Interfaces.Bases;
 
 namespace Medium.BL.Features.SavingLists.Validators
 {
     public class CreateSavingListRequestValidator : AbstractValidator<CreateSavingListRequest>
     {
-        public CreateSavingListRequestValidator()
+        public CreateSavingListRequestValidator(IUnitOfWork unitOfWork)
         {
+            UnitOfWork = unitOfWork;
+
             RuleFor(p => p.Name)
                 .NotNull().WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be not empty");
@@ -16,5 +19,7 @@ namespace Medium.BL.Features.SavingLists.Validators
             //    .NotEmpty().WithMessage("{PropertyName} Must be not empty");
 
         }
+
+        public IUnitOfWork UnitOfWork { get; }
     }
 }

@@ -20,13 +20,11 @@ namespace Medium.BL.AppServices
 {
     public class RoleServices : AppService, IRoleServices
     {
-        private readonly IConfiguration configuration;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public RoleServices(RoleManager<IdentityRole<int>> roleManager, IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public RoleServices(RoleManager<IdentityRole<int>> roleManager, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
-            this.configuration = configuration;
             this.userManager = userManager;
             _roleManager = roleManager;
         }

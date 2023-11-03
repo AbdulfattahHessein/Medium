@@ -4,6 +4,7 @@ using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Medium.Api.Controllers
 {
@@ -11,13 +12,13 @@ namespace Medium.Api.Controllers
     [ApiController]
     public class AccountsController : AppControllerBase
     {
-
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly IAccountsService _accountsService;
         private readonly IRoleServices _roleServices;
 
-        public AccountsController(IConfiguration configuration, UserManager<ApplicationUser> userManager, IAccountsService accountsService, IRoleServices roleServices)
+        public AccountsController(UserManager<ApplicationUser> userManager, IAccountsService accountsService, IRoleServices roleServices)
         {
-
+            this.userManager = userManager;
             this._accountsService = accountsService;
             _roleServices = roleServices;
         }
@@ -122,6 +123,13 @@ namespace Medium.Api.Controllers
             var result = await _roleServices.UpdateUserRoles(request);
 
             return ApiResult(result);
+        }
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var result = await userManager.Users.ToListAsync();
+
+            return Ok(result);
         }
 
     }
