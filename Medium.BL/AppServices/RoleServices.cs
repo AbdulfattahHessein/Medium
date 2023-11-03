@@ -3,17 +3,13 @@ using FluentValidation;
 using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Accounts.Response;
 using Medium.BL.Features.Accounts.Validators;
-using Medium.BL.Features.Publisher.Responses;
-using Medium.BL.Features.Publisher.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-//using System.ComponentModel.DataAnnotations;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
-//using ValidationException = FluentValidation.ValidationException;
 
 namespace Medium.BL.AppServices
 

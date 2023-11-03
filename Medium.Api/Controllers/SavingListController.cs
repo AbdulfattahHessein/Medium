@@ -28,6 +28,14 @@ namespace Medium.Api.Controllers
             return ApiResult(saveList);
         }
 
+        [HttpGet("GetAllPaginationSaveList")]
+        public async Task<IActionResult> GetAllPaginationStoies([FromQuery] GetAllPaginationSaveListRequest request)
+        {
+            var result = await _savingListServices.GetAllPaginationAsync(request);
+
+            return ApiResult(result);
+        }
+
         [HttpGet("GetSavingListById/{id}")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetSavingListById(int id)

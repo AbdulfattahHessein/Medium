@@ -91,19 +91,20 @@ namespace Medium.BL.AppServices
         //========================================= Create SaveList =====================================
         public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset, int publisherId)
         {
-            //var validator = new CreateSavingListRequestValidator();
-            //var validateResult = await validator.ValidateAsync(requset);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
+            var validator = new CreateSavingListRequestValidator();
+            var validateResult = await validator.ValidateAsync(requset);
+            if (!validateResult.IsValid)
+            {
+                throw new ValidationException(validateResult.Errors);
+            }
 
-            // var publisher = UnitOfWork.Publishers.GetById(requset.PublisherId);
+            //var publisher = UnitOfWork.Publishers.GetById(requset.PublisherId);
             //if (publisher == null)
             //{
             //    return NotFound<CreateSavingListResponse>();
             //}
-            await DoValidationAsync<CreateSavingListRequestValidator, CreateSavingListRequest>(requset, UnitOfWork);
+            // await DoValidationAsync<CreateSavingListRequestValidator, CreateSavingListRequest>(requset, UnitOfWork);
+
 
             var savingList = new SavingList()
             {
@@ -112,7 +113,7 @@ namespace Medium.BL.AppServices
                 PublisherId = publisherId,
 
             };
-
+            savingList.PublisherId = publisherId;
             await UnitOfWork.SavingLists.InsertAsync(savingList);
             await UnitOfWork.CommitAsync();
             var savingListMap = Mapper.Map<CreateSavingListResponse>(savingList);
@@ -205,6 +206,24 @@ namespace Medium.BL.AppServices
             var saveListMap = Mapper.Map<UpdateSavingListResponse>(saveList);
             return Success(saveListMap);
         }
+
+
+        ////// ================================ GETALL PAGINATION SaveLIst ============================================================
+
+        public async Task<ApiResponsePaginated<List<GetAllPaginationSaveListResponse>>> GetAllPaginationAsync(GetAllPaginationSaveListRequest request)
+        {
+            var saveLists = await UnitOfWork.SavingLists
+                .GetAllAsync(s => s.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize,
+                s => s.Publisher);
+
+            var totalCount = await UnitOfWork.SavingLists.CountAsync((s => s.Name.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllPaginationSaveListResponse>>(saveLists);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
+
+
 
         //public async Task<ApiResponse<List<GetSavingListWithStoriesResponse>>> GetAllSavingListsWithStoriesAsync()
         //{
