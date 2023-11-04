@@ -109,7 +109,8 @@ namespace Medium.BL.AppServices
             var savingList = new SavingList()
             {
                 Name = requset.Name,
-                // Publisher = publisher
+                //Publisher = publisher
+                PublisherId = publisherId,
 
             };
             savingList.PublisherId = publisherId;

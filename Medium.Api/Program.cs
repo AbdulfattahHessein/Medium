@@ -67,13 +67,13 @@ var app = builder.Build();
 //app.UseMiddleware<UserExistenceMiddleware>();
 
 
-//app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => options.EnableTryItOutByDefault());
 }
 
 app.UseHttpsRedirection();
