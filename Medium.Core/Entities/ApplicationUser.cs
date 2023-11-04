@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EntityFrameworkCore.EncryptColumn.Attribute;
+using Microsoft.AspNetCore.Identity;
 
 namespace Medium.Core.Entities
 {
     public class ApplicationUser : IdentityUser<int>
     {
         public Publisher Publisher { get; set; }
+        [EncryptColumn]
+        public string? Code { get; set; }
     }
 }

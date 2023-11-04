@@ -1,4 +1,7 @@
-﻿using Medium.Core.Entities;
+﻿using EntityFrameworkCore.EncryptColumn.Extension;
+using EntityFrameworkCore.EncryptColumn.Interfaces;
+using EntityFrameworkCore.EncryptColumn.Util;
+using Medium.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +10,10 @@ namespace Medium.DA.Context
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int> //: DbContext
     {
+        private readonly IEncryptionProvider _encryptionProvider;
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-
+            _encryptionProvider = new GenerateEncryptionProvider("8a4dcaaec64d412380fe4b02193cd26f");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -99,6 +103,8 @@ namespace Medium.DA.Context
                 .IsUnique();
             });
 
+
+            modelBuilder.UseEncryption(_encryptionProvider);
         }
         public DbSet<Publisher> Publishers => Set<Publisher>();
         public DbSet<SavingList> SavingLists => Set<SavingList>();
