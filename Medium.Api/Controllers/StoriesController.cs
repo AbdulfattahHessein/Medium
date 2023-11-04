@@ -19,13 +19,13 @@ namespace Medium.Api.Controllers
             _storiesService = storiesService;
         }
 
-        [HttpGet("GetAllStories")]
-        //  [Authorize]
-        public async Task<IActionResult> GetAllStories()
-        {
-            var stories = await _storiesService.GetAllStories();
-            return ApiResult(stories);
-        }
+        //[HttpGet("GetAllStories")]
+        ////  [Authorize]
+        //public async Task<IActionResult> GetAllStories()
+        //{
+        //    var stories = await _storiesService.GetAllStories();
+        //    return ApiResult(stories);
+        //}
 
         [HttpGet("GetStoryByID/{id}")]
         public async Task<IActionResult> GetStoryById(int id)
@@ -76,7 +76,9 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateStory([FromForm] UpdateStoryRequest request)
         {
-            var story = await _storiesService.UpdateStory(request);
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var story = await _storiesService.UpdateStory(request, publisherId);
             return ApiResult(story);
         }
 

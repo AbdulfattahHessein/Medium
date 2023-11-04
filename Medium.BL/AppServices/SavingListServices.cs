@@ -91,7 +91,7 @@ namespace Medium.BL.AppServices
         //========================================= Create SaveList =====================================
         public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset, int publisherId)
         {
-            var validator = new CreateSavingListRequestValidator();
+            var validator = new CreateSavingListRequestValidator(UnitOfWork);
             var validateResult = await validator.ValidateAsync(requset);
             if (!validateResult.IsValid)
             {

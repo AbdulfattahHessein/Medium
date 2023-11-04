@@ -8,7 +8,7 @@ namespace Medium.BL.Interfaces.Services
     {
         Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId);
         Task<ApiResponse<GetStoryByIdResponse>> GetStoryById(GetStoryByIdRequest request);
-        Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request);
+        Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request, int publisherId);
         Task<ApiResponse<DeleteStoryResponse>> DeleteStoryAsync(DeleteStoryRequest request);
         Task<ApiResponse<List<GetAllStoryIncludePublisherResponse>>> GetAllStoriesIncludingPublisher();
         Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories();

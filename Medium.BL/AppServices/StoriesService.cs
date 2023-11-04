@@ -87,8 +87,10 @@ namespace Medium.BL.AppServices
             var existTopics = (await UnitOfWork.Topics.GetAllAsync(t => request.Topics.Contains(t.Name)));
             var existTopicsNames = existTopics.Select(t => t.Name).ToList();
             var newTopicsNames = request.Topics.Where(topicName => !existTopicsNames.Contains(topicName)).ToList();
-            UnitOfWork.Topics.InsertList(newTopicsNames.Select(tn => new Topic() { Name = tn }));
-            await UnitOfWork.CommitAsync();
+            var newTopics = newTopicsNames.Select(tn => new Topic() { Name = tn });
+            //UnitOfWork.Topics.InsertList(newTopics);
+
+            //await UnitOfWork.CommitAsync();
 
 
             var story = new Story
@@ -100,7 +102,12 @@ namespace Medium.BL.AppServices
                 StoryVideos = storyVideos,
 
             };
-
+            story.Topics = existTopics;
+            //  story.Topics.ToList().AddRange(newTopics);
+            foreach (var topic in newTopics)
+            {
+                story.Topics.Add(topic);
+            }
             await UnitOfWork.Stories.InsertAsync(story); await UnitOfWork.CommitAsync();
             //await UnitOfWork.StoryPhotos.InsertAsync(storyPhotos); await UnitOfWork.CommitAsync();
             //await UnitOfWork.StoryVideos.InsertAsync(storyVideos); await UnitOfWork.CommitAsync();
@@ -128,7 +135,7 @@ namespace Medium.BL.AppServices
                 throw new ValidationException(validateResult.Errors);
             }
 
-            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos, s => s.Topics, s => s.Reacts);
             if (story == null)
             {
                 return NotFound<GetStoryByIdResponse>();
@@ -152,7 +159,7 @@ namespace Medium.BL.AppServices
 
         ////// ================================ UPDATE ============================================================
 
-        public async Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request)
+        public async Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request, int publisherId)
         {
             var validator = new UpdateStoryRequestValidator();
             var validateResult = validator.Validate(request);
@@ -161,28 +168,44 @@ namespace Medium.BL.AppServices
                 throw new ValidationException(validateResult.Errors);
             }
 
-            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos, s => s.Topics);
             if (story == null)
             {
                 return NotFound<UpdateStoryResponse>();
             }
 
-            // Remove old story photos
-            //if (story.StoryPhotos != null && story.StoryPhotos.Any())
+            var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            if (publisher == null)
+            {
+                return NotFound<UpdateStoryResponse>();
+            }
+            //var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            //if (publisher == null)
             //{
-            //    foreach (var oldPhoto in story.StoryPhotos)
-            //    {
-            //        File.Delete($@"./{oldPhoto.Url}");
-            //    }
+            //    return NotFound<UpdateStoryResponse>();
             //}
+
+            //  Remove old story photos
+
+            foreach (var oldPhoto in story.StoryPhotos)
+            {
+                File.Delete($@"./{oldPhoto.Url}");
+            }
+
+            foreach (var oldVideoo in story.StoryVideos)
+            {
+                File.Delete($@"./{oldVideoo.Url}");
+            }
+
 
             string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
             // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
 
             // Update story photos
+
+            var updatedStoryPhotos = new List<StoryPhoto>();
             if (request.StoryPhotos != null)
             {
-                var updatedStoryPhotos = new List<StoryPhoto>();
                 foreach (var file in request.StoryPhotos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -194,11 +217,14 @@ namespace Medium.BL.AppServices
                 story.StoryPhotos = updatedStoryPhotos;
             }
 
+
             // Update story videos
+
+            var updatedStoryVideos = new List<StoryVideo>();
+            uploadDirectory = Path.Combine("./Resources", "StoryVideos");
+
             if (request.StoryVideos != null)
             {
-                var updatedStoryVideos = new List<StoryVideo>();
-                uploadDirectory = Path.Combine("./Resources", "StoryVideos");
                 foreach (var file in request.StoryVideos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -208,6 +234,19 @@ namespace Medium.BL.AppServices
                     });
                 }
                 story.StoryVideos = updatedStoryVideos;
+            }
+
+            // To Add Topic in Story
+            var existTopics = (await UnitOfWork.Topics.GetAllAsync(t => request.Topics.Contains(t.Name)));
+            var existTopicsNames = existTopics.Select(t => t.Name).ToList();
+            var newTopicsNames = request.Topics.Where(topicName => !existTopicsNames.Contains(topicName)).ToList();
+            var newTopics = newTopicsNames.Select(tn => new Topic() { Name = tn });
+
+            story.Topics = existTopics;
+            //  story.Topics.ToList().AddRange(newTopics);
+            foreach (var topic in newTopics)
+            {
+                story.Topics.Add(topic);
             }
 
             Mapper.Map(request, story);
@@ -257,7 +296,7 @@ namespace Medium.BL.AppServices
         {
             var stories = await UnitOfWork.Stories
                 .GetAllAsync(s => s.Title.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize,
-                s => s.Publisher, s => s.Topics);
+                s => s.Publisher, s => s.Topics, s => s.StoryPhotos);
 
             var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
 

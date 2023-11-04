@@ -14,10 +14,15 @@ namespace Medium.BL.Features.Stories.Mapping
             //    .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
             // CreateMap<UpdateStoryRequest, Story>()
 
-            CreateMap<Story, UpdateStoryResponse>().ReverseMap();
+            CreateMap<Story, UpdateStoryResponse>()
+                   .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos.Select(s => s.Url)))
+              .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos.Select(s => s.Url)))
+              .ForMember(s => s.Topics, options => options.MapFrom(s => s.Topics.Select(s => s.Name)));
+
             CreateMap<UpdateStoryRequest, Story>()
                 .ForMember(dest => dest.StoryPhotos, opt => opt.Ignore())
-                .ForMember(dest => dest.StoryVideos, opt => opt.Ignore());
+                .ForMember(dest => dest.StoryVideos, opt => opt.Ignore())
+                .ForMember(dest => dest.Topics, options => options.Ignore());
 
 
 

@@ -4,7 +4,6 @@ using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
-using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
@@ -76,7 +75,7 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id, s => s.Followers);
             if (publisher == null)
                 return NotFound<GetPublisherByIdResponse>();
             var response = Mapper.Map<GetPublisherByIdResponse>(publisher);

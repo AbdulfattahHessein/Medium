@@ -19,7 +19,8 @@ namespace Medium.BL.Features.Stories.Mapping
 
             CreateMap<Story, GetAllStoryResponse>()
              .ForMember(s => s.StoryPhotos, options => options.MapFrom(src => src.StoryPhotos.Select(photo => photo.Url)))
-            .ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url).ToList()));
+            .ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url)));
+            //.ForMember(s => s.TopicsNames, options => options.MapFrom(s => s.Topics.Select(t => t.Name))); 
         }
     }
 }

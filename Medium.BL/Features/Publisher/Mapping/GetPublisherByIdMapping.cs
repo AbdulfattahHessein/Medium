@@ -8,7 +8,9 @@ namespace Medium.BL.Features.Publisher.Mapping
     {
         void GetPublisherByIdMapping()
         {
-            CreateMap<Entities.Publisher, GetPublisherByIdResponse>();
+            CreateMap<Entities.Publisher, GetPublisherByIdResponse>()
+                 .ForMember(s => s.FollowersCount, options => options.MapFrom(s => s.Followers.Count()));
+
         }
     }
 }

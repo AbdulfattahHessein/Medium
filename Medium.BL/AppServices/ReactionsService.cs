@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using Medium.BL.Features.Publisher.Validators;
 using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Features.Reactions.Response;
 using Medium.BL.Features.Reactions.Validators;
@@ -34,7 +32,7 @@ namespace Medium.BL.AppServices
             {
                 StoryId = request.StoryId,
                 ReactionId = request.ReactionId,
-                //PublisherId = request.PublisherId,
+                PublisherId = publisherId,
             };
             await UnitOfWork.Reacts.InsertAsync(react);
             await UnitOfWork.CommitAsync();
@@ -130,6 +128,6 @@ namespace Medium.BL.AppServices
             return Success(response);
         }
 
-       
+
     }
 }

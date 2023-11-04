@@ -1,4 +1,5 @@
 using Medium.BL;
+using Medium.BL.Middlewares;
 using Medium.DA;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -63,7 +64,7 @@ builder.Services.AddBusinessLogicDependencies();
 var app = builder.Build();
 
 
-//app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 //app.UseMiddleware<UserExistenceMiddleware>();
 
 

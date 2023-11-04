@@ -22,6 +22,7 @@ namespace Medium.BL.Middlewares
             {
                 await _next(context);
             }
+
             catch (Exception exception)
             {
                 var httpStatusCode = ConfigurateExceptionTypes(exception);
