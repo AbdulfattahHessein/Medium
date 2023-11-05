@@ -17,6 +17,8 @@ namespace Medium.BL
             services.AddScoped<ISavingListServices, SavingListServices>();
             services.AddScoped<IAccountsService, AccountsService>();
             services.AddScoped<IRoleServices, RoleServices>();
+            services.AddScoped<IEmailService, EmailService>();
+
 
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
