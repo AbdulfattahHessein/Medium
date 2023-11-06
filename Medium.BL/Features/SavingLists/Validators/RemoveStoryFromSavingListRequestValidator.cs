@@ -1,12 +1,17 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.SavingLists.Request;
+using Medium.Core.Interfaces.Bases;
 
 namespace Medium.BL.Features.SavingLists.Validators
 {
     internal class RemoveStoryFromSavingListRequestValidator : AbstractValidator<RemoveStoryFromSavingListRequest>
     {
-        public RemoveStoryFromSavingListRequestValidator()
+        private readonly IUnitOfWork _unitOfWork;
+
+        public RemoveStoryFromSavingListRequestValidator(IUnitOfWork unitOfWork)
         {
+            this._unitOfWork = unitOfWork;
+
             RuleFor(p => p.SavingListId).GreaterThan(0).WithMessage("{PropertyName} must be greater than 0")
                 .NotNull().WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be not Empty");
@@ -15,7 +20,6 @@ namespace Medium.BL.Features.SavingLists.Validators
                 .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0")
                 .NotNull().WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be not Empty");
-
         }
     }
 }

@@ -10,9 +10,13 @@
         public ICollection<Topic> Topics { get; set; }
         public ICollection<StoryPhoto> StoryPhotos { get; set; }
         public ICollection<StoryVideo> StoryVideos { get; set; }
-        public ICollection<SavingList> SavingLists { get; set; }
+        public ICollection<SavingList> SavingLists { get; set; } = new HashSet<SavingList>();
         public ICollection<React>? Reacts { get; set; }
 
+        public Story(int id)
+        {
+            Id = id;
+        }
         public Story()
         {
             Title = string.Empty;

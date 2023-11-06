@@ -18,6 +18,11 @@ namespace Medium.Core.Entities
         {
             Name = string.Empty;
         }
+        public Publisher(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
         public Publisher(string name, string? photoUrl = null)
         {
             Name = name;

@@ -27,25 +27,35 @@ namespace Medium.BL.AppServices
                 throw new ValidationException(validateResult.Errors);
             }
             var story = await UnitOfWork.Stories.GetByIdAsync(request.storyId);
+
             if (story == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
-            var saveListOld = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, sv => sv.Stories);
-            var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId);
+            // اي دا يا ايمن
+            //var saveListOld = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, sv => sv.Stories);
+
+            var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, s => s.Stories);
+
             if (saveList == null)
             {
                 return NotFound<AddStoryToSaveListResponse>();
             }
-            if (saveList.Stories == saveListOld.Stories)
+            //if (saveList.Stories == saveListOld.Stories)
+            //{
+            //    return BadRequest<AddStoryToSaveListResponse>("This Story is already Saved in this SaveList");
+            //}
+
+            //Ensure the saving list Stories collection is not null.
+            //if (saveList.Stories == null)
+            //{
+            //    saveList.Stories = new List<Story>();
+            //}
+            if (saveList.Stories.Contains(story))
             {
-                return BadRequest<AddStoryToSaveListResponse>("This Story is olready Saved in this SaveList");
+                return BadRequest<AddStoryToSaveListResponse>("This Story is already Saved in this SaveList");
             }
-            // Ensure the saving list Stories collection is not null.
-            if (saveList.Stories == null)
-            {
-                saveList.Stories = new List<Story>();
-            }
+
             saveList.Stories.Add(story);
             // Save changes to the database.
             await UnitOfWork.CommitAsync();
@@ -57,7 +67,7 @@ namespace Medium.BL.AppServices
         //========================================= Remove Story From SavingList =====================================
         public async Task<ApiResponse<RemoveStoryFromSavingListResponse>> RemoveStoryFromSavingList(RemoveStoryFromSavingListRequest request)
         {
-            var validator = new RemoveStoryFromSavingListRequestValidator();
+            var validator = new RemoveStoryFromSavingListRequestValidator(UnitOfWork);
             var validateResult = validator.Validate(request);
             if (!validateResult.IsValid)
             {
@@ -76,10 +86,10 @@ namespace Medium.BL.AppServices
             }
 
             // Ensure the saving list Stories collection is not null
-            if (savingList.Stories == null)
-            {
-                savingList.Stories = new List<Story>();
-            }
+            //if (savingList.Stories == null)
+            //{
+            //    savingList.Stories = new List<Story>();
+            //}
             // Remove the story from the saving list.
             savingList.Stories.Remove(story);
             await UnitOfWork.CommitAsync();
@@ -109,11 +119,9 @@ namespace Medium.BL.AppServices
             var savingList = new SavingList()
             {
                 Name = requset.Name,
-                //Publisher = publisher
                 PublisherId = publisherId,
 
             };
-            savingList.PublisherId = publisherId;
             await UnitOfWork.SavingLists.InsertAsync(savingList);
             await UnitOfWork.CommitAsync();
             var savingListMap = Mapper.Map<CreateSavingListResponse>(savingList);
@@ -214,6 +222,18 @@ namespace Medium.BL.AppServices
         {
             var saveLists = await UnitOfWork.SavingLists
                 .GetAllAsync(s => s.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize,
+                s => s.Publisher);
+
+            var totalCount = await UnitOfWork.SavingLists.CountAsync((s => s.Name.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllPaginationSaveListResponse>>(saveLists);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
+        public async Task<ApiResponsePaginated<List<GetAllPaginationSaveListResponse>>> GetAllPublisherSaveListsAsync(GetAllPaginationSaveListRequest request, int publisherId)
+        {
+            var saveLists = await UnitOfWork.SavingLists
+                .GetAllAsync(s => s.Name.Contains(request.Search) && s.Publisher.Id == publisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
                 s => s.Publisher);
 
             var totalCount = await UnitOfWork.SavingLists.CountAsync((s => s.Name.Contains(request.Search)));

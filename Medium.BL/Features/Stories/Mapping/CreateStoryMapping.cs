@@ -8,8 +8,9 @@ namespace Medium.BL.Features.Stories.Mapping
         void CreateStoryMapping()
         {
             CreateMap<Story, CreateStoryResponse>()
-                 .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))
-                .ForMember(s => s.StoryVideos, options => options.MapFrom(s => s.StoryVideos));
+                .ForMember(s => s.StoryPhotos, options => options.MapFrom(src => src.StoryPhotos.Select(photo => photo.Url)))
+                .ForMember(s => s.StoryVideos, options => options.MapFrom(src => src.StoryVideos.Select(video => video.Url)))
+                .ForMember(s => s.Topics, options => options.MapFrom(s => s.Topics.Select(t => t.Name)));
 
             //CreateMap<Story, CreateStoryRequest>()
             //     .ForMember(s => s.StoryPhotos, options => options.MapFrom(s => s.StoryPhotos))

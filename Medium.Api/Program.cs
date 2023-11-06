@@ -1,7 +1,10 @@
 using Medium.BL;
 using Medium.BL.Middlewares;
 using Medium.DA;
+using Medium.DA.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +65,16 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddBusinessLogicDependencies();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+
+    context.Database.Migrate();
+
+}
 
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();

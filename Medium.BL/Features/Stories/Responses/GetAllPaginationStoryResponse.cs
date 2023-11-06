@@ -5,7 +5,7 @@
 
     //};
 
-    public class GetAllPaginationStoryResponse
+    public record GetAllPaginationStoryResponse
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -14,7 +14,7 @@
         public string PublisherName { get; set; }
         public string PublisherPhotoUrl { get; set; }
         public string StoryMainPhoto { get; set; }
-        public List<string> TopicsNames { get; set; }
+        public List<string> Topics { get; set; }
 
     }
 }

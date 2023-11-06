@@ -8,7 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Medium.DA.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int> //: DbContext
+    public class ApplicationDbContext :
+        IdentityDbContext<
+            ApplicationUser,
+            IdentityRole<int>,
+            int,
+            IdentityUserClaim<int>,
+            IdentityUserRole<int>,
+            IdentityUserLogin<int>,
+            IdentityRoleClaim<int>,
+            IdentityUserToken<int>>
     {
         private readonly IEncryptionProvider _encryptionProvider;
         public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -103,6 +112,7 @@ namespace Medium.DA.Context
                 .IsUnique();
             });
 
+            modelBuilder.SeedRolesAndUsers();
 
             modelBuilder.UseEncryption(_encryptionProvider);
         }

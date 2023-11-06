@@ -29,9 +29,20 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetAllPaginationSaveList")]
+        [Authorize]
         public async Task<IActionResult> GetAllPaginationStoies([FromQuery] GetAllPaginationSaveListRequest request)
         {
             var result = await _savingListServices.GetAllPaginationAsync(request);
+
+            return ApiResult(result);
+        }
+
+        [HttpGet("GetAllPublisherSaveLists")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPublisherSaveLists([FromQuery] GetAllPaginationSaveListRequest request)
+        {
+            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _savingListServices.GetAllPublisherSaveListsAsync(request, publisherId);
 
             return ApiResult(result);
         }

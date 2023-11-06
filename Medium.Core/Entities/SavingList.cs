@@ -6,6 +6,6 @@
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public Publisher Publisher { get; set; }
         public int PublisherId { get; set; }
-        public ICollection<Story> Stories { get; set; }
+        public ICollection<Story> Stories { get; set; } = new HashSet<Story>();
     }
 }
