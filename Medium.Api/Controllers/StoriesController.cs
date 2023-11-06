@@ -3,13 +3,9 @@ using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
-    //[Route("api/[controller]")]
-    //[Route("api")]
-    //[ApiController]
     public class StoriesController : AppControllerBase
     {
         private readonly IStoriesService _storiesService;
@@ -56,9 +52,9 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetAllPublisherStories([FromQuery] GetAllPaginationStoryRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //
 
-            var result = await _storiesService.GetAllPublisherStoriesAsync(request, publisherId);
+            var result = await _storiesService.GetAllPublisherStoriesAsync(request);
 
             return ApiResult(result);
         }
@@ -67,9 +63,9 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            // var topics = request.Topics; // Access the Topics from the request
-            var result = await _storiesService.CreateStoryAsync(request, publisherId);
+            //
+            //// var topics = request.Topics; // Access the Topics from the request
+            var result = await _storiesService.CreateStoryAsync(request);
 
             return ApiResult(result);
         }
@@ -79,9 +75,9 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateStory([FromForm] UpdateStoryRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var story = await _storiesService.UpdateStory(request, publisherId);
+
+            var story = await _storiesService.UpdateStory(request);
             return ApiResult(story);
         }
 

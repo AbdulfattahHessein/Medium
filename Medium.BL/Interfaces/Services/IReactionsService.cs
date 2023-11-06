@@ -11,8 +11,8 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<DeleteReactionResponse>> DeleteAsync(DeleteReactionRequest requset);
         Task<ApiResponse<GetReactionByIdResponse>> GetById(GetReactionByIdRequest requset);
         Task<ApiResponsePaginated<List<GetAllPaginationReactionsResponse>>> GetAllAsync(GetAllPaginationReactionsRequest request);
-        Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request, int publisherId);
-        Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request, int publisherId);
+        Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request);
+        Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request);
 
     }
 }

@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class RoleController : ControllerBase
     {
 

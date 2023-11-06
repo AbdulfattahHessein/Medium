@@ -1,10 +1,8 @@
 ﻿using Medium.Api.Bases;
 using Medium.BL.Features.Publisher.Requests;
 using Medium.BL.Interfaces.Services;
-using Medium.DA.Implementation.Bases;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -61,17 +59,17 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetFollowerNotFollowing([FromQuery] FollowerNotFollowingRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _publishersService.GetFollowerNotFollowing(request, publisherId);
+
+            var result = await _publishersService.GetFollowerNotFollowing(request);
             return ApiResult(result);
         }
         [HttpPost("Follow")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Follow([FromQuery] AddFollowingRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var result = await _publishersService.AddFollowingAsync(request, publisherId);
+
+            var result = await _publishersService.AddFollowingAsync(request);
 
 
             return ApiResult(result);
@@ -80,8 +78,8 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UnFollow([FromQuery] DeleteFollowingRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _publishersService.DeleteFollowingAsync(request, publisherId);
+
+            var result = await _publishersService.DeleteFollowingAsync(request);
 
             return ApiResult(result);
         }

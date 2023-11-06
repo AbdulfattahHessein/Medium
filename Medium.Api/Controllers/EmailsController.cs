@@ -15,21 +15,21 @@ namespace Medium.Api.Controllers
         private readonly IConfiguration configuration;
         private readonly IEmailService emailService;
 
-        public EmailsController(UserManager<ApplicationUser> userManager,IConfiguration configuration, IEmailService emailService)
+        public EmailsController(UserManager<ApplicationUser> userManager, IConfiguration configuration, IEmailService emailService)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.emailService = emailService;
         }
         [HttpPost("/SendEmail")]
-        public async Task<IActionResult> SendEmail([FromForm]EmailSendRequest request)
+        public async Task<IActionResult> SendEmail([FromForm] EmailSendRequest request)
         {
             var response = await emailService.SendEmail(request);
-            return ApiResult(response) ;
+            return ApiResult(response);
 
         }
         [HttpGet("VerifyEmail")]
-        public async Task<IActionResult> VerifyEmail(string userId,string code)
+        public async Task<IActionResult> VerifyEmail(string userId, string code)
         {
 
             if (userId == null || code == null)
@@ -42,7 +42,7 @@ namespace Medium.Api.Controllers
                 return BadRequest("Invalid User");
             }
             else
-               code = Encoding.UTF8.GetString(bytes:Convert.FromBase64String(code));
+                code = Encoding.UTF8.GetString(bytes: Convert.FromBase64String(code));
             var result = await userManager.ConfirmEmailAsync(user, code);
             var Message = result.Succeeded ? "Thank you for confirmation " : " Please Try again";
             return Ok(Message);

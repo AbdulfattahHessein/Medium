@@ -1,14 +1,7 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Accounts.Request;
-using Medium.BL.Features.Topics.Request;
 using Medium.Core.Entities;
-using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Medium.BL.Features.Accounts.Validators
 {

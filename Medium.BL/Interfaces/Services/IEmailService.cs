@@ -10,7 +10,7 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<string>> ResetPassword(ResetPasswordRequest request);
 
     }
-    
+
     public record EmailSendRequest(string Email, string Message, string? Reason);
     public record SendResetPasswordRequest(string Email);
     public record ConfirmResetPasswordRequest(string Code, string Email);

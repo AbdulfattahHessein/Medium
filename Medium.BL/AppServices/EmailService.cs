@@ -31,7 +31,7 @@ namespace Medium.BL.AppServices
             //_encryptionProvider = new GenerateEncryptionProvider("8a4dcaaec64d412380fe4b02193cd26f");
         }
 
-       
+
         public async Task<ApiResponse<bool>> SendEmail(EmailSendRequest request)
         {
             try

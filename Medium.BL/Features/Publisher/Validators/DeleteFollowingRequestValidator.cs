@@ -12,7 +12,7 @@ namespace Medium.BL.Features.Publisher.Validators
         {
             this._unitOfWork = unitOfWork;
 
-           
+
             RuleFor(p => p.FollowingId).NotNull().
                 WithMessage("{PropertyName} Must be not Null")
                 .NotEmpty().WithMessage("{PropertyName} Must be valid");

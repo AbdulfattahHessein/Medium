@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace Medium.Core.Entities
+﻿namespace Medium.Core.Entities
 {
     public class Publisher : Entity<int>
     {

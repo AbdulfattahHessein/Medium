@@ -2,7 +2,6 @@
 using Medium.Core.Interfaces.Repositories;
 using Medium.DA.Context;
 using Medium.DA.Implementation.Bases;
-using Microsoft.EntityFrameworkCore;
 
 namespace Medium.DA.Implementation.Repositories
 {

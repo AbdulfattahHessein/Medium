@@ -27,19 +27,19 @@ namespace Medium.DA.Implementation.Bases
 
         #region Async Function
 
-        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = GetWhere(criteria, includes);
             return await query.FirstOrDefaultAsync();
         }
 
-        public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
+        public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = Includes(_table, includes);
 
             return query.ToListAsync();
         }
-        public async Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = Includes(_table, includes);
 
@@ -47,7 +47,7 @@ namespace Medium.DA.Implementation.Bases
 
             return query.ToList();
         }
-        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object?>>[] includes)
         {
             IQueryable<TEntity> query = _table;
 
@@ -64,7 +64,7 @@ namespace Medium.DA.Implementation.Bases
 
             return await query.ToListAsync();
         }
-        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria = null, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria = null, params Expression<Func<TEntity, object?>>[] includes)
         {
             IQueryable<TEntity> query = _table;
 
@@ -79,12 +79,12 @@ namespace Medium.DA.Implementation.Bases
         {
             return _table.SingleOrDefaultAsync(e => e.Id.Equals(id));
         }
-        public Task<TEntity?> GetByIdAsync(Key id, params Expression<Func<TEntity, object>>[] includes)
+        public Task<TEntity?> GetByIdAsync(Key id, params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = Includes(_table, includes);
             return query.FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
-        public Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        public Task<TEntity?> GetFirstAsync(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object?>>[] includes)
         {
             return GetWhere(criteria, includes).FirstOrDefaultAsync();
         }
@@ -114,7 +114,7 @@ namespace Medium.DA.Implementation.Bases
             return _table.SingleOrDefault(e => e.Id.Equals(id));
         }
 
-        public List<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes)
+        public List<TEntity> GetAll(params Expression<Func<TEntity, object?>>[] includes)
         {
 
             var query = Includes(_table, includes);
@@ -122,7 +122,7 @@ namespace Medium.DA.Implementation.Bases
             return query.ToList();
         }
 
-        public TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        public TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object?>>[] includes)
         {
             return GetWhere(criteria, includes).FirstOrDefault();
         }
@@ -157,7 +157,7 @@ namespace Medium.DA.Implementation.Bases
 
         #region Private functions
 
-        private IQueryable<TEntity> Includes(IQueryable<TEntity> query, params Expression<Func<TEntity, object>>[] includes)
+        private IQueryable<TEntity> Includes(IQueryable<TEntity> query, params Expression<Func<TEntity, object?>>[] includes)
         {
             if (includes != null)
                 foreach (var include in includes)
@@ -165,7 +165,7 @@ namespace Medium.DA.Implementation.Bases
 
             return query;
         }
-        private IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes)
+        private IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = Includes(_table, includes);
 

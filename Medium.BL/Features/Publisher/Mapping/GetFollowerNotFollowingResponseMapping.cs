@@ -1,10 +1,4 @@
-﻿using Medium.BL.Features.Publisher.Response;
-using Medium.BL.Features.Publisher.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Medium.BL.Features.Publisher.Responses;
 
 namespace Medium.BL.Features.Publisher.Mapping
 {

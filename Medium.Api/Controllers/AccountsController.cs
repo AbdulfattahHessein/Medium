@@ -9,8 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Medium.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+
     public class AccountsController : AppControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;

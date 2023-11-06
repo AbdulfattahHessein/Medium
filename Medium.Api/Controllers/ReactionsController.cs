@@ -3,7 +3,6 @@ using Medium.BL.Features.Reactions.Request;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Medium.Api.Controllers
 {
@@ -61,17 +60,17 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> AddReactToStory(AddReactToStoryRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _reactionsService.AddReactToStory(request, publisherId);
+            //
+            await _reactionsService.AddReactToStory(request);
             return NoContent();
         }
         [HttpDelete("React")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveReactFromStory(RemoveReactFromStoryRequest request)
         {
-            var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //
 
-            var result = await _reactionsService.RemoveReactFromStory(request, publisherId);
+            var result = await _reactionsService.RemoveReactFromStory(request);
 
             return ApiResult(result);
         }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using FluentValidation.Results;
 using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Accounts.Response;
 using Medium.BL.Features.Accounts.Validators;
@@ -8,16 +7,13 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 
@@ -28,11 +24,17 @@ namespace Medium.BL.AppServices
         private readonly IConfiguration configuration;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public AccountsService(IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public AccountsService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext, IConfiguration configuration, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper, httpContext)
         {
             this.configuration = configuration;
             this.userManager = userManager;
         }
+
+        //public AccountsService(IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        //{
+        //    this.configuration = configuration;
+        //    this.userManager = userManager;
+        //}
         public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
         {
             var user = await userManager.FindByNameAsync(request.UserName);
@@ -75,7 +77,6 @@ namespace Medium.BL.AppServices
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
-            //var publisher = await UnitOfWork.Publishers.GetFirstAsync(p => p.Id == user.Id);
             //Token claims
             var claims = new List<Claim>()
                     {

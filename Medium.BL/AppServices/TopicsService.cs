@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Medium.BL.Features.Accounts.Request;
-using Medium.BL.Features.Stories.Responses;
-using Medium.BL.Features.Stories.Validators;
 using Medium.BL.Features.Topics.Request;
 using Medium.BL.Features.Topics.Response;
 using Medium.BL.Features.Topics.Validators;
@@ -10,12 +7,13 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 namespace Medium.BL.AppServices
 {
     public class TopicsService : AppService, ITopicsService
     {
-        public TopicsService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public TopicsService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
         }
         public async Task<ApiResponse<CreateTopicResponse>> CreateAsync(CreateTopicRequest requset)
@@ -44,7 +42,7 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
-          
+
             var Topic = await UnitOfWork.Topics.GetByIdAsync(requset.Id);
             if (Topic == null)
             {
@@ -61,7 +59,7 @@ namespace Medium.BL.AppServices
         }
 
         public async Task<ApiResponsePaginated<List<GetAllPaginationTopicResponse>>> GetAllAsync(GetAllPaginationTopicRequest request)
-        { 
+        {
             var topics = await UnitOfWork.Topics
                  .GetAllAsync(s => s.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
 

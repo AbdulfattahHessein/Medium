@@ -14,7 +14,7 @@ namespace Medium.BL.AppServices
 {
     public class StoriesService : AppService, IStoriesService
     {
-        public StoriesService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public StoriesService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Medium.BL.AppServices
 
 
         //========================================= CREATE ========================================
-        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request, int publisherId)
+        public async Task<ApiResponse<CreateStoryResponse>> CreateStoryAsync(CreateStoryRequest request)
         {
 
             await DoValidationAsync<CreateStoryRequestValidator, CreateStoryRequest>(request, UnitOfWork);
@@ -77,7 +77,8 @@ namespace Medium.BL.AppServices
                 }
             }
 
-            var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            //var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            var publisher = UnitOfWork.Publishers.GetById(PublisherId);
             if (publisher == null)
             {
                 return NotFound<CreateStoryResponse>();
@@ -88,9 +89,6 @@ namespace Medium.BL.AppServices
             var existTopicsNames = existTopics.Select(t => t.Name).ToList();
             var newTopicsNames = request.Topics.Where(topicName => !existTopicsNames.Contains(topicName)).ToList();
             var newTopics = newTopicsNames.Select(tn => new Topic() { Name = tn });
-            //UnitOfWork.Topics.InsertList(newTopics);
-
-            //await UnitOfWork.CommitAsync();
 
 
             var story = new Story
@@ -103,14 +101,13 @@ namespace Medium.BL.AppServices
 
             };
             story.Topics = existTopics;
-            //  story.Topics.ToList().AddRange(newTopics);
+
             foreach (var topic in newTopics)
             {
                 story.Topics.Add(topic);
             }
             await UnitOfWork.Stories.InsertAsync(story); await UnitOfWork.CommitAsync();
-            //await UnitOfWork.StoryPhotos.InsertAsync(storyPhotos); await UnitOfWork.CommitAsync();
-            //await UnitOfWork.StoryVideos.InsertAsync(storyVideos); await UnitOfWork.CommitAsync();
+
             var storyMap = Mapper.Map<CreateStoryResponse>(story);
             return Success(storyMap);
         }
@@ -159,7 +156,7 @@ namespace Medium.BL.AppServices
 
         ////// ================================ UPDATE ============================================================
 
-        public async Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request, int publisherId)
+        public async Task<ApiResponse<UpdateStoryResponse>> UpdateStory(UpdateStoryRequest request)
         {
             var validator = new UpdateStoryRequestValidator();
             var validateResult = validator.Validate(request);
@@ -174,17 +171,15 @@ namespace Medium.BL.AppServices
                 return NotFound<UpdateStoryResponse>();
             }
 
-            var publisher = UnitOfWork.Publishers.GetById(publisherId);
+            var publisher = UnitOfWork.Publishers.GetById(PublisherId);
             if (publisher == null)
             {
                 return NotFound<UpdateStoryResponse>();
             }
-            //var publisher = UnitOfWork.Publishers.GetById(publisherId);
-            //if (publisher == null)
-            //{
-            //    return NotFound<UpdateStoryResponse>();
-            //}
-
+            if (publisher == null)
+            {
+                return NotFound<UpdateStoryResponse>();
+            }
             //  Remove old story photos
 
             foreach (var oldPhoto in story.StoryPhotos)
@@ -199,7 +194,6 @@ namespace Medium.BL.AppServices
 
 
             string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
-            // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
 
             // Update story photos
 
@@ -243,7 +237,7 @@ namespace Medium.BL.AppServices
             var newTopics = newTopicsNames.Select(tn => new Topic() { Name = tn });
 
             story.Topics = existTopics;
-            //  story.Topics.ToList().AddRange(newTopics);
+
             foreach (var topic in newTopics)
             {
                 story.Topics.Add(topic);
@@ -305,10 +299,10 @@ namespace Medium.BL.AppServices
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
 
-        public async Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllPublisherStoriesAsync(GetAllPaginationStoryRequest request, int publisherId)
+        public async Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllPublisherStoriesAsync(GetAllPaginationStoryRequest request)
         {
             var stories = await UnitOfWork.Stories
-                 .GetAllAsync(s => s.Title.Contains(request.Search) && s.Publisher.Id == publisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
+                 .GetAllAsync(s => s.Title.Contains(request.Search) && s.Publisher.Id == PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
                  s => s.Publisher, s => s.Topics);
 
             var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));

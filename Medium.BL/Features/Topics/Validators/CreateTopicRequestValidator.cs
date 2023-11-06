@@ -1,10 +1,5 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Topics.Request;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Medium.BL.Features.Topics.Validators
 {

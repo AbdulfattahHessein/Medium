@@ -7,8 +7,8 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -19,10 +19,10 @@ namespace Medium.BL.AppServices
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public RoleServices(RoleManager<IdentityRole<int>> roleManager, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public RoleServices(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext, RoleManager<IdentityRole<int>> roleManager, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper, httpContext)
         {
-            this.userManager = userManager;
             _roleManager = roleManager;
+            this.userManager = userManager;
         }
 
         public async Task<ApiResponse<string>> AddRoleToUser(AddRoleUserRequest request)

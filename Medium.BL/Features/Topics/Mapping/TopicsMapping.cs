@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Features.Topics.Request;
 using Medium.BL.Features.Topics.Response;
-using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
 
 namespace Medium.BL.Features.Topics.Mapping

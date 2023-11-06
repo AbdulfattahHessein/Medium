@@ -7,16 +7,18 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
 {
     public class SavingListServices : AppService, ISavingListServices
     {
-
-        public SavingListServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public SavingListServices(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
         }
+
+
         //========================================= Add Story To SaveList =====================================
         public async Task<ApiResponse<AddStoryToSaveListResponse>> AddStoryToSaveList(AddStoryToSaveListRequest request)
         {
@@ -26,7 +28,7 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
-            var story = await UnitOfWork.Stories.GetByIdAsync(request.storyId);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.StoryId);
 
             if (story == null)
             {
@@ -35,7 +37,7 @@ namespace Medium.BL.AppServices
             // اي دا يا ايمن
             //var saveListOld = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, sv => sv.Stories);
 
-            var saveList = await UnitOfWork.SavingLists.GetByIdAsync(request.saveListId, s => s.Stories);
+            var saveList = await UnitOfWork.SavingLists.GetFirstAsync(s => s.Id == request.SaveListId && s.PublisherId == PublisherId, s => s.Stories);
 
             if (saveList == null)
             {
@@ -99,7 +101,7 @@ namespace Medium.BL.AppServices
 
 
         //========================================= Create SaveList =====================================
-        public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset, int publisherId)
+        public async Task<ApiResponse<CreateSavingListResponse>> CreateAsync(CreateSavingListRequest requset)
         {
             var validator = new CreateSavingListRequestValidator(UnitOfWork);
             var validateResult = await validator.ValidateAsync(requset);
@@ -119,7 +121,7 @@ namespace Medium.BL.AppServices
             var savingList = new SavingList()
             {
                 Name = requset.Name,
-                PublisherId = publisherId,
+                PublisherId = PublisherId,
 
             };
             await UnitOfWork.SavingLists.InsertAsync(savingList);
@@ -165,14 +167,7 @@ namespace Medium.BL.AppServices
         //========================================= GetById SaveList =====================================
         public async Task<ApiResponse<GetSavingListByIdResponse>> GetByIdAsync(GetSavingListByIdRequest requset)
         {
-            var validator = new GetSavingListByIdRequestValidator();
-            var validateResult = await validator.ValidateAsync(requset);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
-
-            //await DoValidationAsync<GetSavingListByIdRequestValidator, GetSavingListByIdRequest>(requset, UnitOfWork);
+            await DoValidationAsync<GetSavingListByIdRequestValidator, GetSavingListByIdRequest>(requset, UnitOfWork);
 
 
             var saveList = await UnitOfWork.SavingLists.GetByIdAsync(requset.Id);
@@ -188,13 +183,6 @@ namespace Medium.BL.AppServices
         //========================================= Update SaveList =====================================
         public async Task<ApiResponse<UpdateSavingListResponse>> UpdateAsync(UpdateSavingListRequest requset)
         {
-            //var validator = new UpdateSavingListValidator();
-            //var validateResult = validator.Validate(requset);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
-
             await DoValidationAsync<UpdateSavingListValidator, UpdateSavingListRequest>(requset, UnitOfWork);
 
 
@@ -230,10 +218,10 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
-        public async Task<ApiResponsePaginated<List<GetAllPaginationSaveListResponse>>> GetAllPublisherSaveListsAsync(GetAllPaginationSaveListRequest request, int publisherId)
+        public async Task<ApiResponsePaginated<List<GetAllPaginationSaveListResponse>>> GetAllPublisherSaveListsAsync(GetAllPaginationSaveListRequest request)
         {
             var saveLists = await UnitOfWork.SavingLists
-                .GetAllAsync(s => s.Name.Contains(request.Search) && s.Publisher.Id == publisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
+                .GetAllAsync(s => s.Name.Contains(request.Search) && s.Publisher.Id == PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
                 s => s.Publisher);
 
             var totalCount = await UnitOfWork.SavingLists.CountAsync((s => s.Name.Contains(request.Search)));
@@ -242,26 +230,6 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
-
-
-
-        //public async Task<ApiResponse<List<GetSavingListWithStoriesResponse>>> GetAllSavingListsWithStoriesAsync()
-        //{
-        //    var savingLists = await UnitOfWork.SavingLists.GetAllAsync(sv => sv.Stories); // Retrieve all saving lists
-        //    var result = new List<GetSavingListWithStoriesResponse>();
-
-        //    foreach (var saveList in savingLists)
-        //    {
-        //        result.Add(new GetSavingListWithStoriesResponse(
-        //            saveList.Id,
-        //            saveList.Name,
-        //            saveList.Stories.ToList() // Retrieve all stories associated with this saving list
-        //        ));
-        //    }
-        //    var responseMap = Mapper.Map<List<GetSavingListWithStoriesResponse>>(result);
-
-        //    return Success(responseMap);
-        //}
 
     }
 }

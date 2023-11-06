@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Reactions.Request;
-using Medium.BL.Interfaces.Services;
 using Medium.Core.Interfaces.Bases;
 
 namespace Medium.BL.Features.Reactions.Validators

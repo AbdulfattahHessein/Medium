@@ -10,6 +10,7 @@ using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -18,10 +19,15 @@ namespace Medium.BL.AppServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper)
+        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
-            this._userManager = userManager;
+            _userManager = HttpContextAccessor.HttpContext.RequestServices.GetService<UserManager<ApplicationUser>>()!;
         }
+
+        //public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper)
+        //{
+        //    this._userManager = userManager;
+        //}
         private async Task<string?> UploadFormFileToAsync(IFormFile? formFile, string uploadDirectory)
         {
 
@@ -169,11 +175,12 @@ namespace Medium.BL.AppServices
         }
 
 
-        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request, int PublisherId)
+        public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request)
         {
             await DoValidationAsync<FollowerNotFollowingRequestValidator, FollowerNotFollowingRequest>(request, UnitOfWork);
             var publishers = await UnitOfWork.Publishers
                 .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize, p => p.Followers, p => p.Followings);
+
             var publisher = publishers.Find(p => p.Id == PublisherId);
 
             List<Publisher> Followers = new List<Publisher>();
@@ -194,14 +201,8 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
-        public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request, int PublisherId)
+        public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
-            //var validator = new AddFollowingRequestValidator(UnitOfWork);
-            //var validateResult = validator.Validate(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
             await DoValidationAsync<AddFollowingRequestValidator, AddFollowingRequest>(request, UnitOfWork);
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
@@ -230,14 +231,9 @@ namespace Medium.BL.AppServices
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request, int PublisherId)
+        public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
         {
-            //var validator = new DeleteFollowingRequestValidator(UnitOfWork);
-            //var validateResult = validator.Validate(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
+
             await DoValidationAsync<DeleteFollowingRequestValidator, DeleteFollowingRequest>(request, UnitOfWork);
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followings, p => p.Followers);
             var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId, p => p.Followings, p => p.Followers);

@@ -1,10 +1,6 @@
 ﻿using FluentValidation;
 using Medium.BL.Features.Accounts.Request;
 using Medium.Core.Interfaces.Bases;
-using System;
-using FluentValidation;
-using Medium.BL.Features.Accounts.Request;
-using Medium.Core.Interfaces.Bases;
 
 namespace Medium.BL.Features.Accounts.Validators
 {
@@ -18,7 +14,7 @@ namespace Medium.BL.Features.Accounts.Validators
             RuleFor(r => r.RoleName).NotNull()
                 .WithMessage("{PropertyName} Must be not Null")
                  .NotEmpty().WithMessage("{PropertyName} Must be valid");
-           
+
         }
     }
 }

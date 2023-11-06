@@ -1,17 +1,11 @@
 ﻿using Medium.Api.Bases;
-using Medium.BL.AppServices;
-using Medium.BL.Features.Accounts.Request;
-using Medium.BL.Features.Stories.Requests;
 using Medium.BL.Features.Topics.Request;
 using Medium.BL.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace Medium.Api.Controllers
 {
-    //    [Route("api/[controller]")]
-    //    [ApiController]
     public class TopicsController : AppControllerBase
     {
         private readonly ITopicsService _topicsService;

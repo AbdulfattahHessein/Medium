@@ -6,6 +6,7 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 
@@ -13,36 +14,27 @@ namespace Medium.BL.AppServices
 {
     public class ReactionsService : AppService, IReactionsService
     {
-        public ReactionsService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public ReactionsService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
         }
-
-        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request, int publisherId)
+        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request)
         {
-            //var validator = new AddReactToStoryRequestValidator(UnitOfWork);
-            //var validateResult = await validator.ValidateAsync(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
-
             await DoValidationAsync<AddReactToStoryRequestValidator, AddReactToStoryRequest>(request, UnitOfWork);
 
             var react = new React()
             {
                 StoryId = request.StoryId,
                 ReactionId = request.ReactionId,
-                PublisherId = publisherId,
+                PublisherId = PublisherId,
             };
             await UnitOfWork.Reacts.InsertAsync(react);
             await UnitOfWork.CommitAsync();
 
             return NoContent<ApiResponse>();
         }
-        public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request, int publisherId)
+        public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request)
         {
-            var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, publisherId);
-            //var react = await UnitOfWork.Reacts.GetFirstAsync(r => r.StoryId.Equals(request.storyId) && r.PublisherId.Equals(request.publisherId));
+            var react = await UnitOfWork.Reacts.FindAsync(request.StoryId, PublisherId);
 
             await DoValidationAsync<RemoveReactFromStoryRequestValidator, RemoveReactFromStoryRequest>(request, UnitOfWork);
 
@@ -73,12 +65,11 @@ namespace Medium.BL.AppServices
             await DoValidationAsync<DeleteReactionRequestValidator, DeleteReactionRequest>(request, UnitOfWork);
 
             var reaction = await UnitOfWork.Reactions.GetByIdAsync(request.Id)!;
-            //if (reaction == null)
-            //{
-            //    return NotFound<DeleteReactionResponse>();
+            if (reaction == null)
+            {
+                return NotFound<DeleteReactionResponse>();
 
-            //}
-
+            }
             UnitOfWork.Reactions.Delete(reaction);
             await UnitOfWork.CommitAsync();
 

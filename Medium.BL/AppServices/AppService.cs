@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Medium.BL.AppServices
 {
@@ -8,10 +10,14 @@ namespace Medium.BL.AppServices
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public IMapper Mapper { get; set; }
-        public AppService(IUnitOfWork unitOfWork, IMapper mapper)
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public int PublisherId => int.Parse(HttpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        public AppService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext)
         {
             UnitOfWork = unitOfWork;
             Mapper = mapper;
+            HttpContextAccessor = httpContext;
         }
 
         public void Dispose()
