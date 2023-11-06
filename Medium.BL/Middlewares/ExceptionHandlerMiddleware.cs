@@ -29,12 +29,9 @@ namespace Medium.BL.Middlewares
 
                 context.Response.StatusCode = httpStatusCode;
                 context.Response.ContentType = MediaTypeNames.Application.Json; //"application/json"
-
+                var responseResult = new ApiResponse() { StatusCode = (HttpStatusCode)httpStatusCode };
                 if (exception is ValidationException ex)
                 {
-                    var responseResult = new ApiResponse() { StatusCode = (HttpStatusCode)httpStatusCode, Message = ex.Message };
-
-
                     var errors = new Dictionary<string, List<string>>();
                     foreach (var error in ex.Errors)
                     {
@@ -48,7 +45,8 @@ namespace Medium.BL.Middlewares
                 }
                 else
                 {
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(new { exception.Message }));
+                    responseResult.Message = exception.Message;
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(responseResult));
                 }
 
             }

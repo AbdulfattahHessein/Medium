@@ -26,7 +26,7 @@ namespace Medium.Core.Interfaces.Bases
 
 
         TEntity? GetById(TKey id);
-        TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object>>[] includes);
+        TEntity? GetFirst(Expression<Func<TEntity, bool>> criteria, params Expression<Func<TEntity, object?>>[] includes);
         void Insert(TEntity entity);
         void InsertList(IEnumerable<TEntity> entities);
         void Update(TEntity entity);

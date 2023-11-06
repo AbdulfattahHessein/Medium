@@ -11,6 +11,7 @@ using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -24,10 +25,6 @@ namespace Medium.BL.AppServices
             _userManager = HttpContextAccessor.HttpContext.RequestServices.GetService<UserManager<ApplicationUser>>()!;
         }
 
-        //public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper)
-        //{
-        //    this._userManager = userManager;
-        //}
         private async Task<string?> UploadFormFileToAsync(IFormFile? formFile, string uploadDirectory)
         {
 
@@ -52,12 +49,6 @@ namespace Medium.BL.AppServices
         //we dont need this function, because publisher are created when user created
         public async Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request)
         {
-            //var validator = new CreatePublisherRequestValidator(UnitOfWork);
-            //var validateResult = await validator.ValidateAsync(request);
-            //if (!validateResult.IsValid)
-            //{
-            //    throw new ValidationException(validateResult.Errors);
-            //}
             await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
 
             string uploadDirectory = Path.Combine("./Resources", "Photos");
@@ -149,12 +140,9 @@ namespace Medium.BL.AppServices
                 File.Delete($@"./Resources/{publisher.PhotoUrl}");
             }
             //delete everything related with the publisher like its stories
-
+            //when delete the user, publisher will also deleted
             var user = await _userManager.FindByIdAsync(publisher.Id.ToString());
             await _userManager.DeleteAsync(user);
-
-            ////UnitOfWork.Publishers.Delete(publisher);
-            //await UnitOfWork.CommitAsync();
 
             var response = Mapper.Map<DeletePublisherResponse>(publisher);
 
@@ -178,28 +166,22 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request)
         {
             await DoValidationAsync<FollowerNotFollowingRequestValidator, FollowerNotFollowingRequest>(request, UnitOfWork);
-            var publishers = await UnitOfWork.Publishers
-                .GetAllAsync((request.PageNumber - 1) * request.PageSize, request.PageSize, p => p.Followers, p => p.Followings);
 
-            var publisher = publishers.Find(p => p.Id == PublisherId);
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followers, p => p.Followings)!;
 
-            List<Publisher> Followers = new List<Publisher>();
-            Followers.AddRange(publisher.Followers);
-            List<Publisher> Followings = new List<Publisher>();
-            Followings.AddRange(publisher.Followings);
-            List<Publisher> FollowersNotFollowing = new List<Publisher>();
-            foreach (var Follower in Followers)
+            if (publisher == null)
             {
-                var follower = Followings.Find(f => f.Id == Follower.Id);
-                if (follower == null)
-                    FollowersNotFollowing.Add(Follower);
+                return new ApiResponsePaginated<List<FollowerNotFollowingResponse>>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                };
             }
 
-            var totalCount = FollowersNotFollowing.Count();
+            var FollowersNotFollowing = publisher.Followers!.Except(publisher.Followings!);
 
             var response = Mapper.Map<List<FollowerNotFollowingResponse>>(FollowersNotFollowing);
 
-            return Success(response, totalCount, request.PageNumber, request.PageSize);
+            return Success(response, FollowersNotFollowing.Count(), request.PageNumber, request.PageSize);
         }
         public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
