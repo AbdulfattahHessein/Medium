@@ -25,14 +25,14 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreatePublisher([FromForm] CreatePublisherRequest request)
-        {
-            var result = await _publishersService.Create(request);
+        //[HttpPost]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> CreatePublisher([FromForm] CreatePublisherRequest request)
+        //{
+        //    var result = await _publishersService.Create(request);
 
-            return ApiResult(result);
-        }
+        //    return ApiResult(result);
+        //}
         [HttpGet("{id}")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetPublisherById(int id)

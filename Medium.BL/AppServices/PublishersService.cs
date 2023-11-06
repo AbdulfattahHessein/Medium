@@ -9,14 +9,18 @@ using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
 {
     public class PublishersService : AppService, IPublishersService
     {
-        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper)
         {
+            this._userManager = userManager;
         }
         private async Task<string?> UploadFormFileToAsync(IFormFile? formFile, string uploadDirectory)
         {
@@ -139,11 +143,12 @@ namespace Medium.BL.AppServices
                 File.Delete($@"./Resources/{publisher.PhotoUrl}");
             }
             //delete everything related with the publisher like its stories
-            //
-            //
 
-            UnitOfWork.Publishers.Delete(publisher);
-            await UnitOfWork.CommitAsync();
+            var user = await _userManager.FindByIdAsync(publisher.Id.ToString());
+            await _userManager.DeleteAsync(user);
+
+            ////UnitOfWork.Publishers.Delete(publisher);
+            //await UnitOfWork.CommitAsync();
 
             var response = Mapper.Map<DeletePublisherResponse>(publisher);
 

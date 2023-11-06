@@ -2,6 +2,7 @@
 using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +110,7 @@ namespace Medium.Api.Controllers
         #endregion
 
         [HttpPost("addRoleToUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleUserRequest request)
         {
             var result = await _roleServices.AddRoleToUser(request);
@@ -118,6 +120,7 @@ namespace Medium.Api.Controllers
 
 
         [HttpPost("UpdateUserRoles")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateRoleToUserRequest request)
         {
             var result = await _roleServices.UpdateUserRoles(request);
@@ -125,6 +128,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpGet("GetAllUsers")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             var result = await userManager.Users.ToListAsync();
