@@ -52,6 +52,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpGet("GetAllPaginationTopics")]
+        [Authorize]
         public async Task<IActionResult> GetAllPaginationTopics([FromQuery] GetAllPaginationTopicRequest request)
         {
             var result = await _topicsService.GetAllAsync(request);

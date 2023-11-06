@@ -28,20 +28,23 @@ namespace Medium.Api.Controllers
         //}
 
         [HttpGet("GetStoryByID/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetStoryById(int id)
         {
             var story = await _storiesService.GetStoryById(new GetStoryByIdRequest(id));
             return ApiResult(story);
         }
 
-        [HttpGet("GetAllStoriesIncludingPublisher")]
-        public async Task<IActionResult> GetAllStoriesIncludingPublisher()
-        {
-            var stories = await _storiesService.GetAllStoriesIncludingPublisher();
-            return ApiResult(stories);
-        }
+        //[HttpGet("GetAllStoriesIncludingPublisher")]
+        //[Authorize]
+        //public async Task<IActionResult> GetAllStoriesIncludingPublisher()
+        //{
+        //    var stories = await _storiesService.GetAllStoriesIncludingPublisher();
+        //    return ApiResult(stories);
+        //}
 
         [HttpGet("GetAllPaginationStories")]
+        [Authorize]
         public async Task<IActionResult> GetAllPaginationStories([FromQuery] GetAllPaginationStoryRequest request)
         {
             var result = await _storiesService.GetAllAsync(request);

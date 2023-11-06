@@ -20,16 +20,16 @@ namespace Medium.Api.Controllers
         }
 
 
-        [HttpGet("GetAllSaveingList")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllSaveingList()
-        {
-            var saveList = await _savingListServices.GetAllAsync();
-            return ApiResult(saveList);
-        }
+        //[HttpGet("GetAllSaveingList")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> GetAllSaveingList()
+        //{
+        //    var saveList = await _savingListServices.GetAllAsync();
+        //    return ApiResult(saveList);
+        //}
 
         [HttpGet("GetAllPaginationSaveList")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllPaginationStoies([FromQuery] GetAllPaginationSaveListRequest request)
         {
             var result = await _savingListServices.GetAllPaginationAsync(request);
@@ -38,7 +38,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetAllPublisherSaveLists")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetAllPublisherSaveLists([FromQuery] GetAllPaginationSaveListRequest request)
         {
             var publisherId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

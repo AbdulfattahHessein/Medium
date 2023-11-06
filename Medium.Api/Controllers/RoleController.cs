@@ -1,6 +1,7 @@
 ﻿using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPost("createRole")]
+        [Authorize("Admin")]
         public async Task<IActionResult> CreateRole([FromBody] AddRoleRequest request)
         {
             var result = await _roleServices.CreateRoleAsync(request);
@@ -33,6 +35,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("GetRoleByName")]
+        [Authorize("Admin")]
         public async Task<IActionResult> GetRoleByName([FromQuery] GetRoleRequest request)
         {
             var result = await _roleServices.GetRoleByNameAsync(request);
@@ -45,6 +48,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpGet("getAllRoles")]
+        [Authorize("Admin")]
         public async Task<IActionResult> GetAllRoles()
         {
             var result = await _roleServices.GetAllRolesAsync();
@@ -53,6 +57,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpPut("updateRole")]
+        [Authorize("Admin")]
         public async Task<IActionResult> UpdateRole([FromQuery] UpdateRoleRequest request)
         {
             var result = await _roleServices.UpdateRoleAsync(request);
@@ -61,6 +66,7 @@ namespace Medium.Api.Controllers
         }
 
         [HttpDelete("deleteRole")]
+        [Authorize("Admin")]
         public async Task<IActionResult> DeleteRole([FromQuery] DeleteRoleRequest request)
         {
             var result = await _roleServices.DeleteRoleAsync(request);
