@@ -35,7 +35,7 @@ namespace Medium.DA
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
 
-                var validIssuers = configuration.GetSection("JWT:ValidIssuers").Get<string[]>();
+                var validIssuers = configuration.GetSection("JWT:ValidIssurs").Get<string[]>();
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

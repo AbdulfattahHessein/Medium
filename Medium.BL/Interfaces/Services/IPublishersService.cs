@@ -16,6 +16,4 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request);
         Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request);
     }
-    public record GetAllPublisherRequest(int PageNumber = 1, int PageSize = 10, string Search = "");
-    public record GetAllPublisherResponse(int Id, string Name, string? Bio, string? PhotoUrl);
 }
