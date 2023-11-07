@@ -10,6 +10,7 @@ namespace Medium.BL.Features.Stories.Mapping
             CreateMap<Story, GetAllPaginationStoryResponse>()
                 .ForMember(s => s.PublisherName, options => options.MapFrom(s => s.Publisher.Name))
                 .ForMember(s => s.PublisherPhotoUrl, options => options.MapFrom(s => s.Publisher.PhotoUrl))
+                .ForMember(s => s.StoryMainPhoto, options => options.MapFrom(s => s.StoryPhotos.Select(s => s.Url).FirstOrDefault()))
                 .ForMember(s => s.Topics, options => options.MapFrom(s => s.Topics.Select(t => t.Name)));
         }
     }

@@ -8,6 +8,7 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +20,13 @@ namespace Medium.BL.AppServices
     public class PublishersService : AppService, IPublishersService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
+        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly string webRootPath;
+        public PublishersService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext, IHostingEnvironment hostingEnvironment) : base(unitOfWork, mapper, httpContext)
         {
             _userManager = HttpContextAccessor.HttpContext.RequestServices.GetService<UserManager<ApplicationUser>>()!;
+            this.hostingEnvironment = hostingEnvironment;
+            webRootPath = hostingEnvironment.WebRootPath;
         }
 
         private async Task<string?> UploadFormFileToAsync(IFormFile? formFile, string uploadDirectory)
@@ -51,7 +55,7 @@ namespace Medium.BL.AppServices
         {
             await DoValidationAsync<CreatePublisherRequestValidator, CreatePublisherRequest>(request, UnitOfWork);
 
-            string uploadDirectory = Path.Combine("./Resources", "Photos");
+            string uploadDirectory = Path.Combine(webRootPath, "Resources", "Photos");
             string? fileName = await UploadFormFileToAsync(request.Photo, uploadDirectory);
 
             var publisher = new Publisher(request.Name)
@@ -91,22 +95,23 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
+
             //get the old publisher
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
                 return NotFound<UpdatePublisherResponse>();
 
-            //Delete old photo if exist
+            //Delete publisher photo if exist
             if (publisher.PhotoUrl != null)
             {
-                File.Delete($@".{publisher.PhotoUrl}");
+                File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }
 
             //update publisher by map the request to the old publisher
             Mapper.Map(request, publisher);
 
             //upload the new photo and set the photoUrl 
-            var fileName = await UploadFormFileToAsync(request.Photo, Path.Combine("./Resources", "Photos"));
+            var fileName = await UploadFormFileToAsync(request.Photo, Path.Combine(webRootPath, "Resources", "Photos"));
             publisher.PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : null;
 
             //update the publisher
@@ -129,6 +134,9 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
+
+
+
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
             {
@@ -137,7 +145,7 @@ namespace Medium.BL.AppServices
             //Delete publisher photo if exist
             if (publisher.PhotoUrl != null)
             {
-                File.Delete($@"./Resources/{publisher.PhotoUrl}");
+                File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }
             //delete everything related with the publisher like its stories
             //when delete the user, publisher will also deleted

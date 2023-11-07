@@ -7,15 +7,22 @@ using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
 {
     public class StoriesService : AppService, IStoriesService
     {
-        public StoriesService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
+        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly string webRootPath;
+
+        public StoriesService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext, IHostingEnvironment hostingEnvironment) : base(unitOfWork, mapper, httpContext)
         {
+            this.hostingEnvironment = hostingEnvironment;
+            webRootPath = hostingEnvironment.WebRootPath;
         }
 
         ////// ================================ CREATE ============================================================
@@ -47,13 +54,18 @@ namespace Medium.BL.AppServices
 
             await DoValidationAsync<CreateStoryRequestValidator, CreateStoryRequest>(request, UnitOfWork);
 
-            string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
-            // string? fileName = await UploadFormFileToAsync(request.StoryPhotos, uploadDirectory);
+            //var hostingEnvironment = HttpContextAccessor.HttpContext.RequestServices.GetService<IHostingEnvironment>()!;
+            //var webRootPath = hostingEnvironment.WebRootPath;
+
+
+
             var storyPhotos = new List<StoryPhoto>();
             var storyVideos = new List<StoryVideo>();
 
             if (request.StoryPhotos != null)
             {
+                var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryPhotos");
+
                 foreach (var file in request.StoryPhotos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -66,7 +78,7 @@ namespace Medium.BL.AppServices
 
             if (request.StoryVideos != null)
             {
-                uploadDirectory = Path.Combine("./Resources", "StoryVideos");
+                var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryVideos");
                 foreach (var file in request.StoryVideos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -76,8 +88,6 @@ namespace Medium.BL.AppServices
                     });
                 }
             }
-
-            //var publisher = UnitOfWork.Publishers.GetById(publisherId);
             var publisher = UnitOfWork.Publishers.GetById(PublisherId);
             if (publisher == null)
             {
@@ -164,6 +174,9 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
+            //var hostingEnvironment = HttpContextAccessor.HttpContext.RequestServices.GetService<IHostingEnvironment>()!;
+            //var webRootPath = hostingEnvironment.WebRootPath;
+
 
             var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos, s => s.Topics);
             if (story == null)
@@ -180,26 +193,23 @@ namespace Medium.BL.AppServices
             {
                 return NotFound<UpdateStoryResponse>();
             }
-            //  Remove old story photos
-
-            foreach (var oldPhoto in story.StoryPhotos)
+            //delete old story photos
+            foreach (var photo in story.StoryPhotos)
             {
-                File.Delete($@"./{oldPhoto.Url}");
+                File.Delete(Path.GetFullPath(webRootPath + photo.Url));
             }
-
-            foreach (var oldVideoo in story.StoryVideos)
+            //delete old story videos
+            foreach (var video in story.StoryVideos)
             {
-                File.Delete($@"./{oldVideoo.Url}");
+                File.Delete(Path.GetFullPath(webRootPath + video.Url));
             }
-
-
-            string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
 
             // Update story photos
-
             var updatedStoryPhotos = new List<StoryPhoto>();
             if (request.StoryPhotos != null)
             {
+                var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryVideos");
+
                 foreach (var file in request.StoryPhotos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -215,10 +225,12 @@ namespace Medium.BL.AppServices
             // Update story videos
 
             var updatedStoryVideos = new List<StoryVideo>();
-            uploadDirectory = Path.Combine("./Resources", "StoryVideos");
+
 
             if (request.StoryVideos != null)
             {
+                var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryVideos");
+
                 foreach (var file in request.StoryVideos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -260,6 +272,8 @@ namespace Medium.BL.AppServices
             {
                 throw new ValidationException(validateResult.Errors);
             }
+            //var hostingEnvironment = HttpContextAccessor.HttpContext.RequestServices.GetService<IHostingEnvironment>()!;
+            //var webRootPath = hostingEnvironment.WebRootPath;
 
             var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos);
             if (story == null)
@@ -267,17 +281,17 @@ namespace Medium.BL.AppServices
                 return NotFound<DeleteStoryResponse>();
             }
             UnitOfWork.Stories.Delete(story);
-            await UnitOfWork.CommitAsync();
+            //await UnitOfWork.CommitAsync();
 
             //delete all story photos
             foreach (var photo in story.StoryPhotos)
             {
-                File.Delete($@"./{photo.Url}");
+                File.Delete(Path.GetFullPath(webRootPath + photo.Url));
             }
             //delete all story videos
             foreach (var video in story.StoryVideos)
             {
-                File.Delete($@"./{video.Url}");
+                File.Delete(Path.GetFullPath(webRootPath + video.Url));
             }
 
             var storyMap = Mapper.Map<DeleteStoryResponse>(story);
@@ -303,7 +317,7 @@ namespace Medium.BL.AppServices
         {
             var stories = await UnitOfWork.Stories
                  .GetAllAsync(s => s.Title.Contains(request.Search) && s.Publisher.Id == PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize,
-                 s => s.Publisher, s => s.Topics);
+                 s => s.Publisher, s => s.Topics, s => s.StoryPhotos);
 
             var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
 
