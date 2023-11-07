@@ -9,6 +9,7 @@ using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,12 +23,26 @@ namespace Medium.BL.AppServices
     public class AccountsService : AppService, IAccountsService
     {
         private readonly IConfiguration configuration;
+        private readonly IHttpContextAccessor httpContext;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IUrlHelper urlHelper;
+        private readonly IEmailService emailService;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AccountsService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext, IConfiguration configuration, UserManager<ApplicationUser> userManager) : base(unitOfWork, mapper, httpContext)
+        public AccountsService(IConfiguration configuration, IHttpContextAccessor httpContext, UserManager<ApplicationUser> userManager,
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IUrlHelper urlHelper,
+            IEmailService emailService,
+             IHttpContextAccessor httpContextAccessor) : base(unitOfWork, mapper, httpContext)
+
         {
             this.configuration = configuration;
+            this.httpContext = httpContext;
             this.userManager = userManager;
+            this.urlHelper = urlHelper;
+            this.emailService = emailService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         //public AccountsService(IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
@@ -65,11 +80,21 @@ namespace Medium.BL.AppServices
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.First().Description);
 
-            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName });
-            await UnitOfWork.CommitAsync();
+            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user });
+
 
             await userManager.AddToRoleAsync(user, "User");
 
+            //Send Confirm Email
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var requestAccessor = httpContextAccessor.HttpContext.Request;
+            var Url = requestAccessor.Scheme + "://" + requestAccessor.Host + urlHelper.Action("ConfirmEmail", "Accounts", new { UserId = user.Id, Code = code });
+
+
+            var message = $"To Confirm Email Click Link: <a href='{Url}'> اضغط هنا</a>";
+            // message or bodyq
+            var Request = new EmailSendRequest(user.Email, message, "ConFirm Email");
+            await emailService.SendEmail(Request);
 
             var response = new RegisterResponse(user.UserName, user.PasswordHash, user.Email);
 

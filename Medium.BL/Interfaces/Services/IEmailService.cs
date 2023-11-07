@@ -5,13 +5,16 @@ namespace Medium.BL.Interfaces.Services
     public interface IEmailService
     {
         Task<ApiResponse<bool>> SendEmail(EmailSendRequest request);
+        // Task<ApiResponse<string>> ConfirmEmail(int? UserId, string? Code);
+        Task<ApiResponse<string>> ConfirmEmail(ConfirmEmailRequest request);
         Task<ApiResponse<string>> SendResetPasswordCode(SendResetPasswordRequest request);
         Task<ApiResponse<string>> ConfirmResetPassword(ConfirmResetPasswordRequest request);
         Task<ApiResponse<string>> ResetPassword(ResetPasswordRequest request);
 
     }
 
-    public record EmailSendRequest(string Email, string Message, string? Reason);
+    public record EmailSendRequest(string Email = "", string Message = "", string? Reason = "");
+    public record ConfirmEmailRequest(int? UserId, string? Code);
     public record SendResetPasswordRequest(string Email);
     public record ConfirmResetPasswordRequest(string Code, string Email);
     public record ResetPasswordRequest(string Email, string Password, string ConfirmPassword);

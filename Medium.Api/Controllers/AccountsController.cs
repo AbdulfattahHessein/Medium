@@ -12,12 +12,14 @@ namespace Medium.Api.Controllers
 
     public class AccountsController : AppControllerBase
     {
+        private readonly IEmailService emailService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IAccountsService _accountsService;
         private readonly IRoleServices _roleServices;
 
-        public AccountsController(UserManager<ApplicationUser> userManager, IAccountsService accountsService, IRoleServices roleServices)
+        public AccountsController(IEmailService emailService, UserManager<ApplicationUser> userManager, IAccountsService accountsService, IRoleServices roleServices)
         {
+            this.emailService = emailService;
             this.userManager = userManager;
             this._accountsService = accountsService;
             _roleServices = roleServices;
@@ -32,6 +34,14 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
 
         }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
+        {
+            var response = await emailService.ConfirmEmail(request);
+            return ApiResult(response);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {

@@ -39,8 +39,8 @@ namespace Medium.BL.AppServices
                 //sending the Message of passwordResetLink
                 using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync(configuration["Email:host"], 465, true);
-                    client.Authenticate(configuration["Email:fromEmail"], configuration["Email:password"]);
+                    await client.ConnectAsync("smtp.gmail.com", 465, true);
+                    client.Authenticate("nadasaeed566@gmail.com", "lzwpqzydygrfffqe");
                     var bodybuilder = new BodyBuilder
                     {
                         HtmlBody = $"{request.Message}",
@@ -143,6 +143,22 @@ namespace Medium.BL.AppServices
                 await _userManager.AddPasswordAsync(user, request.Password);
             }
 
+            return Success<string>("Successed");
+        }
+
+        public async Task<ApiResponse<string>> ConfirmEmail(ConfirmEmailRequest request)
+        {
+            if (request.UserId == null || request.Code == null)
+            {
+                return BadRequest<string>("Error When ConfirmEmail");
+            }
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            var confirmEmail = await _userManager.ConfirmEmailAsync(user, request.Code);
+            if (!confirmEmail.Succeeded)
+            {
+                return BadRequest<string>("Error When ConfirmEmail");
+            }
+            await unitOfWork.CommitAsync();
             return Success<string>("Successed");
         }
 

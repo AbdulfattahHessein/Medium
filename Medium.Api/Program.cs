@@ -3,6 +3,8 @@ using Medium.BL.Middlewares;
 using Medium.DA;
 using Medium.DA.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -62,6 +64,15 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddBusinessLogicDependencies();
+
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+builder.Services.AddScoped<IUrlHelper>(x =>
+{
+    var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+    var factory = x.GetRequiredService<IUrlHelperFactory>();
+    return factory.GetUrlHelper(actionContext);
+});
 
 var app = builder.Build();
 
