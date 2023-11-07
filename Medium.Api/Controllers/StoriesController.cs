@@ -15,14 +15,6 @@ namespace Medium.Api.Controllers
             _storiesService = storiesService;
         }
 
-        //[HttpGet("GetAllStories")]
-        ////  [Authorize]
-        //public async Task<IActionResult> GetAllStories()
-        //{
-        //    var stories = await _storiesService.GetAllStories();
-        //    return ApiResult(stories);
-        //}
-
         [HttpGet("GetStoryByID/{id}")]
         [Authorize]
         public async Task<IActionResult> GetStoryById(int id)
@@ -31,17 +23,8 @@ namespace Medium.Api.Controllers
             return ApiResult(story);
         }
 
-        //[HttpGet("GetAllStoriesIncludingPublisher")]
-        //[Authorize]
-        //public async Task<IActionResult> GetAllStoriesIncludingPublisher()
-        //{
-        //    var stories = await _storiesService.GetAllStoriesIncludingPublisher();
-        //    return ApiResult(stories);
-        //}
-
-        [HttpGet("GetAllPaginationStories")]
-        [Authorize]
-        public async Task<IActionResult> GetAllPaginationStories([FromQuery] GetAllPaginationStoryRequest request)
+        [HttpGet]
+        public async Task<IActionResult> GetAllStories([FromQuery] GetAllPaginationStoryRequest request)
         {
             var result = await _storiesService.GetAllAsync(request);
 
@@ -52,8 +35,6 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetAllPublisherStories([FromQuery] GetAllPaginationStoryRequest request)
         {
-            //
-
             var result = await _storiesService.GetAllPublisherStoriesAsync(request);
 
             return ApiResult(result);
