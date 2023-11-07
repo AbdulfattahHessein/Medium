@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Medium.BL.Features.Publisher.Response;
 using Medium.BL.Interfaces.Services;
 using Entities = Medium.Core.Entities;
 
