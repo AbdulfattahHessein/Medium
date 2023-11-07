@@ -34,10 +34,14 @@ namespace Medium.DA
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
+
+                var validIssuers = configuration.GetSection("JWT:ValidIssuers").Get<string[]>();
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = configuration["JWT:ValidIssur"],
+                    //ValidIssuer = configuration["JWT:ValidIssur"],
+                    ValidIssuers = validIssuers,
                     ValidateAudience = true,
                     ValidAudience = configuration["JWT:ValidAudience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
