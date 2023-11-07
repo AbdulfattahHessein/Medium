@@ -128,14 +128,7 @@ namespace Medium.BL.AppServices
         //we dont need this function, and we need to create api to remove user and all thing related to its publisher
         public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
-            var validator = new DeletePublisherRequestValidator(UnitOfWork);
-            var validateResult = validator.Validate(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
-
-
+            await DoValidationAsync<DeletePublisherRequestValidator, DeletePublisherRequest>(request);
 
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
