@@ -34,7 +34,6 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
 
         }
-
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
         {
