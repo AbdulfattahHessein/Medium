@@ -90,8 +90,7 @@ namespace Medium.BL.AppServices
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.First().Description);
 
-            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user });
-
+            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName });
 
             await userManager.AddToRoleAsync(user, "User");
 
