@@ -65,6 +65,14 @@ namespace Medium.BL.ResponseHandler
                 Message = Message == null ? "Bad Request" : Message
             };
         }
+        public static ApiResponse<T> Forbidden<T>(string Message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.Forbidden,
+                Message = Message == null ? "Forbidden" : Message
+            };
+        }
 
 
         public static ApiResponse<T> UnprocessableEntity<T>(T entity)

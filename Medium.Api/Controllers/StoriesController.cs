@@ -15,7 +15,7 @@ namespace Medium.Api.Controllers
             _storiesService = storiesService;
         }
 
-        [HttpGet("GetStoryByID/{id}")]
+        [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetStoryById(int id)
         {
@@ -40,19 +40,17 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpPost("CreateStory")]
+        [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryRequest request)
         {
-            //
-            //// var topics = request.Topics; // Access the Topics from the request
             var result = await _storiesService.CreateStoryAsync(request);
 
             return ApiResult(result);
         }
 
 
-        [HttpPut("UpdateStory")]
+        [HttpPut]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateStory([FromForm] UpdateStoryRequest request)
         {
@@ -62,7 +60,7 @@ namespace Medium.Api.Controllers
             return ApiResult(story);
         }
 
-        [HttpDelete("DeleteStory/{id}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> DeleteStory(int id)
         {

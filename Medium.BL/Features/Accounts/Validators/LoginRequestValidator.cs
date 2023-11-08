@@ -30,6 +30,13 @@ namespace Medium.BL.Features.Accounts.Validators
                      var rightPassword = await userManager.CheckPasswordAsync(user, r.Password);
                      return rightPassword;
                  })
+                 .WithMessage("Invalid Username or Password")
+                 .MustAsync(async (r, i, c) =>
+                 {
+                     var user = await userManager.FindByNameAsync(r.UserName);
+                     var rightPassword = await userManager.CheckPasswordAsync(user, r.Password);
+                     return rightPassword;
+                 })
                  .WithMessage("Invalid Username or Password");
 
         }

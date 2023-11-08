@@ -1,4 +1,5 @@
-﻿using Medium.BL.Features.Accounts.Request;
+﻿using Medium.Api.Bases;
+using Medium.BL.Features.Accounts.Request;
 using Medium.BL.Interfaces.Services;
 using Medium.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Medium.Api.Controllers
 {
-    public class RoleController : ControllerBase
+    public class RoleController : AppControllerBase
     {
 
         private readonly IConfiguration configuration;
@@ -23,8 +24,8 @@ namespace Medium.Api.Controllers
             _roleServices = roleServices;
         }
 
-        [HttpPost("createRole")]
-        [Authorize("Admin")]
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRole([FromBody] AddRoleRequest request)
         {
             var result = await _roleServices.CreateRoleAsync(request);
@@ -32,21 +33,17 @@ namespace Medium.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetRoleByName")]
-        [Authorize("Admin")]
-        public async Task<IActionResult> GetRoleByName([FromQuery] GetRoleRequest request)
+        [HttpGet("{name}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRoleByName(string name)
         {
-            var result = await _roleServices.GetRoleByNameAsync(request);
-            //if (result == null)
-            //{
-            //    return BadRequest("Name Not Found");
-            //}
+            var result = await _roleServices.GetRoleByNameAsync(new GetRoleRequest(name));
 
             return Ok(result);
         }
 
-        [HttpGet("getAllRoles")]
-        [Authorize("Admin")]
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllRoles()
         {
             var result = await _roleServices.GetAllRolesAsync();
@@ -54,8 +51,8 @@ namespace Medium.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("updateRole")]
-        [Authorize("Admin")]
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRole([FromQuery] UpdateRoleRequest request)
         {
             var result = await _roleServices.UpdateRoleAsync(request);
@@ -63,11 +60,11 @@ namespace Medium.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("deleteRole")]
-        [Authorize("Admin")]
-        public async Task<IActionResult> DeleteRole([FromQuery] DeleteRoleRequest request)
+        [HttpDelete("{name}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRole(string name)
         {
-            var result = await _roleServices.DeleteRoleAsync(request);
+            var result = await _roleServices.DeleteRoleAsync(new DeleteRoleRequest(name));
 
             return Ok(result);
         }

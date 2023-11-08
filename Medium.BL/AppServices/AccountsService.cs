@@ -52,9 +52,13 @@ namespace Medium.BL.AppServices
         //}
         public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
         {
+            //await DoValidationAsync<LoginRequestValidator, LoginRequest>(request);
+
             var user = await userManager.FindByNameAsync(request.UserName);
             if (user != null)
             {
+                //    if (await userManager.IsEmailConfirmedAsync(user))
+                //    {
                 var rightPassword = await userManager.CheckPasswordAsync(user, request.Password);
                 if (rightPassword)
                 {
@@ -62,6 +66,12 @@ namespace Medium.BL.AppServices
                     var response = new LoginResponse(token);
                     return Success(response);
                 }
+                else
+                {
+                    return Forbidden<LoginResponse>();
+                }
+                //}
+
             }
             return UnAuthorized<LoginResponse>();
         }
@@ -92,7 +102,7 @@ namespace Medium.BL.AppServices
 
 
             var message = $"To Confirm Email Click Link: <a href='{Url}'> اضغط هنا</a>";
-            // message or bodyq
+            // message or body
             var Request = new EmailSendRequest(user.Email, message, "ConFirm Email");
             await emailService.SendEmail(Request);
 

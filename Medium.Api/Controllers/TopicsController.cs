@@ -13,9 +13,9 @@ namespace Medium.Api.Controllers
         {
             _topicsService = topicsService;
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var result = await _topicsService.GetById(new GetTopicByIdRequest(id));
 
@@ -45,9 +45,9 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
-        [HttpGet("GetAllPaginationTopics")]
+        [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAllPaginationTopics([FromQuery] GetAllPaginationTopicRequest request)
+        public async Task<IActionResult> GetAllTopics([FromQuery] GetAllPaginationTopicRequest request)
         {
             var result = await _topicsService.GetAllAsync(request);
 

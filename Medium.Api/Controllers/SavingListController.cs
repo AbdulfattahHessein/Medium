@@ -15,18 +15,9 @@ namespace Medium.Api.Controllers
             _savingListServices = savingListServices;
         }
 
-
-        //[HttpGet("GetAllSaveingList")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> GetAllSaveingList()
-        //{
-        //    var saveList = await _savingListServices.GetAllAsync();
-        //    return ApiResult(saveList);
-        //}
-
-        [HttpGet("GetAllPaginationSaveList")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllPaginationStoies([FromQuery] GetAllPaginationSaveListRequest request)
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllStories([FromQuery] GetAllPaginationSaveListRequest request)
         {
             var result = await _savingListServices.GetAllPaginationAsync(request);
 
@@ -43,7 +34,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpGet("GetSavingListById/{id}")]
+        [HttpGet("{id}")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetSavingListById(int id)
         {
@@ -52,7 +43,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpPost("CreateSavingList")]
+        [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateSavingList([FromForm] CreateSavingListRequest request)
         {
@@ -62,7 +53,7 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpPut("UpdateSavingList")]
+        [HttpPut]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateSavingList([FromForm] UpdateSavingListRequest request)
         {
@@ -70,12 +61,11 @@ namespace Medium.Api.Controllers
             return ApiResult(saveList);
         }
 
-
-        [HttpDelete("DeleteSaveList")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> DeleteSaveList([FromQuery] DeleteSavingListRequest request)
+        public async Task<IActionResult> DeleteSaveList(int id)
         {
-            var saveList = await _savingListServices.DeleteAsync(request);
+            var saveList = await _savingListServices.DeleteAsync(new DeleteSavingListRequest(id));
             return ApiResult(saveList);
         }
 
@@ -94,14 +84,6 @@ namespace Medium.Api.Controllers
             var result = await _savingListServices.RemoveStoryFromSavingList(request);
             return ApiResult(result);
         }
-
-        //    [HttpGet("GetAllSavingListsWithStories")]
-        //    public async Task<IActionResult> GetAllSavingListsWithStories()
-        //    {
-        //        var result = await _savingListServices.GetAllSavingListsWithStoriesAsync();
-        //        return ApiResult(result);
-        //    }
-        //}
     }
 }
 

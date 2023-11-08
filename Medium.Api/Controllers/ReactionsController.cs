@@ -14,7 +14,7 @@ namespace Medium.Api.Controllers
         {
             _reactionsService = reactionsService;
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get(int id)
         {
@@ -31,7 +31,7 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -48,9 +48,9 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
-        [HttpGet("GetAllPaginationReactions")]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllPaginationReactions([FromQuery] GetAllPaginationReactionsRequest request)
+        public async Task<IActionResult> GetAllReactions([FromQuery] GetAllPaginationReactionsRequest request)
         {
             var result = await _reactionsService.GetAllAsync(request);
 
