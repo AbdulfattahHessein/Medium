@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Resources\" />
+    <Folder Include="Resources\StoryPhotos\" />
+    <Folder Include="wwwroot\Resources\StoryVideos\" />
+    <Folder Include="wwwroot\Resources\StoryPhotos\" />
   </ItemGroup>
 
 </Project>
