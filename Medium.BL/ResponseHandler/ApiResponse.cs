@@ -14,7 +14,7 @@ namespace Medium.BL.ResponseHandler
             T data,
             int totalCount,
             int page = 1,
-            int pageSize = 10, string message = null)
+            int pageSize = 10, string? message = null)
         {
             Data = data;
             TotalCount = totalCount;
@@ -26,13 +26,18 @@ namespace Medium.BL.ResponseHandler
         public int PageSize { get; set; } = 10;
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
         public int TotalCount { get; set; }
-        public string Message { get; set; }
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
     }
 
-    public class ApiResponse<T> : ApiResponse, IApiResponse<T>
+    public class ApiResponse<T> : IApiResponse<T>//: ApiResponse, IApiResponse<T>
     {
+        public T? Data { get; set; }
+        public bool Succeeded => (int)StatusCode >= 200 && (int)StatusCode <= 290;
+        public HttpStatusCode StatusCode { get; set; }
+        public object? Meta { get; set; }
+        public string? Message { get; set; }
+        public Dictionary<string, List<string>>? Errors { get; set; }
         public ApiResponse()
         {
 
@@ -44,17 +49,9 @@ namespace Medium.BL.ResponseHandler
             Message = message;
         }
 
-        public new T? Data { get; set; }
     }
-    public class ApiResponse : IApiResponse
+    public class ApiResponse : ApiResponse<object>, IApiResponse
     {
-        public object? Data { get; set; }
-        public bool Succeeded => (int)StatusCode >= 200 && (int)StatusCode <= 290;
-        public HttpStatusCode StatusCode { get; set; }
-        public object? Meta { get; set; }
-        public string Message { get; set; }
-        public Dictionary<string, List<string>>? Errors { get; set; }
-
     }
 
 }

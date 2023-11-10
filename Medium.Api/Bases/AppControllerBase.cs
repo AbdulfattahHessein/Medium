@@ -21,6 +21,8 @@ namespace Medium.Api.Bases
                 HttpStatusCode.Accepted => new AcceptedResult(string.Empty, response),
                 HttpStatusCode.UnprocessableEntity => new UnprocessableEntityObjectResult(response),
                 HttpStatusCode.NoContent => new NoContentResult(),
+                HttpStatusCode.Forbidden => new ObjectResult(response) { StatusCode = (int)HttpStatusCode.Forbidden }
+,
                 _ => new BadRequestObjectResult(response)
 
             };

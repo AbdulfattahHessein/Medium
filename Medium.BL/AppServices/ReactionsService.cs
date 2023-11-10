@@ -17,7 +17,7 @@ namespace Medium.BL.AppServices
         public ReactionsService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext) : base(unitOfWork, mapper, httpContext)
         {
         }
-        public async Task<ApiResponse> AddReactToStory(AddReactToStoryRequest request)
+        public async Task<ApiResponse<AddReactToStoryResponse>> AddReactToStory(AddReactToStoryRequest request)
         {
             await DoValidationAsync<AddReactToStoryRequestValidator, AddReactToStoryRequest>(request, UnitOfWork);
 
@@ -30,7 +30,7 @@ namespace Medium.BL.AppServices
             await UnitOfWork.Reacts.InsertAsync(react);
             await UnitOfWork.CommitAsync();
 
-            return NoContent<ApiResponse>();
+            return NoContent<AddReactToStoryResponse>();
         }
         public async Task<ApiResponse<RemoveReactFromStoryResponse>> RemoveReactFromStory(RemoveReactFromStoryRequest request)
         {

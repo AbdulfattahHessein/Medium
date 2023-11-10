@@ -102,7 +102,7 @@ namespace Medium.BL.AppServices
                 return NotFound<UpdatePublisherResponse>();
 
             //Delete publisher photo if exist
-            if (publisher.PhotoUrl != null)
+            if (publisher.PhotoUrl != null && publisher.PhotoUrl != "/Defaults/default-profile.png")
             {
                 File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }
@@ -112,7 +112,7 @@ namespace Medium.BL.AppServices
 
             //upload the new photo and set the photoUrl 
             var fileName = await UploadFormFileToAsync(request.Photo, Path.Combine(webRootPath, "Resources", "Photos"));
-            publisher.PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : null;
+            publisher.PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : "/Defaults/default-profile.png";
 
             //update the publisher
             UnitOfWork.Publishers.Update(publisher);

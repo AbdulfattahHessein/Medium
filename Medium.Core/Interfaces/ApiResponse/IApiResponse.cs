@@ -2,18 +2,17 @@
 
 namespace Medium.Core.Interfaces.ApiResponse
 {
-    public interface IApiResponse<T> : IApiResponse
+    public interface IApiResponse<T> //: IApiResponse
     {
-        new T? Data { get; set; }
-
-    }
-    public interface IApiResponse
-    {
-        object? Data { get; set; }
+        T? Data { get; set; }
         Dictionary<string, List<string>>? Errors { get; set; }
         object? Meta { get; set; }
         HttpStatusCode StatusCode { get; set; }
         bool Succeeded { get; }
+
+    }
+    public interface IApiResponse : IApiResponse<object>
+    {
     }
 
 }

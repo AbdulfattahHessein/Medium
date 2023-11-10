@@ -2,6 +2,7 @@
 using Medium.Core.Interfaces.Bases;
 using Medium.DA.Context;
 using Medium.DA.Implementation.Bases;
+using Medium.DA.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +22,24 @@ namespace Medium.DA
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
             });
-            services.AddIdentity<ApplicationUser, IdentityRole<int>>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
+            {
+                //options.SignIn.RequireConfirmedEmail = true;
+                //options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+            //remove validation from password
+            services.AddScoped<IPasswordValidator<ApplicationUser>, NoOpPasswordValidator<ApplicationUser>>();
 
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            })
+            .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;

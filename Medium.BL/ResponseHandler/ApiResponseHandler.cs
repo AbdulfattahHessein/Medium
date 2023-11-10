@@ -12,12 +12,12 @@ namespace Medium.BL.ResponseHandler
                 StatusCode = System.Net.HttpStatusCode.OK,
             };
         }
-        public static ApiResponse<T> Deleted<T>(string Message = null)
+        public static ApiResponse<T> Deleted<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
-                Message = Message == null ? "Deleted Successfully" : Message
+                Message = Message ?? "Deleted Successfully"
             };
         }
         public static ApiResponse<T> Success<T>(T data, string? Message = null, object? Meta = null)
@@ -26,6 +26,7 @@ namespace Medium.BL.ResponseHandler
             {
                 Data = data,
                 StatusCode = System.Net.HttpStatusCode.OK,
+                Message = Message ?? "Success",
                 Meta = Meta
             };
         }
@@ -50,27 +51,28 @@ namespace Medium.BL.ResponseHandler
                 StatusCode = System.Net.HttpStatusCode.OK,
             };
         }
-        public static ApiResponse<T> UnAuthorized<T>()
+        public static ApiResponse<T> UnAuthorized<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Unauthorized,
+                Message = Message ?? "Unauthorized"
             };
         }
-        public static ApiResponse<T> BadRequest<T>(string Message = null)
+        public static ApiResponse<T> BadRequest<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.BadRequest,
-                Message = Message == null ? "Bad Request" : Message
+                Message = Message ?? "Bad Request"
             };
         }
-        public static ApiResponse<T> Forbidden<T>(string Message = null)
+        public static ApiResponse<T> Forbidden<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Forbidden,
-                Message = Message == null ? "Forbidden" : Message
+                Message = Message ?? "Forbidden"
             };
         }
 
@@ -89,34 +91,37 @@ namespace Medium.BL.ResponseHandler
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.NotFound,
+                Message = Message ?? "Not Found",
+
             };
         }
-        public static ApiResponse<T> NotFound<T>(T entity, object? Meta = null, string? Message = null)
+        public static ApiResponse<T> NotFound<T>(T entity, string? Message = null, object? Meta = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Created,
-                Message = Message == null ? "Not Found" : Message,
+                Message = Message ?? "Not Found",
                 Meta = Meta,
                 Data = entity
             };
         }
 
-        public static ApiResponse<T> Created<T>(T entity, object? Meta = null)
+        public static ApiResponse<T> Created<T>(T entity, string? Message = null, object? Meta = null)
         {
             return new ApiResponse<T>()
             {
                 Data = entity,
                 StatusCode = System.Net.HttpStatusCode.Created,
+                Message = Message ?? "Created Successfully",
                 Meta = Meta
             };
         }
-        public static ApiResponse<T> Created<T>(string Message = null)
+        public static ApiResponse<T> Created<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Created,
-                Message = Message == null ? "Created Successfully" : Message,
+                Message = Message ?? "Created Successfully",
             };
         }
         public static ApiResponse<T> NoContent<T>()
@@ -124,14 +129,16 @@ namespace Medium.BL.ResponseHandler
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.NoContent,
+                Message = "Not Content"
+
             };
         }
-        public static ApiResponse<T> NoContent<T>(string Message = null)
+        public static ApiResponse<T> NoContent<T>(string? Message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.NoContent,
-                Message = Message == null ? "Not Content" : Message
+                Message = Message ?? "Not Content"
             };
         }
     }

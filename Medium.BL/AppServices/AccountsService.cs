@@ -44,15 +44,9 @@ namespace Medium.BL.AppServices
             this.emailService = emailService;
             this.httpContextAccessor = httpContextAccessor;
         }
-
-        //public AccountsService(IConfiguration configuration, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
-        //{
-        //    this.configuration = configuration;
-        //    this.userManager = userManager;
-        //}
         public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
         {
-            //await DoValidationAsync<LoginRequestValidator, LoginRequest>(request);
+            await DoValidationAsync<LoginRequestValidator, LoginRequest>(request);
 
             var user = await userManager.FindByNameAsync(request.UserName);
             if (user != null)
@@ -66,14 +60,9 @@ namespace Medium.BL.AppServices
                     var response = new LoginResponse(token);
                     return Success(response);
                 }
-                else
-                {
-                    return Forbidden<LoginResponse>();
-                }
                 //}
-
             }
-            return UnAuthorized<LoginResponse>();
+            return UnAuthorized<LoginResponse>("Invalid Username or Password");
         }
 
         public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest request)
@@ -90,7 +79,7 @@ namespace Medium.BL.AppServices
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.First().Description);
 
-            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName });
+            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName, PhotoUrl = "/Defaults/default-profile.png" });
 
             await userManager.AddToRoleAsync(user, "User");
 
