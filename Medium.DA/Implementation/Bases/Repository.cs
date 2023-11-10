@@ -39,13 +39,13 @@ namespace Medium.DA.Implementation.Bases
 
             return query.ToListAsync();
         }
-        public async Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object?>>[] includes)
+        public Task<List<TEntity>> GetAllAsync(int skip, int take, params Expression<Func<TEntity, object?>>[] includes)
         {
             var query = Includes(_table, includes);
 
-            var items = await query.Skip(skip).Take(take).ToListAsync();
+            query = query.Skip(skip).Take(take);
 
-            return query.ToList();
+            return query.ToListAsync();
         }
         public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? criteria, int? skip, int? take, params Expression<Func<TEntity, object?>>[] includes)
         {

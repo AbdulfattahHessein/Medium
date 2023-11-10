@@ -75,5 +75,14 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
+        [HttpGet("Followers")]
+        [Authorize]
+        public async Task<IActionResult> GetAllFollowers([FromQuery] GetAllFollowersRequest request)
+        {
+
+            var result = await _publishersService.GetAllFollowers(request);
+
+            return ApiResult(result);
+        }
     }
 }

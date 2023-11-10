@@ -35,12 +35,12 @@ namespace Medium.DA.Context
 
             modelBuilder.Entity<Publisher>().HasData(new Publisher(1, "Admin"));
 
-            var userRole = new IdentityUserRole<int>()
+            var userRoles = new List<IdentityUserRole<int>>
             {
-                RoleId = 1,
-                UserId = 1,
+                new IdentityUserRole<int>() {  RoleId = 1, UserId = 1 },
+                new IdentityUserRole<int>() {  RoleId = 2, UserId = 1 }
             };
-            modelBuilder.Entity<IdentityUserRole<int>>().HasData(userRole);
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(userRoles);
 
         }
     }

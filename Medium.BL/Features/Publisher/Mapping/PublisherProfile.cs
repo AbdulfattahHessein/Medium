@@ -18,6 +18,7 @@ namespace Medium.BL.Features.Publisher.Mapping
             AddFollowingResponseMapping();
             DeleteFollowingResponseMapping();
             GetFollowerNotFollowingResponseMapping();
+            GetAllFollowersMapping();
         }
         void GetAllPublisherMapping()
         {

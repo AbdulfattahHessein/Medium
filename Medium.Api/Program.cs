@@ -89,7 +89,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-app.UseMiddleware<ExceptionHandlerMiddleware>();
+//app.UseMiddleware<ExceptionHandlerMiddleware>();
 //app.UseMiddleware<UserExistenceMiddleware>();
 
 

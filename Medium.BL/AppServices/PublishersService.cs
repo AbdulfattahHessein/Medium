@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Linq;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
@@ -168,21 +169,27 @@ namespace Medium.BL.AppServices
         {
             await DoValidationAsync<FollowerNotFollowingRequestValidator, FollowerNotFollowingRequest>(request, UnitOfWork);
 
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followers, p => p.Followings)!;
+            #region old code
+            //var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followers, p => p.Followings)!;
 
-            if (publisher == null)
-            {
-                return new ApiResponsePaginated<List<FollowerNotFollowingResponse>>()
-                {
-                    StatusCode = System.Net.HttpStatusCode.NotFound,
-                };
-            }
+            //if (publisher == null)
+            //{
+            //    return new ApiResponsePaginated<List<FollowerNotFollowingResponse>>()
+            //    {
+            //        StatusCode = System.Net.HttpStatusCode.NotFound,
+            //    };
+            //}
 
-            var FollowersNotFollowing = publisher.Followers!.Except(publisher.Followings!);
+            //var FollowersNotFollowing = publisher.Followers!.Except(publisher.Followings!);
+
+            //var response = Mapper.Map<List<FollowerNotFollowingResponse>>(FollowersNotFollowing);
+            #endregion
+
+            var FollowersNotFollowing = await UnitOfWork.Publishers.GetFollowersNotFollowings(PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
             var response = Mapper.Map<List<FollowerNotFollowingResponse>>(FollowersNotFollowing);
 
-            return Success(response, FollowersNotFollowing.Count(), request.PageNumber, request.PageSize);
+            return Success(response, FollowersNotFollowing.Count, request.PageNumber, request.PageSize);
         }
         public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
@@ -245,6 +252,17 @@ namespace Medium.BL.AppServices
 
             }
             throw new NotImplementedException();
+        }
+
+        public async Task<ApiResponsePaginated<List<GetAllFollowersResponse>>> GetAllFollowers(GetAllFollowersRequest request)
+        {
+            var followers = await UnitOfWork.Publishers.GetAllFollowers(request.PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            var response = Mapper.Map<List<GetAllFollowersResponse>>(followers);
+
+            return Success(response, followers.Count, request.PageNumber, request.PageSize);
+
+
         }
     }
 }

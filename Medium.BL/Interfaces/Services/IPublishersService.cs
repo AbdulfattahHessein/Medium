@@ -8,6 +8,7 @@ namespace Medium.BL.Interfaces.Services
     public interface IPublishersService
     {
         Task<ApiResponsePaginated<List<GetAllPublisherResponse>>> GetAllAsync(GetAllPublisherRequest request);
+        Task<ApiResponsePaginated<List<GetAllFollowersResponse>>> GetAllFollowers(GetAllFollowersRequest request);
         Task<ApiResponsePaginated<List<FollowerNotFollowingResponse>>> GetFollowerNotFollowing(FollowerNotFollowingRequest request);
         Task<ApiResponse<CreatePublisherResponse>> Create(CreatePublisherRequest request);
         Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request);

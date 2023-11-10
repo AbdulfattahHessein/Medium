@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Medium.BL.ResponseHandler
 {
-    public class ApiResponsePaginated<T> : ApiResponse<T> where T : ICollection
+    public class ApiResponsePaginated<T> : ApiResponse<T> //where T : ICollection
     {
         public ApiResponsePaginated()
         {
