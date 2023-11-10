@@ -9,7 +9,6 @@ using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -65,6 +64,7 @@ namespace Medium.BL.AppServices
             if (request.StoryPhotos != null)
             {
                 var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryPhotos");
+                //string uploadDirectory = Path.Combine("./Resources", "StoryPhotos");
 
                 foreach (var file in request.StoryPhotos)
                 {
@@ -79,6 +79,7 @@ namespace Medium.BL.AppServices
             if (request.StoryVideos != null)
             {
                 var uploadDirectory = Path.Combine(webRootPath, "Resources", "StoryVideos");
+                //string uploadDirectory = Path.Combine("./Resources", "StoryVideos");
                 foreach (var file in request.StoryVideos)
                 {
                     string? fileName = await UploadFormFileToAsync(file, uploadDirectory);
@@ -125,7 +126,7 @@ namespace Medium.BL.AppServices
         ////// ================================ GETALL ============================================================
         public async Task<ApiResponse<List<GetAllStoryResponse>>> GetAllStories()
         {
-            var stories = await UnitOfWork.Stories.GetAllAsync(s => s.StoryPhotos, s => s.StoryVideos);
+            var stories = await UnitOfWork.Stories.GetAllAsync(s => s.StoryPhotos, s => s.StoryVideos, s => s.Publisher);
             var storiesMap = Mapper.Map<List<GetAllStoryResponse>>(stories);
             return Success(storiesMap);
 
@@ -142,7 +143,8 @@ namespace Medium.BL.AppServices
                 throw new ValidationException(validateResult.Errors);
             }
 
-            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos, s => s.Topics, s => s.Reacts);
+            var story = await UnitOfWork.Stories.GetByIdAsync(request.Id, s => s.StoryPhotos, s => s.StoryVideos, s => s.Topics,
+                s => s.Reacts, s => s.Publisher);
             if (story == null)
             {
                 return NotFound<GetStoryByIdResponse>();
@@ -304,7 +306,7 @@ namespace Medium.BL.AppServices
         {
             var stories = await UnitOfWork.Stories
                 .GetAllAsync(s => s.Title.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize,
-                s => s.Publisher, s => s.Topics, s => s.StoryPhotos);
+                s => s.Publisher, s => s.Topics, s => s.StoryPhotos, s => s.Publisher);
 
             var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
 
