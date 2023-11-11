@@ -94,9 +94,9 @@ namespace Medium.BL.AppServices
             var Request = new EmailSendRequest(user.Email, message, "ConFirm Email");
             await emailService.SendEmail(Request);
 
-            var response = new RegisterResponse(user.UserName, user.PasswordHash, user.Email);
+            var response = new RegisterResponse(user.UserName, user.Email);
 
-            return Success(response);
+            return Success(response, "Account Created Successfully");
         }
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {

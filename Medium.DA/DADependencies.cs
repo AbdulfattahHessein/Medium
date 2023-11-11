@@ -25,7 +25,7 @@ namespace Medium.DA
             services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
             {
                 //options.SignIn.RequireConfirmedEmail = true;
-                //options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();

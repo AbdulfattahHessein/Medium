@@ -135,13 +135,30 @@ namespace Medium.Api.Controllers
 
             return ApiResult(result);
         }
-        [HttpGet("GetAllUsers")]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var result = await userManager.Users.ToListAsync();
+            var users = await userManager.Users.ToListAsync();
 
-            return Ok(result);
+            var usersWithRoles = new List<object>();
+
+
+            foreach (var user in users)
+            {
+                var userRoles = await userManager.GetRolesAsync(user);
+
+                usersWithRoles.Add(new
+                {
+                    user.Id,
+                    user.UserName,
+                    user.Email,
+                    user.EmailConfirmed,
+                    Roles = userRoles
+                });
+            }
+
+            return Ok(usersWithRoles);
         }
 
     }

@@ -21,7 +21,8 @@ namespace Medium.BL.Features.Accounts.Validators
                      var user = await userManager.FindByNameAsync(r.UserName);
                      return user == null;
                  })
-                .WithMessage("Username is already used.");
+                .WithMessage("Username is already used.")
+                .Matches(@"^[A-Za-z]+").WithMessage("Your username must start with character.");
 
             RuleFor(t => t.Email)
                .NotEmpty().WithMessage("{PropertyName} must be not empty")

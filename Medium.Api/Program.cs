@@ -28,12 +28,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDataAccessDependencies(builder.Configuration);
 
-//builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
-//                    .AddEntityFrameworkStores<ApplicationDbContext>()
-//                    .AddUserValidator<CustomUserValidator<ApplicationUser>>()
-//                    .AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>();
-
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
@@ -89,7 +83,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-//app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 //app.UseMiddleware<UserExistenceMiddleware>();
 
 
