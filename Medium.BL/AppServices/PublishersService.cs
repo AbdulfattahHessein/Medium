@@ -129,15 +129,15 @@ namespace Medium.BL.AppServices
         //we dont need this function, and we need to create api to remove user and all thing related to its publisher
         public async Task<ApiResponse<DeletePublisherResponse>> DeleteAsync(DeletePublisherRequest request)
         {
-            await DoValidationAsync<DeletePublisherRequestValidator, DeletePublisherRequest>(request);
+            await DoValidationAsync<DeletePublisherRequestValidator, DeletePublisherRequest>(request, UnitOfWork);
 
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
             if (publisher == null)
             {
-                return NotFound<DeletePublisherResponse>();
+                return NotFound<DeletePublisherResponse>("Publisher Not Found");
             }
             //Delete publisher photo if exist
-            if (publisher.PhotoUrl != null)
+            if (publisher.PhotoUrl != null && publisher.PhotoUrl != "/Defaults/default-profile.png")
             {
                 File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }

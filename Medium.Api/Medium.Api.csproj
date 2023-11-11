@@ -26,9 +26,4 @@
     <ProjectReference Include="..\Medium.DA\Medium.DA.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Resources\StoryVideos\" />
-    <Folder Include="wwwroot\Resources\StoryPhotos\" />
-  </ItemGroup>
-
 </Project>
