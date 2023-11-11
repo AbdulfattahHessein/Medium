@@ -5,7 +5,6 @@ using Medium.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Medium.Api.Controllers
 {
@@ -139,26 +138,8 @@ namespace Medium.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await userManager.Users.ToListAsync();
-
-            var usersWithRoles = new List<object>();
-
-
-            foreach (var user in users)
-            {
-                var userRoles = await userManager.GetRolesAsync(user);
-
-                usersWithRoles.Add(new
-                {
-                    user.Id,
-                    user.UserName,
-                    user.Email,
-                    user.EmailConfirmed,
-                    Roles = userRoles
-                });
-            }
-
-            return Ok(usersWithRoles);
+            var users = await _accountsService.GetAllUsersWithRoles();
+            return ApiResult(users);
         }
 
     }

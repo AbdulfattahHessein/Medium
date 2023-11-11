@@ -10,6 +10,7 @@ using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -44,6 +45,32 @@ namespace Medium.BL.AppServices
             this.emailService = emailService;
             this.httpContextAccessor = httpContextAccessor;
         }
+
+        public async Task<ApiResponse<List<GetAllUsersWithRolesResponse>>> GetAllUsersWithRoles()
+        {
+            var users = await userManager.Users.ToListAsync();
+
+            var usersWithRoles = new List<GetAllUsersWithRolesResponse>();
+
+            foreach (var user in users)
+            {
+                var userRoles = await userManager.GetRolesAsync(user);
+
+                var userWithRoles = new GetAllUsersWithRolesResponse
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    EmailConfirmed = user.EmailConfirmed.ToString(), // Convert to string
+                    Roles = userRoles.ToList() // Convert to List
+                };
+
+                usersWithRoles.Add(userWithRoles);
+            }
+
+            return Success(usersWithRoles);
+        }
+
         public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
         {
             await DoValidationAsync<LoginRequestValidator, LoginRequest>(request);

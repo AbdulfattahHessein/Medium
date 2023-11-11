@@ -8,7 +8,10 @@ namespace Medium.BL.Interfaces.Services
     {
         Task<ApiResponse<RegisterResponse>> Register(RegisterRequest request);
         Task<ApiResponse<LoginResponse>> Login(LoginRequest request);
+        Task<ApiResponse<List<GetAllUsersWithRolesResponse>>> GetAllUsersWithRoles();
     }
+
+
 
 
 }
