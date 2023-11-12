@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -257,6 +255,17 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponsePaginated<List<GetAllFollowersResponse>>> GetAllFollowers(GetAllFollowersRequest request)
         {
             var followers = await UnitOfWork.Publishers.GetAllFollowers(request.PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            var response = Mapper.Map<List<GetAllFollowersResponse>>(followers);
+
+            return Success(response, followers.Count, request.PageNumber, request.PageSize);
+
+
+        }
+
+        public async Task<ApiResponsePaginated<List<GetAllFollowersResponse>>> GetAllFolloweings(GetAllFollowersRequest request)
+        {
+            var followers = await UnitOfWork.Publishers.GetAllFollowings(request.PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
             var response = Mapper.Map<List<GetAllFollowersResponse>>(followers);
 

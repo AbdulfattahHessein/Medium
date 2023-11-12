@@ -76,11 +76,20 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
         [HttpGet("Followers")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetAllFollowers([FromQuery] GetAllFollowersRequest request)
         {
 
             var result = await _publishersService.GetAllFollowers(request);
+
+            return ApiResult(result);
+        }
+        [HttpGet("Followings")]
+        //  [Authorize]
+        public async Task<IActionResult> GetAllFollowerings([FromQuery] GetAllFollowersRequest request)
+        {
+
+            var result = await _publishersService.GetAllFolloweings(request);
 
             return ApiResult(result);
         }

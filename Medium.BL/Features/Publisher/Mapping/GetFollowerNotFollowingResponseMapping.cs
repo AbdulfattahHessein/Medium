@@ -7,6 +7,8 @@ namespace Medium.BL.Features.Publisher.Mapping
         void GetFollowerNotFollowingResponseMapping()
         {
             CreateMap<Core.Entities.Publisher, FollowerNotFollowingResponse>();
+
+
         }
     }
 }
