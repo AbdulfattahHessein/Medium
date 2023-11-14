@@ -67,5 +67,12 @@ namespace Medium.Api.Controllers
             var story = await _storiesService.DeleteStoryAsync(new DeleteStoryRequest(id));
             return ApiResult(story);
         }
+        [HttpGet("GetTopicWithStories")]
+        public async Task<IActionResult> GetTopicWithStories([FromQuery] GetAllStoriesByTopicNameRequest request)
+        {
+            var result = await _storiesService.GetAllStoriesByTopicIdAsync(request);
+            return ApiResult(result);
+        }
+
     }
 }

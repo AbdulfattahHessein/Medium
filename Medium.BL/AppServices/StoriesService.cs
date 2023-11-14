@@ -327,6 +327,51 @@ namespace Medium.BL.AppServices
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
+
+        //public async Task<ApiResponsePaginated<List<GetAllStoriesByTopicNameResponse>>> GetAllStoriesByTopicNameAsync(GetAllStoriesByTopicNameRequest request)
+        //{
+        //    // var topic = await UnitOfWork.Topics.FirstOrDefaultAsync(t => t.Id == request.TopicId, t => t.Stories);
+        //    var topic = await UnitOfWork.Stories.GetAllStoriesByTopicNameAsync(request.TopicId, (request.PageNumber - 1) * request.PageSize, request.PageSize
+        //        );
+        //    if (topic == null)
+        //    {
+        //        return new ApiResponsePaginated<List<GetAllStoriesByTopicNameResponse>>
+        //        {
+        //            StatusCode = System.Net.HttpStatusCode.NotFound,
+        //            Message = "Topic Not Found",
+        //        };
+        //    }
+
+        //    var response = Mapper.Map<List<GetAllStoriesByTopicNameResponse>>(topic);
+        //    return Success(response, topic.Count, request.PageNumber, request.PageSize);
+
+
+
+        //}
+        public async Task<ApiResponsePaginated<List<GetAllStoriesByTopicIdResponse>>> GetAllStoriesByTopicIdAsync(GetAllStoriesByTopicNameRequest request)
+        {
+            var stories = await UnitOfWork.Stories.GetAllStoriesByTopicIdAsync(request.TopicId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
+
+            if (stories == null || stories.Count == 0)
+            {
+                return new ApiResponsePaginated<List<GetAllStoriesByTopicIdResponse>>
+                {
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    Message = "Topic Not Found",
+                };
+            }
+            var response = Mapper.Map<List<GetAllStoriesByTopicIdResponse>>(stories);
+            // Calculate the total number of stories for the given topic
+            var totalStories = await UnitOfWork.Stories.CountAsync(s => s.Topics.Any(t => t.Id == request.TopicId));
+
+            foreach (var storyResponse in response)
+            {
+                storyResponse.StroriesNumber = totalStories;
+            }
+
+            return Success(response, totalStories, request.PageNumber, request.PageSize);
+        }
+
     }
 
 }
