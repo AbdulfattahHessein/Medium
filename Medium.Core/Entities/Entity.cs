@@ -2,7 +2,7 @@
 {
     public abstract class Entity<Key> where Key : struct
     {
-        public Key Id { get; protected set; }
+        public Key Id { get; set; }
         public Entity()
         {
             Id = default;

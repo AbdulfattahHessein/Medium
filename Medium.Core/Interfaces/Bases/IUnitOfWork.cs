@@ -1,4 +1,5 @@
 ﻿using Medium.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Medium.Core.Interfaces.Bases
 {
@@ -14,5 +15,6 @@ namespace Medium.Core.Interfaces.Bases
         public ISavingListRepository SavingLists { get; }
         Task<int> CommitAsync();
         public void Dispose();
+        public EntityEntry Attach(object entity);
     }
 }

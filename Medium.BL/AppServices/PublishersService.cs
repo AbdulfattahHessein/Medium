@@ -6,6 +6,7 @@ using Medium.BL.Features.Publisher.Responses;
 using Medium.BL.Features.Publisher.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
+using Medium.Core.Constants;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Hosting;
@@ -57,8 +58,9 @@ namespace Medium.BL.AppServices
             string uploadDirectory = Path.Combine(webRootPath, "Resources", "Photos");
             string? fileName = await UploadFormFileToAsync(request.Photo, uploadDirectory);
 
-            var publisher = new Publisher(request.Name)
+            var publisher = new Publisher
             {
+                Name = request.Name,
                 Bio = request.Bio,
                 PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : null // Set the relative URL
             };
@@ -73,12 +75,8 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<GetPublisherByIdResponse>> GetById(GetPublisherByIdRequest request)
         {
-            var validator = new GetPublisherByIdRequestValidator(UnitOfWork);
-            var validateResult = await validator.ValidateAsync(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
+            await DoValidationAsync<GetPublisherByIdRequestValidator, GetPublisherByIdRequest>(request, UnitOfWork);
+
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id, s => s.Followers);
             if (publisher == null)
                 return NotFound<GetPublisherByIdResponse>();
@@ -88,12 +86,7 @@ namespace Medium.BL.AppServices
 
         public async Task<ApiResponse<UpdatePublisherResponse>> UpdateAsync(UpdatePublisherRequest request)
         {
-            var validator = new UpdatePublisherRequestValidator(UnitOfWork);
-            var validateResult = validator.Validate(request);
-            if (!validateResult.IsValid)
-            {
-                throw new ValidationException(validateResult.Errors);
-            }
+            await DoValidationAsync<UpdatePublisherRequestValidator, UpdatePublisherRequest>(request, UnitOfWork);
 
             //get the old publisher
             var publisher = await UnitOfWork.Publishers.GetByIdAsync(request.Id);
@@ -101,7 +94,7 @@ namespace Medium.BL.AppServices
                 return NotFound<UpdatePublisherResponse>();
 
             //Delete publisher photo if exist
-            if (publisher.PhotoUrl != null && publisher.PhotoUrl != "/Defaults/default-profile.png")
+            if (publisher.PhotoUrl != null && publisher.PhotoUrl != Defaults.ProfilePhotoPath)
             {
                 File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }
@@ -111,7 +104,7 @@ namespace Medium.BL.AppServices
 
             //upload the new photo and set the photoUrl 
             var fileName = await UploadFormFileToAsync(request.Photo, Path.Combine(webRootPath, "Resources", "Photos"));
-            publisher.PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : "/Defaults/default-profile.png";
+            publisher.PhotoUrl = fileName != null ? $"/Resources/Photos/{fileName}" : Defaults.ProfilePhotoPath;
 
             //update the publisher
             UnitOfWork.Publishers.Update(publisher);
@@ -135,7 +128,7 @@ namespace Medium.BL.AppServices
                 return NotFound<DeletePublisherResponse>("Publisher Not Found");
             }
             //Delete publisher photo if exist
-            if (publisher.PhotoUrl != null && publisher.PhotoUrl != "/Defaults/default-profile.png")
+            if (publisher.PhotoUrl != null && publisher.PhotoUrl != Defaults.ProfilePhotoPath)
             {
                 File.Delete(Path.GetFullPath(webRootPath + publisher.PhotoUrl));
             }
@@ -192,64 +185,85 @@ namespace Medium.BL.AppServices
         public async Task<ApiResponse<AddFollowingResponse>> AddFollowingAsync(AddFollowingRequest request)
         {
             await DoValidationAsync<AddFollowingRequestValidator, AddFollowingRequest>(request, UnitOfWork);
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId);
-            var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId);
 
-            if (publisher != null && following != null)
-            {
-                if (publisher.Followings == null)
-                {
-                    publisher.Followings = new List<Publisher>();
-                }
+            if (request.FollowingId == PublisherId)
+                return BadRequest<AddFollowingResponse>("You can't follow or unfollow yourself");
 
-                if (following.Followers == null)
-                {
-                    following.Followers = new List<Publisher>();
-                }
+            var followingExist = await UnitOfWork.Publishers.AnyAsync(p => p.Id == request.FollowingId);
 
-                publisher.Followings.Add(following);
-                following.Followers.Add(publisher);
+            if (!followingExist)
+                return NotFound<AddFollowingResponse>("Publisher you want to follow Not Found");
 
-                await UnitOfWork.CommitAsync();
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followings);
 
-                var response = Mapper.Map<AddFollowingResponse>(following);
-                return Success(response);
-            }
+            var following = publisher?.Followings?.Where(f => f.Id == request.FollowingId).FirstOrDefault();
 
-            throw new NotImplementedException();
+            if (following != null)
+                return BadRequest<AddFollowingResponse>("You already follow this publisher");
+
+            following = new Publisher { Id = request.FollowingId };
+
+            var entityEntry = UnitOfWork.Attach(following);
+
+            publisher?.Followings?.Add(following);
+
+            await UnitOfWork.CommitAsync();
+
+            var response = Mapper.Map<AddFollowingResponse>(following);
+
+            return Success(response, "followed successfully");
+
+            #region another code for better performance
+            //var publisher = new Publisher() { Id = PublisherId };
+
+            //UnitOfWork.Attach(publisher);
+
+            //var followingExist = await UnitOfWork.Publishers.AnyAsync(p => p.Id == request.FollowingId);
+
+            //if (!followingExist)
+            //    return NotFound<AddFollowingResponse>();
+
+            //var following = new Publisher() { Id = request.FollowingId };
+
+            //UnitOfWork.Attach(following);
+
+            //publisher.Followings!.Add(following);
+
+            //await UnitOfWork.CommitAsync();
+
+            //var response = Mapper.Map<AddFollowingResponse>(following);
+
+            //return Success(response);
+            #endregion
         }
 
         public async Task<ApiResponse<DeleteFollowingResponse>> DeleteFollowingAsync(DeleteFollowingRequest request)
         {
 
             await DoValidationAsync<DeleteFollowingRequestValidator, DeleteFollowingRequest>(request, UnitOfWork);
-            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followings, p => p.Followers);
-            var following = await UnitOfWork.Publishers.GetByIdAsync(request.FollowingId, p => p.Followings, p => p.Followers);
 
-            if (publisher != null && following != null)
-            {
+            if (request.FollowingId == PublisherId)
+                return BadRequest<DeleteFollowingResponse>("You can't follow or unfollow yourself");
 
-                if (publisher.Followings == null)
-                {
-                    publisher.Followings = new List<Publisher>();
+            var followingExist = await UnitOfWork.Publishers.AnyAsync(p => p.Id == request.FollowingId);
 
-                }
+            if (!followingExist)
+                return NotFound<DeleteFollowingResponse>("Publisher you want to unfollow Not Found");
 
-                if (following.Followers == null)
-                {
-                    following.Followers = new List<Publisher>();
-                }
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId, p => p.Followings);
 
-                publisher.Followings.Remove(following);
-                following.Followers.Remove(publisher);
+            var following = publisher.Followings.Where(f => f.Id == request.FollowingId).FirstOrDefault();
 
-                await UnitOfWork.CommitAsync();
+            if (following == null)
+                return BadRequest<DeleteFollowingResponse>("You already not follow this publisher");
 
-                var response = Mapper.Map<DeleteFollowingResponse>(following);
-                return Success(response);
+            publisher?.Followings?.Remove(following);
 
-            }
-            throw new NotImplementedException();
+            await UnitOfWork.CommitAsync();
+
+            var response = Mapper.Map<DeleteFollowingResponse>(following);
+
+            return Success(response, "Unfollowed successfully");
         }
 
         public async Task<ApiResponsePaginated<List<GetAllFollowersResponse>>> GetAllFollowers(GetAllFollowersRequest request)

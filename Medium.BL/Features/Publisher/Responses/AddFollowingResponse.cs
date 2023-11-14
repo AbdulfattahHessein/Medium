@@ -1,4 +1,4 @@
 ﻿namespace Medium.BL.Features.Publisher.Response
 {
-    public record AddFollowingResponse(int Id, string Name, string? Bio, string? PhotoUrl);
+    public record AddFollowingResponse(int Id);
 }

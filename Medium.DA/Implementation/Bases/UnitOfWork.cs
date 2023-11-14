@@ -2,6 +2,7 @@
 using Medium.Core.Interfaces.Repositories;
 using Medium.DA.Context;
 using Medium.DA.Implementation.Repositories;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Medium.DA.Implementation.Bases
 {
@@ -31,7 +32,10 @@ namespace Medium.DA.Implementation.Bases
             SavingLists = new SavingListRepository(dbContext);
 
         }
-
+        public EntityEntry Attach(object entity)
+        {
+            return _dbContext.Attach(entity);
+        }
         public Task<int> CommitAsync()
         {
             return _dbContext.SaveChangesAsync();

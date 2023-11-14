@@ -5,6 +5,7 @@ using Medium.BL.Features.Accounts.Response;
 using Medium.BL.Features.Accounts.Validators;
 using Medium.BL.Interfaces.Services;
 using Medium.BL.ResponseHandler;
+using Medium.Core.Constants;
 using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Http;
@@ -106,7 +107,7 @@ namespace Medium.BL.AppServices
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.First().Description);
 
-            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName, PhotoUrl = "/Defaults/default-profile.png" });
+            await UnitOfWork.Publishers.InsertAsync(new Publisher() { User = user, Name = user.UserName });
 
             await userManager.AddToRoleAsync(user, "User");
 

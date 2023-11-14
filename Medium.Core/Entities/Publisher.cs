@@ -1,35 +1,17 @@
-﻿namespace Medium.Core.Entities
+﻿using Medium.Core.Constants;
+
+namespace Medium.Core.Entities
 {
     public class Publisher : Entity<int>
     {
-        public string Name { get; set; }
-        public string? Bio { get; set; }
-        public string? PhotoUrl { get; set; }
-        public ICollection<Story>? Stories { get; set; }
-        public ICollection<Publisher>? Followers { get; set; }
-        public ICollection<Publisher>? Followings { get; set; }
-        public ICollection<SavingList>? SavingLists { get; set; }
-        public ICollection<React>? Reacts { get; set; }
-        //public int UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Bio { get; set; } = string.Empty;
+        public string? PhotoUrl { get; set; } = Defaults.ProfilePhotoPath;
+        public ICollection<Story> Stories { get; set; } = new HashSet<Story>();
+        public ICollection<Publisher> Followers { get; set; } = new HashSet<Publisher>();
+        public ICollection<Publisher> Followings { get; set; } = new HashSet<Publisher>();
+        public ICollection<SavingList> SavingLists { get; set; } = new HashSet<SavingList>();
+        public ICollection<React> Reacts { get; set; } = new HashSet<React>();
         public ApplicationUser User { get; set; }
-        public Publisher()
-        {
-            Name = string.Empty;
-        }
-        public Publisher(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-        public Publisher(string name, string? photoUrl = null)
-        {
-            Name = name;
-            PhotoUrl = photoUrl;
-        }
-        public Publisher(string name, string? bio, string? photoUrl = null) : this(name, photoUrl)
-        {
-            Bio = bio;
-
-        }
     }
 }

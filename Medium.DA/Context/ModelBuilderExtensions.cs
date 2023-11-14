@@ -33,7 +33,7 @@ namespace Medium.DA.Context
 
             modelBuilder.Entity<ApplicationUser>().HasData(admin);
 
-            modelBuilder.Entity<Publisher>().HasData(new Publisher(1, "Admin"));
+            modelBuilder.Entity<Publisher>().HasData(new Publisher { Id = 1, Name = admin.UserName });
 
             var userRoles = new List<IdentityUserRole<int>>
             {
