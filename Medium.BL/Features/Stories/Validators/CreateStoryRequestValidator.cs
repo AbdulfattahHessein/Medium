@@ -22,7 +22,7 @@ namespace Medium.BL.Features.Stories.Validators
                 .NotNull().WithMessage("{PropertyName} must not be null")
                 .Must(topics => topics != null && topics.All(topic => !string.IsNullOrWhiteSpace(topic)))
                 .WithMessage("Topic names must not be null or empty")
-                .Must(topics => topics == null || topics.Distinct().Count == topics.Count)
+                .Must(topics => topics == null || topics.Distinct().Count() == topics.Count)
                 .WithMessage("Topic names must be unique");
 
             //        RuleFor(s => s.PublisherId)

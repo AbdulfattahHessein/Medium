@@ -6,7 +6,8 @@ namespace Medium.BL.Features.Publisher.Mapping
     {
         void GetFollowerNotFollowingResponseMapping()
         {
-            CreateMap<Core.Entities.Publisher, FollowerNotFollowingResponse>();
+            CreateMap<Core.Entities.Publisher, FollowerNotFollowingResponse>()
+                 .ForMember(s => s.IsFollowing, options => options.Ignore());//options.MapFrom(s => s.Followers.Any(f => f.Id == publishersService.PublisherId))); ;
 
 
         }

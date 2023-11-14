@@ -1,5 +1,12 @@
 ﻿namespace Medium.BL.Features.Publisher.Response
 {
-    public record GetAllPublisherResponse(int Id, string Name, string? Bio, string? PhotoUrl);
+    public record GetAllPublisherResponse
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string? Bio { get; set; }
+        public string? PhotoUrl { get; set; }
+        public bool IsFollowing { get; set; }
+    }
 
 }

@@ -11,7 +11,7 @@ namespace Medium.BL.AppServices
         public IUnitOfWork UnitOfWork { get; set; }
         public IMapper Mapper { get; set; }
         public IHttpContextAccessor HttpContextAccessor { get; }
-        public int PublisherId => int.Parse(HttpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public int PublisherId => int.Parse(HttpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
 
         public AppService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContext)
         {

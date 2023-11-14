@@ -81,6 +81,7 @@ namespace Medium.BL.AppServices
             if (publisher == null)
                 return NotFound<GetPublisherByIdResponse>();
             var response = Mapper.Map<GetPublisherByIdResponse>(publisher);
+            response.IsFollowing = publisher.Followers.Any(f => f.Id == PublisherId);
             return Success(response);
         }
 
@@ -146,11 +147,17 @@ namespace Medium.BL.AppServices
         {
 
             var publishers = await UnitOfWork.Publishers
-                .GetAllAsync(p => p.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize);
+                .GetAllAsync(p => p.Name.Contains(request.Search), (request.PageNumber - 1) * request.PageSize, request.PageSize, p => p.Followers);
 
             var totalCount = await UnitOfWork.Publishers.CountAsync(p => p.Name.Contains(request.Search));
 
             var response = Mapper.Map<List<GetAllPublisherResponse>>(publishers);
+
+
+            for (int i = 0; i < publishers.Count; i++)
+            {
+                response[i].IsFollowing = publishers[i].Followers.Any(f => f.Id == PublisherId);
+            }
 
             return Success(response, totalCount, request.PageNumber, request.PageSize);
         }
@@ -179,6 +186,12 @@ namespace Medium.BL.AppServices
             var FollowersNotFollowing = await UnitOfWork.Publishers.GetFollowersNotFollowings(PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
             var response = Mapper.Map<List<FollowerNotFollowingResponse>>(FollowersNotFollowing);
+
+            for (int i = 0; i < FollowersNotFollowing.Count; i++)
+            {
+                response[i].IsFollowing = FollowersNotFollowing[i].Followers.Any(f => f.Id == PublisherId);
+            }
+
 
             return Success(response, FollowersNotFollowing.Count, request.PageNumber, request.PageSize);
         }
@@ -272,6 +285,11 @@ namespace Medium.BL.AppServices
 
             var response = Mapper.Map<List<GetAllFollowersResponse>>(followers);
 
+            for (int i = 0; i < followers.Count; i++)
+            {
+                response[i].IsFollowing = followers[i].Followers.Any(f => f.Id == PublisherId);
+            }
+
             return Success(response, followers.Count, request.PageNumber, request.PageSize);
 
 
@@ -282,6 +300,11 @@ namespace Medium.BL.AppServices
             var followers = await UnitOfWork.Publishers.GetAllFollowings(request.PublisherId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
             var response = Mapper.Map<List<GetAllFollowersResponse>>(followers);
+
+            for (int i = 0; i < followers.Count; i++)
+            {
+                response[i].IsFollowing = followers[i].Followers.Any(f => f.Id == PublisherId);
+            }
 
             return Success(response, followers.Count, request.PageNumber, request.PageSize);
 

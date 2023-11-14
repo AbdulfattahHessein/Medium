@@ -20,9 +20,6 @@ namespace Medium.BL.Features.Publisher.Mapping
             GetFollowerNotFollowingResponseMapping();
             GetAllFollowersMapping();
         }
-        void GetAllPublisherMapping()
-        {
-            CreateMap<Entities.Publisher, GetAllPublisherResponse>();
-        }
+
     }
 }
