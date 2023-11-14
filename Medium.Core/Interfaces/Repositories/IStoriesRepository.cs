@@ -8,6 +8,7 @@ namespace Medium.Core.Interfaces.Repositories
     {
         List<Story> GetStoriesIncludingPublisher(params Expression<Func<Story, object>>[] includes);
         Task<List<Story>> GetAllStoriesByTopicIdAsync(int topicId, int? skip, int? take);
+        Task<IQueryable<Story>> GetAllFollowingsStories(int publisherId, int? skip, int? take);
 
 
     }

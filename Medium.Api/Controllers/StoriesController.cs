@@ -31,6 +31,15 @@ namespace Medium.Api.Controllers
             return ApiResult(result);
         }
 
+        [HttpGet("GetAllFollowingsStories")]
+        [Authorize]
+        public async Task<IActionResult> GetAllFollowingsStories([FromQuery] GetAllFollowingsStoriesRequest request)
+        {
+            var result = await _storiesService.GetAllFollowingsStories(request);
+
+            return ApiResult(result);
+        }
+
         [HttpGet("GetAllPublisherStories")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetAllPublisherStories([FromQuery] GetAllPaginationStoryRequest request)

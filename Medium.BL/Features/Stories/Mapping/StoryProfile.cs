@@ -14,8 +14,7 @@ namespace Medium.BL.Features.Stories.Mapping
             GetAllStoriesIncludingPublisherMapping();
             GetAllPaginationStoryMapping();
             GetAllStoriesByTopicIdMapping();
-
-
+            GetAllFollowingsStoriesMapping();
         }
     }
 }

@@ -15,6 +15,8 @@ namespace Medium.BL.Interfaces.Services
         Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllAsync(GetAllPaginationStoryRequest request);
         Task<ApiResponsePaginated<List<GetAllPaginationStoryResponse>>> GetAllPublisherStoriesAsync(GetAllPaginationStoryRequest request);
         Task<ApiResponsePaginated<List<GetAllStoriesByTopicIdResponse>>> GetAllStoriesByTopicIdAsync(GetAllStoriesByTopicNameRequest request);
+        Task<ApiResponsePaginated<List<GetAllFollowingsStoriesResponse>>> GetAllFollowingsStories(GetAllFollowingsStoriesRequest request);
+
 
 
     }

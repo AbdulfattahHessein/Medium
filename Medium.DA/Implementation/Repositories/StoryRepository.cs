@@ -39,6 +39,27 @@ namespace Medium.DA.Implementation.Repositories
         {
             return GetAll(includes);
         }
+        public async Task<IQueryable<Story>> GetAllFollowingsStories(int publisherId, int? skip, int? take)
+        {
+            var publisher = await _dbContext.Publishers.FindAsync(publisherId);
+            var query = _dbContext
+                .Stories
+                .Include(s => s.Publisher)
+                .Include(s => s.StoryVideos)
+                .Include(s => s.StoryPhotos)
+                .Include(s => s.Publisher)
+                .Include(s => s.Topics)
+                .Where(s => s.Publisher.Followers.Contains(publisher));
+
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+
+            if (take.HasValue)
+                query = query.Take(take.Value);
+
+            return query;
+
+        }
 
 
     }

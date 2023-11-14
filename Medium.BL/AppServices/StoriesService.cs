@@ -9,6 +9,8 @@ using Medium.Core.Entities;
 using Medium.Core.Interfaces.Bases;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Linq.Expressions;
 using static Medium.BL.ResponseHandler.ApiResponseHandler;
 
 namespace Medium.BL.AppServices
@@ -372,6 +374,31 @@ namespace Medium.BL.AppServices
             return Success(response, totalStories, request.PageNumber, request.PageSize);
         }
 
+        public async Task<ApiResponsePaginated<List<GetAllFollowingsStoriesResponse>>> GetAllFollowingsStories(GetAllFollowingsStoriesRequest request)
+        {
+            var publisher = await UnitOfWork.Publishers.GetByIdAsync(PublisherId);
+            Expression<Func<Story, object?>>[] includes =
+            {
+                s => s.Publisher,
+                s => s.Topics,
+                s => s.StoryPhotos,
+                s => s.Topics
+
+            };
+
+            Expression<Func<Story, bool>>? criteria = s => s.Publisher.Followers.Contains(publisher) && s.Title.Contains(request.Search);
+
+            var stories = await UnitOfWork.Stories.GetAllAsync(criteria,
+                                                               (request.PageNumber - 1) * request.PageSize,
+                                                               request.PageSize,
+                                                               includes);
+
+            var totalCount = await UnitOfWork.Stories.CountAsync((s => s.Title.Contains(request.Search)));
+
+            var response = Mapper.Map<List<GetAllFollowingsStoriesResponse>>(stories);
+
+            return Success(response, totalCount, request.PageNumber, request.PageSize);
+        }
     }
 
 }
