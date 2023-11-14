@@ -7,7 +7,7 @@ namespace Medium.Core.Interfaces.Repositories
     public interface IStoriesRepository : IRepository<Story, int>
     {
         List<Story> GetStoriesIncludingPublisher(params Expression<Func<Story, object>>[] includes);
-        Task<List<Story>> GetAllStoriesByTopicNameAsync(int topicId, int? skip, int? take);
+        Task<List<Story>> GetAllStoriesByTopicIdAsync(int topicId, int? skip, int? take);
 
 
     }

@@ -348,19 +348,19 @@ namespace Medium.BL.AppServices
 
 
         //}
-        public async Task<ApiResponsePaginated<List<GetAllStoriesByTopicNameResponse>>> GetAllStoriesByTopicNameAsync(GetAllStoriesByTopicNameRequest request)
+        public async Task<ApiResponsePaginated<List<GetAllStoriesByTopicIdResponse>>> GetAllStoriesByTopicIdAsync(GetAllStoriesByTopicNameRequest request)
         {
-            var stories = await UnitOfWork.Stories.GetAllStoriesByTopicNameAsync(request.TopicId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
+            var stories = await UnitOfWork.Stories.GetAllStoriesByTopicIdAsync(request.TopicId, (request.PageNumber - 1) * request.PageSize, request.PageSize);
 
             if (stories == null || stories.Count == 0)
             {
-                return new ApiResponsePaginated<List<GetAllStoriesByTopicNameResponse>>
+                return new ApiResponsePaginated<List<GetAllStoriesByTopicIdResponse>>
                 {
                     StatusCode = System.Net.HttpStatusCode.NotFound,
                     Message = "Topic Not Found",
                 };
             }
-            var response = Mapper.Map<List<GetAllStoriesByTopicNameResponse>>(stories);
+            var response = Mapper.Map<List<GetAllStoriesByTopicIdResponse>>(stories);
             // Calculate the total number of stories for the given topic
             var totalStories = await UnitOfWork.Stories.CountAsync(s => s.Topics.Any(t => t.Id == request.TopicId));
 

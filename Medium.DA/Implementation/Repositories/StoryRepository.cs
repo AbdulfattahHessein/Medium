@@ -14,7 +14,7 @@ namespace Medium.DA.Implementation.Repositories
 
         }
 
-        public Task<List<Story>> GetAllStoriesByTopicNameAsync(int topicId, int? skip, int? take)
+        public Task<List<Story>> GetAllStoriesByTopicIdAsync(int topicId, int? skip, int? take)
         {
             var query = _dbContext.Topics
                 .Where(t => t.Id == topicId)
@@ -27,13 +27,12 @@ namespace Medium.DA.Implementation.Repositories
             if (take.HasValue)
                 query = query.Take(take.Value);
 
-            // query.Include(s => s.StoryPhotos);
-            // query.Include(s => s.StoryVideos);            
             return query
                 .Include(s => s.Publisher)
                 .Include(s => s.StoryVideos)
                 .Include(s => s.StoryPhotos)
                 .Include(s => s.Publisher.Followers)
+                .Include(s => s.Topics)
                 .ToListAsync();
         }
         public List<Story> GetStoriesIncludingPublisher(params Expression<Func<Story, object>>[] includes)

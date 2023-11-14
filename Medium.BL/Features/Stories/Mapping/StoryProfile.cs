@@ -13,7 +13,7 @@ namespace Medium.BL.Features.Stories.Mapping
             GetAllStoryMapping();
             GetAllStoriesIncludingPublisherMapping();
             GetAllPaginationStoryMapping();
-            GetAllStoriesByTopicNameMapping();
+            GetAllStoriesByTopicIdMapping();
 
 
         }

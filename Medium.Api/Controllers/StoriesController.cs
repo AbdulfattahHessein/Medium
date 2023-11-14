@@ -70,7 +70,7 @@ namespace Medium.Api.Controllers
         [HttpGet("GetTopicWithStories")]
         public async Task<IActionResult> GetTopicWithStories([FromQuery] GetAllStoriesByTopicNameRequest request)
         {
-            var result = await _storiesService.GetAllStoriesByTopicNameAsync(request);
+            var result = await _storiesService.GetAllStoriesByTopicIdAsync(request);
             return ApiResult(result);
         }
 
