@@ -285,7 +285,7 @@ namespace Medium.BL.AppServices
                 return NotFound<DeleteStoryResponse>();
             }
             UnitOfWork.Stories.Delete(story);
-            //await UnitOfWork.CommitAsync();
+            await UnitOfWork.CommitAsync();
 
             //delete all story photos
             foreach (var photo in story.StoryPhotos)
